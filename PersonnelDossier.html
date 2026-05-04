@@ -950,7 +950,7 @@ TextField > .unity-text-field__input,
     font-size: var(--sm-text-xs);
     letter-spacing: var(--sm-letter-label);
     font-weight: 700;
-    border-radius: 2px;
+    border-radius: var(--sm-r-2);
 }
 
 .sm-pd__filter-btn:hover {
@@ -983,10 +983,10 @@ TextField > .unity-text-field__input,
     /* Bumped 9px → 10px. Below 10px on UI Toolkit's text rendering
        the letter-spacing makes characters bleed at typical zoom
        levels — names/role labels become a smear rather than text. */
-    font-size: 10px;
+    font-size: var(--sm-text-xs);
     letter-spacing: var(--sm-letter-label);
     font-weight: 700;
-    border-radius: 2px;
+    border-radius: var(--sm-r-2);
 }
 
 .sm-pd__trait-chip--active {
@@ -1092,7 +1092,7 @@ TextField > .unity-text-field__input,
     background-color: var(--sm-surface-2);
     border-width: var(--sm-stroke);
     border-color: var(--sm-border);
-    border-radius: 2px;
+    border-radius: var(--sm-r-2);
 }
 
 .sm-pd__column-title {
@@ -1142,7 +1142,7 @@ TextField > .unity-text-field__input,
     background-color: var(--sm-surface);
     border-width: var(--sm-stroke);
     border-color: var(--sm-border);
-    border-radius: 2px;
+    border-radius: var(--sm-r-2);
     border-left-width: 3px;
     border-left-color: var(--sm-info);
     overflow: hidden;
@@ -1209,7 +1209,7 @@ TextField > .unity-text-field__input,
 /* Initials fallback inside the avatar frame. */
 .sm-pd__card-avatar-initials {
     text-align: center; justify-content: center; align-items: center;
-    font-size: 13px;
+    font-size: var(--sm-text-md);
     color: var(--sm-text);
     font-weight: 700;
     letter-spacing: 1px;
@@ -1273,13 +1273,13 @@ TextField > .unity-text-field__input,
     font-size: 9px;
     font-weight: 700;
     letter-spacing: 1.4px;
-    border-radius: 2px;
+    border-radius: var(--sm-r-2);
 }
 
-.sm-pd__card-stamp--retired   { color: var(--sm-text-tertiary); background-color: rgba(148, 160, 173, 0.10); border-width: 1px; border-color: var(--sm-text-tertiary); }
-.sm-pd__card-stamp--kia        { color: var(--sm-alert);         background-color: rgba(255, 96, 96, 0.10);  border-width: 1px; border-color: var(--sm-alert); }
-.sm-pd__card-stamp--captured   { color: var(--sm-warning);       background-color: rgba(255, 200, 80, 0.10); border-width: 1px; border-color: var(--sm-warning); }
-.sm-pd__card-stamp--mia        { color: var(--sm-text-muted);    background-color: rgba(122, 134, 148, 0.10); border-width: 1px; border-color: var(--sm-text-muted); }
+.sm-pd__card-stamp--retired   { color: var(--sm-text-tertiary); background-color: rgba(148, 160, 173, 0.10); border-width: var(--sm-stroke); border-color: var(--sm-text-tertiary); }
+.sm-pd__card-stamp--kia        { color: var(--sm-alert);         background-color: rgba(255, 96, 96, 0.10);  border-width: var(--sm-stroke); border-color: var(--sm-alert); }
+.sm-pd__card-stamp--captured   { color: var(--sm-warning);       background-color: rgba(255, 200, 80, 0.10); border-width: var(--sm-stroke); border-color: var(--sm-warning); }
+.sm-pd__card-stamp--mia        { color: var(--sm-text-muted);    background-color: rgba(122, 134, 148, 0.10); border-width: var(--sm-stroke); border-color: var(--sm-text-muted); }
 
 /* ── Right detail pane ───────────────────────────────────────────── */
 
@@ -1319,7 +1319,7 @@ TextField > .unity-text-field__input,
     padding: var(--sm-s-2);
     margin-bottom: var(--sm-s-2);
     background-color: var(--sm-surface-2);
-    border-radius: 2px;
+    border-radius: var(--sm-r-2);
 }
 
 .sm-pd__empty-stat-label {
@@ -1536,7 +1536,7 @@ TextField > .unity-text-field__input,
     padding: var(--sm-s-3);
     margin-bottom: var(--sm-s-3);
     background-color: var(--sm-surface-2);
-    border-radius: 2px;
+    border-radius: var(--sm-r-2);
 }
 
 .sm-pd__stats-row {
@@ -1568,13 +1568,13 @@ TextField > .unity-text-field__input,
     flex-grow: 1;
     height: 6px;
     background-color: var(--sm-surface-3);
-    border-radius: 1px;
+    border-radius: var(--sm-r-1);
     margin-right: var(--sm-s-2);
 }
 
 .sm-pd__psych-fill {
     height: 6px;
-    border-radius: 1px;
+    border-radius: var(--sm-r-1);
     background-color: var(--sm-info);
 }
 
@@ -1585,7 +1585,7 @@ TextField > .unity-text-field__input,
 .sm-pd__psych-val {
     width: 32px;
     text-align: right; justify-content: right; align-items: center;
-    font-size: 11px;
+    font-size: var(--sm-text-sm);
     color: var(--sm-text);
 }
 
@@ -1597,7 +1597,7 @@ TextField > .unity-text-field__input,
 .sm-pd__loyalty-track {
     height: 8px;
     background-color: var(--sm-surface-3);
-    border-radius: 1px;
+    border-radius: var(--sm-r-1);
     margin: var(--sm-s-2) 0;
     position: relative;
 }
