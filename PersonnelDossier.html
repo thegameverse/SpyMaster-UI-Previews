@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PersonnelDossier · UI Preview</title>
+<style>
+
+/* ── Unity UI Toolkit default-shape reset ──────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; min-height: 100%; }
+body {
+    display: flex; flex-direction: column;
+    background-color: var(--sm-bg, #080F14);
+    color: var(--sm-text, #E6EDF3);
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+    font-size: 12px;
+}
+/* Every UXML element defaults to flex-column with shrink:0 — match
+   that here so authored USS that relies on those defaults works. */
+.uxml-root, .uxml-root * {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: relative;
+}
+/* UXML buttons inherit Unity's chrome; default-strip the browser's
+   button skin so per-screen USS is the only source of styling. */
+.uxml-root button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+.uxml-root input {
+    font: inherit;
+    color: inherit;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #212C3B;
+    padding: 4px 8px;
+}
+
+/* ── Assets/UI/Tokens/tokens.uss ── */
+/*
+ * SpyMaster · Design Tokens for Unity UI Toolkit
+ * ------------------------------------------------------------
+ * Source of truth: Claude Design/screens/DesignSheet.png + 01..09 screens
+ * Design direction: DARK · COOL SLATE · ONE WARM ACCENT · ONE SANS · ONE MONO
+ *
+ * Import order:   tokens.uss  →  theme.uss  →  per-screen/component .uss
+ * ------------------------------------------------------------
+ */
+
+:root {
+    /* ── SURFACE ─ cool desaturated slate, dark-first */
+    --sm-bg:              #080F14; /* app background */
+    --sm-surface:         #111821; /* card / panel */
+    --sm-surface-2:       #172030; /* nested, hover */
+    --sm-surface-3:       #1E2838; /* active, raised */
+    --sm-nav-bg:          #0A0E13; /* nav rail */
+    --sm-topbar-bg:       #0D1319;
+    --sm-ticker-bg:       #0A0E13;
+
+    /* ── TEXT
+     *
+     * Phase 23d (project-wide contrast pass): the original tertiary/muted
+     * values were too dark to read on `--sm-surface` — `--sm-text-muted`
+     * (#3E4A58) was 2.0:1 contrast and `--sm-text-tertiary` (#5A6876) was
+     * 3.1:1, both failing WCAG AA (4.5:1). They were applied as-is to key
+     * labels, hint text, captions, and dossier metadata across every
+     * screen, producing the dark-grey-on-dark-background problem the
+     * playtest flagged. Both have been lifted while preserving their
+     * relative hierarchy:
+     *
+     *   --sm-text            E6EDF3   ~14:1 on --sm-surface (unchanged)
+     *   --sm-text-secondary  8B97A6   ~5.7:1 (unchanged, already passing)
+     *   --sm-text-tertiary   94A0AD   ~6.4:1 (was 3.1:1, now passing AA)
+     *   --sm-text-muted      7A8694   ~4.6:1 (was 2.0:1, now passing AA)
+     *
+     * NEVER drop `--sm-text-tertiary` below #828F9C or `--sm-text-muted`
+     * below #6F7B8A on a `--sm-surface*` background — re-introduces the
+     * unreadable-grey regression.
+     */
+    --sm-text:            #E6EDF3;
+    --sm-text-secondary:  #8B97A6;
+    --sm-text-tertiary:   #94A0AD;
+    --sm-text-muted:      #7A8694;
+
+    /* ── SEMANTIC (the one warm accent is --sm-alert) */
+    --sm-alert:           #D14B3D; /* critical only — agency brand mark, CLASSIFIED, etc. */
+    --sm-alert-soft:      rgba(209, 75, 61, 0.12);
+    --sm-success:         #6FA37A;
+    --sm-success-soft:    rgba(111, 163, 122, 0.14);
+    --sm-warning:         #D9A441;
+    --sm-warning-soft:    rgba(217, 164, 65, 0.12);
+    --sm-info:            #4E94B8;
+    --sm-info-soft:       rgba(78, 148, 184, 0.14);
+
+    /* ── DATA PALETTE (charts, categories) */
+    --sm-cat-1:           #4E94B8; /* steel blue */
+    --sm-cat-2:           #8B7BA3; /* muted violet */
+    --sm-cat-3:           #C28A5C; /* desaturated tan */
+    --sm-cat-4:           #6FA37A; /* field green */
+    --sm-cat-5:           #9AA5B3; /* slate */
+
+    /* ── APPROACH COLORS (mission planner) */
+    --sm-approach-stealth:   #8B7BA3; /* violet */
+    --sm-approach-social:    #C28A5C; /* tan */
+    --sm-approach-technical: #4E94B8; /* blue */
+    --sm-approach-kinetic:   #D14B3D; /* red */
+
+    /* ── BORDERS */
+    --sm-border:          #212C3B;
+    --sm-border-strong:   #2A3547;
+    --sm-border-focus:    #4E94B8;
+
+    /* ── TYPOGRAPHY */
+    --sm-font-sans:   "Inter", "Segoe UI", sans-serif;
+    --sm-font-mono:   "JetBrains Mono", "Consolas", monospace;
+
+    --sm-text-xs:   10px;
+    --sm-text-sm:   11px;
+    --sm-text-md:   13px;
+    --sm-text-lg:   15px;
+    --sm-text-xl:   20px;
+    --sm-text-2xl:  28px;
+    --sm-text-3xl:  36px;
+    --sm-text-display: 48px;
+
+    --sm-letter-label: 1.4px;
+
+    /* ── SPACING (4 / 8 scale) */
+    --sm-s-1: 4px;
+    --sm-s-2: 8px;
+    --sm-s-3: 12px;
+    --sm-s-4: 16px;
+    --sm-s-5: 20px;
+    --sm-s-6: 24px;
+    --sm-s-8: 32px;
+    --sm-s-10: 40px;
+    --sm-s-12: 48px;
+
+    /* ── CHROME HEIGHTS */
+    --sm-topbar-h:  56px;
+    --sm-navrail-w: 84px;
+    --sm-ticker-h:  52px;
+
+    /* ── MOTION */
+    --sm-dur-fast:    120ms;
+    --sm-dur-base:    200ms;
+    --sm-dur-slow:    380ms;
+
+    /* ── RADII — minimal, sharp */
+    --sm-r-0: 0;
+    --sm-r-1: 1px;
+    --sm-r-2: 2px;
+
+    /* ── BORDERS (stroke width) */
+    --sm-stroke: 1px;
+    --sm-stroke-2: 2px;
+}
+
+/* ── Assets/UI/Theme/theme.uss ── */
+/*
+ * SpyMaster · Base Theme
+ * ------------------------------------------------------------
+ * Element + utility styles built on tokens.uss. Import both as
+ * StyleSheets on your root PanelSettings.
+ *
+ *   Root (UIDocument) → <UXML> references these classes.
+ *
+ * Fonts (live):
+ *   sans  → Assets/Fonts/Inter/Inter-Regular.ttf  (default on .sm-root)
+ *   mono  → Assets/Fonts/JetBrainsMono/JetBrainsMono-Regular.ttf  (.sm-mono / .sm-num)
+ *   bolds → font-weight: 700;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    
+}
+
+/* =========================================================
+ * LAYOUT PRIMITIVES
+ *   .sm-row  — horizontal flex
+ *   .sm-col  — vertical flex (default for Unity, here for clarity)
+ *   .sm-fill — flex-grow 1
+ * ========================================================= */
+.sm-row { flex-direction: row; }
+.sm-col { flex-direction: column; }
+.sm-fill { flex-grow: 1; }
+
+/* Phase 37-transitions — screen fade-in.
+ * SpyMasterShellUI.ShowScreen() adds this class on the cloned screen
+ * tree, sets opacity:0 immediately, then schedules opacity:1 one frame
+ * later. The transition rule below makes the opacity flip animate.
+ * 220ms (slightly longer than --sm-dur-base 200ms) feels intentional
+ * without dragging on long screen transitions. */
+.sm-screen-fade {
+    transition-property: opacity;
+    transition-duration: 220ms;
+    transition-timing-function: ease-out;
+}
+
+/* Phase 37-endgame — paced reveal animation for the post-campaign
+ * NewGamePlus screen. The controller hides each element (opacity:0,
+ * translate:0 8px) at populate-time, then schedules a staggered class
+ * flip via .sm-endgame-revealed. Effect: a 320ms ease-out slide-up
+ * fade per item, sequenced ~90ms apart, so the score breakdown lands
+ * one beat at a time instead of all at once. Players who earned an S
+ * (or an F) get a dramatic moment to actually feel it.
+ *
+ * The rating letter uses .sm-endgame-rating-punch instead — same
+ * fade, but with a scale 0.65 → 1.0 punch-in over 500ms for the
+ * emotional payoff hit. */
+.sm-endgame-reveal-item {
+    transition-property: opacity, translate;
+    transition-duration: 320ms;
+    transition-timing-function: ease-out;
+}
+.sm-endgame-rating-punch {
+    transition-property: opacity, scale;
+    transition-duration: 500ms;
+    transition-timing-function: ease-out;
+}
+.sm-center { align-items: center; justify-content: center; }
+
+/* =========================================================
+ * PANEL — the fundamental container
+ * ========================================================= */
+.sm-panel {
+    background-color: var(--sm-surface);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+}
+
+.sm-panel--flush {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.sm-panel__header {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
+}
+
+.sm-panel__title {
+    font-size: var(--sm-text-sm);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+    color: var(--sm-text);
+    text-align: left; justify-content: left; align-items: flex-start;
+    /* text-transform not supported by Unity USS — author labels in UPPERCASE directly. */
+}
+
+.sm-panel__body {
+    padding-top: var(--sm-s-4);
+    padding-bottom: var(--sm-s-4);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+}
+
+/* =========================================================
+ * TYPOGRAPHY
+ * ========================================================= */
+.sm-mono {
+    
+}
+.sm-mono-bold {
+    
+    font-weight: 700;
+}
+
+.sm-label {
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+    color: var(--sm-text-secondary);
+}
+.sm-h1 { font-size: var(--sm-text-3xl); font-weight: 400; font-style: normal; color: var(--sm-text); }
+.sm-h2 { font-size: var(--sm-text-2xl); color: var(--sm-text); }
+.sm-h3 { font-size: var(--sm-text-xl);  color: var(--sm-text); }
+.sm-body { font-size: var(--sm-text-md); color: var(--sm-text); }
+.sm-secondary { color: var(--sm-text-secondary); }
+.sm-tertiary  { color: var(--sm-text-tertiary); }
+.sm-muted     { color: var(--sm-text-muted); }
+
+.sm-num {
+    
+    font-weight: 400; font-style: normal;
+}
+
+/* =========================================================
+ * BUTTONS
+ *   Usage: <Button class="sm-btn sm-btn--primary" text="SIGN OFF" />
+ * ========================================================= */
+.sm-btn {
+    height: 32px;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+    background-color: rgba(0,0,0,0);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border-strong);
+    border-right-color: var(--sm-border-strong);
+    border-top-color: var(--sm-border-strong);
+    border-bottom-color: var(--sm-border-strong);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    color: var(--sm-text);
+    font-size: var(--sm-text-sm);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+    transition-property: background-color, border-color, color;
+    transition-duration: var(--sm-dur-fast);
+}
+.sm-btn:hover {
+    background-color: var(--sm-surface-2);
+    border-left-color: var(--sm-border-focus);
+    border-right-color: var(--sm-border-focus);
+    border-top-color: var(--sm-border-focus);
+    border-bottom-color: var(--sm-border-focus);
+}
+.sm-btn:active { background-color: var(--sm-surface-3); }
+.sm-btn:disabled { opacity: 0.4; }
+
+.sm-btn--primary {
+    background-color: var(--sm-alert);
+    border-left-color: var(--sm-alert);
+    border-right-color: var(--sm-alert);
+    border-top-color: var(--sm-alert);
+    border-bottom-color: var(--sm-alert);
+    color: #0B0F14;
+}
+.sm-btn--primary:hover {
+    background-color: #E35A4C;
+    border-left-color: #E35A4C;
+    border-right-color: #E35A4C;
+    border-top-color: #E35A4C;
+    border-bottom-color: #E35A4C;
+}
+
+.sm-btn--outline {
+    border-left-color: var(--sm-text-secondary);
+    border-right-color: var(--sm-text-secondary);
+    border-top-color: var(--sm-text-secondary);
+    border-bottom-color: var(--sm-text-secondary);
+    color: var(--sm-text);
+}
+
+.sm-btn--ghost {
+    border-left-color: rgba(0,0,0,0);
+    border-right-color: rgba(0,0,0,0);
+    border-top-color: rgba(0,0,0,0);
+    border-bottom-color: rgba(0,0,0,0);
+    color: var(--sm-text-secondary);
+}
+.sm-btn--ghost:hover { background-color: var(--sm-surface-2); color: var(--sm-text); }
+
+.sm-btn--danger {
+    background-color: var(--sm-alert-soft);
+    border-left-color: var(--sm-alert);
+    border-right-color: var(--sm-alert);
+    border-top-color: var(--sm-alert);
+    border-bottom-color: var(--sm-alert);
+    color: var(--sm-alert);
+}
+
+/* =========================================================
+ * INPUTS (TextField)
+ * ========================================================= */
+
+/* Global caret + selection colours — UI Toolkit's defaults are dark and
+ * vanish against our dark surfaces. Apply to every TextField's inner
+ * editable element so the caret is always visible regardless of which
+ * .sm-* wrapper class is on the field. */
+TextField > .unity-text-field__input,
+.unity-text-field__input {
+    --unity-cursor-color: var(--sm-text);
+    --unity-selection-color: var(--sm-border-focus);
+}
+
+.sm-input > .unity-text-field__input,
+.sm-input {
+    background-color: var(--sm-surface);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border-strong);
+    border-right-color: var(--sm-border-strong);
+    border-top-color: var(--sm-border-strong);
+    border-bottom-color: var(--sm-border-strong);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    min-height: 30px;
+}
+.sm-input:focus > .unity-text-field__input {
+    border-left-color: var(--sm-border-focus);
+    border-right-color: var(--sm-border-focus);
+    border-top-color: var(--sm-border-focus);
+    border-bottom-color: var(--sm-border-focus);
+}
+
+/* =========================================================
+ * BADGE
+ * ========================================================= */
+.sm-badge {
+    flex-direction: row;
+    align-items: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 7px;
+    padding-right: 7px;
+    background-color: var(--sm-surface-2);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+    color: var(--sm-text-secondary);
+    font-weight: 700;
+}
+.sm-badge--alert   { background-color: var(--sm-alert-soft);   color: var(--sm-alert);   border-left-color: rgba(209,75,61,0.35); border-right-color: rgba(209,75,61,0.35); border-top-color: rgba(209,75,61,0.35); border-bottom-color: rgba(209,75,61,0.35); }
+.sm-badge--success { background-color: var(--sm-success-soft); color: var(--sm-success); border-left-color: rgba(111,163,122,0.3); border-right-color: rgba(111,163,122,0.3); border-top-color: rgba(111,163,122,0.3); border-bottom-color: rgba(111,163,122,0.3); }
+.sm-badge--warning { background-color: var(--sm-warning-soft); color: var(--sm-warning); border-left-color: rgba(217,164,65,0.3); border-right-color: rgba(217,164,65,0.3); border-top-color: rgba(217,164,65,0.3); border-bottom-color: rgba(217,164,65,0.3); }
+.sm-badge--info    { background-color: var(--sm-info-soft);    color: var(--sm-info);    border-left-color: rgba(78,148,184,0.3); border-right-color: rgba(78,148,184,0.3); border-top-color: rgba(78,148,184,0.3); border-bottom-color: rgba(78,148,184,0.3); }
+
+/* =========================================================
+ * STAT BLOCK (label / big number / sub)
+ * ========================================================= */
+.sm-stat { flex-direction: column; }
+.sm-stat__value {
+    font-size: var(--sm-text-xl);
+    font-weight: 700;
+    color: var(--sm-text);
+}
+.sm-stat__sub { font-size: var(--sm-text-sm); color: var(--sm-text-secondary); }
+.sm-stat--alert   > .sm-stat__value { color: var(--sm-alert); }
+.sm-stat--success > .sm-stat__value { color: var(--sm-success); }
+.sm-stat--warning > .sm-stat__value { color: var(--sm-warning); }
+
+/* =========================================================
+ * TICKER BAR — bottom-of-screen event feed
+ * ========================================================= */
+.sm-ticker {
+    height: 28px;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--sm-nav-bg);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+    overflow: hidden;
+}
+.sm-ticker__badge {
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    color: var(--sm-alert);
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+}
+
+/* =========================================================
+ * CLASSIFIED BANNER
+ * ========================================================= */
+.sm-banner--classified {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    background-color: var(--sm-alert-soft);
+    border-left-width: 3px;
+    border-left-color: var(--sm-alert);
+    border-top-width: var(--sm-stroke);
+    border-top-color: rgba(209,75,61,0.3);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: rgba(209,75,61,0.3);
+}
+
+/* =========================================================
+ * CONFIDENCE INTERVAL — see ConfidenceInterval.uss
+ * ========================================================= */
+
+/* =========================================================
+ * LIVE dot (used by TopBar + Ticker) — breathing animation
+ * ========================================================= */
+.sm-live-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--sm-alert);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/* =========================================================
+ * ICON — square line icon using VectorImage (Assets/UI/Icons)
+ * ========================================================= */
+.sm-icon {
+    width: 20px;
+    height: 20px;
+    
+}
+.sm-icon-sm { width: 14px; height: 14px; }
+.sm-icon-lg { width: 28px; height: 28px; }
+.sm-icon--muted {  }
+.sm-icon--alert {  }
+.sm-icon--success {  }
+
+/* =========================================================
+ * EMPTY STATE label (used when lists have no data)
+ * ========================================================= */
+.sm-empty-state {
+    color: var(--sm-text-tertiary);
+    font-size: var(--sm-text-sm);
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    text-align: center; justify-content: center; align-items: center;
+}
+
+/* =========================================================
+ * CUSTOM SCROLLBARS (global)
+ *
+ * Replaces Unity's default chunky scrollbar with a thin,
+ * floating thumb that fades into the background when idle and
+ * snaps to the info-blue accent when dragged.
+ *
+ * Mirrored into theme.uss so every screen that loads this
+ * stylesheet gets the styling automatically — previously the
+ * rules lived only in Shared/Scrollbars.uss and only ShellUI
+ * imported them, leaving MainMenu/CharacterCreation/overlays
+ * with the default Unity scrollbar.
+ *
+ * Unity UITK scrollbar element tree:
+ *   Scroller  (.unity-scroller  +  --vertical / --horizontal)
+ *   ├── RepeatButton  (.unity-scroller__low-button)   ← hidden
+ *   ├── Slider  (.unity-base-slider)
+ *   │   └── .unity-base-slider__input
+ *   │       ├── .unity-base-slider__tracker
+ *   │       └── .unity-base-slider__dragger
+ *   └── RepeatButton  (.unity-scroller__high-button)  ← hidden
+ *
+ * All thumb/track rules are scoped to .unity-scroller so they
+ * never bleed into standalone Slider controls (progress bars).
+ * ========================================================= */
+
+/* Vertical bar — 8 px wide strip; faint 1 px left rule. */
+.unity-scroller--vertical {
+    width: 8px;
+    min-width: 8px;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 1px;
+    border-left-color: rgba(33, 44, 59, 0.55);
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Horizontal bar — 8 px tall strip; faint 1 px top rule. */
+.unity-scroller--horizontal {
+    height: 8px;
+    min-height: 8px;
+    background-color: rgba(0, 0, 0, 0);
+    border-top-width: 1px;
+    border-top-color: rgba(33, 44, 59, 0.55);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* Arrow buttons — removed entirely. */
+.unity-scroller__low-button,
+.unity-scroller__high-button {
+    display: none;
+}
+
+/* Inner slider element holding the track + thumb. */
+.unity-scroller .unity-base-slider {
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+}
+
+.unity-scroller .unity-base-slider__input {
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Track — fully transparent; the 1 px scroller border is the guide. */
+.unity-scroller .unity-base-slider__tracker {
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+}
+
+/* Thumb (dragger) — 4 px visible, three states. */
+.unity-scroller .unity-base-slider__dragger {
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+
+    background-color: rgba(255, 255, 255, 0.10);
+
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+
+    transition-property: background-color;
+    transition-duration: var(--sm-dur-fast);
+    transition-timing-function: ease-out;
+}
+
+.unity-scroller .unity-base-slider__dragger:hover {
+    background-color: rgba(255, 255, 255, 0.24);
+}
+
+.unity-scroller .unity-base-slider__dragger:active {
+    background-color: rgba(78, 148, 184, 0.80);
+}
+
+
+/* ──────────────────────────────────────────────────────────────────── */
+/*  Phase 21 polish: canonical close button.                            */
+/*  Replaces the legacy <Button text="✕"/> pattern that shipped         */
+/*  text-as-icon across 17 modals/overlays. All UXML close affordances  */
+/*  add `class="sm-close-btn"` and the SVG x icon renders at 12 px.     */
+/* ──────────────────────────────────────────────────────────────────── */
+
+.sm-close-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    margin: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("project://database/Assets/UI/Icons/x.svg");
+    
+    
+    color: rgba(0, 0, 0, 0);   /* hide any stray text content */
+    transition-property: background-color, -unity-background-image-tint-color, scale;
+    transition-duration: var(--sm-dur-fast);
+    transition-timing-function: ease-out;
+}
+
+.sm-close-btn:hover {
+    background-color: rgba(220, 60, 60, 0.18);
+    
+}
+
+.sm-close-btn:active {
+    scale: 0.92 0.92;
+    
+}
+
+.sm-close-btn:disabled {
+    
+}
+
+/* ──────────────────────────────────────────────────────────────────── */
+/*  Phase 21b-2: empty-state polish.                                    */
+/*  Inline empty-state labels that hang off list-style panels (Notif    */
+/*  Feed watchlist / event feed, Diplomacy event feed). Slightly        */
+/*  smaller + more muted than full-screen empty states so they fit      */
+/*  comfortably under a header without dominating the panel.            */
+/* ──────────────────────────────────────────────────────────────────── */
+
+.sm-nf__inline-empty,
+.sm-dip__inline-empty,
+.sm-nf__empty {
+    font-size: 11px;
+    color: rgba(140, 150, 165, 0.85);
+    text-align: center; justify-content: center; align-items: center;
+    white-space: normal;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+.sm-dip__list-empty {
+    font-size: 12px;
+    color: rgba(140, 150, 165, 0.85);
+    text-align: center; justify-content: center; align-items: center;
+    white-space: normal;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+/* ──────────────────────────────────────────────────────────────────── */
+/* §31 — LiveSkeletonDisplay                                            */
+/* Canonical async-content shimmer skeleton. Used by every LLM-driven   */
+/* text surface during load. Players see placeholder bars + shimmer     */
+/* pulse, NEVER fallback prose presented as if it were real content.    */
+/* The shimmer is driven by VisualElement.schedule (UI Toolkit lacks    */
+/* CSS @keyframes) — these rules just style the static appearance.     */
+/* ──────────────────────────────────────────────────────────────────── */
+
+.sm-skeleton {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.sm-skeleton-line {
+    height: 12px;
+    background-color: var(--sm-surface-3);
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.sm-skeleton-loading > .sm-skeleton-line {
+    background-color: var(--sm-surface-3);
+}
+
+.sm-skeleton-loaded > .sm-skeleton-line,
+.sm-skeleton-error  > .sm-skeleton-line {
+    display: none;
+}
+
+.sm-skeleton-label {
+    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    white-space: normal;
+}
+
+.sm-skeleton-error {
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+}
+
+.sm-skeleton-error > Label {
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-sm);
+    font-style: italic;
+    white-space: normal;
+    margin-bottom: var(--sm-s-2);
+}
+
+.sm-skeleton-retry {
+    align-self: flex-start;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 10px;
+    letter-spacing: 1.4px;
+}
+
+/*
+ * Track M-9 / F-D14 — z-order taxonomy (CodeConventions §12).
+ *
+ * Unity UI Toolkit stacks siblings by DOM order; these classes are
+ * semantic anchors so:
+ *   • ScreenRouter / overlay managers can reorder roots deterministically;
+ *   • lint / audit can verify every screen carries an explicit layer tag;
+ *   • future Unity versions that honour explicit ordering can wire
+ *     numeric values without churning the UXML.
+ *
+ * Layers (top to bottom in display order):
+ *   sm-l1-base     — base background (world globe, full-screen views)
+ *   sm-l2-panels   — primary panels (top bar, nav rail, screens)
+ *   sm-l3-overlays — non-blocking overlays (dropdowns, flyouts, side sheets)
+ *   sm-l4-modals   — modal dialogs (block interaction beneath)
+ *   sm-l5-tooltips — tooltips / hover popovers (always topmost)
+ */
+.sm-l1-base     { /* base layer */ }
+.sm-l2-panels   { /* primary-panel layer */ }
+.sm-l3-overlays { /* non-blocking-overlay layer */ }
+.sm-l4-modals   { /* modal layer */ }
+.sm-l5-tooltips { /* tooltip layer */ }
+
+/* ── Assets/UI/Screens/PersonnelDossier.uss ── */
+/* ===================================================================
+   People — agency org chart (Phase 39 redesign)
+
+   Read-only crew view: header strip on top, body underneath split
+   between the canvas (flex-grow) and the dossier detail pane
+   (380 px). The canvas renders an agency banner above three role
+   columns; cards stack by tenure within each column with a
+   status stamp overlay for retired / KIA / captured / MIA.
+
+   All colours flow from --sm-* tokens.
+   =================================================================== */
+
+.sm-pd {
+    flex-direction: column;
+    background-color: var(--sm-bg);
+    flex-grow: 1;
+}
+
+/* ── Header strip ────────────────────────────────────────────────── */
+
+.sm-pd__header {
+    flex-direction: row;
+    align-items: flex-end;
+    padding: var(--sm-s-4) var(--sm-s-5);
+    background-color: var(--sm-surface);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+}
+
+.sm-pd__header-title {
+    flex-direction: column;
+}
+
+.sm-pd__title {
+    font-size: var(--sm-text-2xl);
+    color: var(--sm-text);
+    font-weight: 700;
+    letter-spacing: var(--sm-letter-label);
+}
+
+.sm-pd__subtitle {
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text-muted);
+    margin-top: var(--sm-s-1);
+    white-space: normal;
+}
+
+.sm-pd__header-stats {
+    margin-left: var(--sm-s-5);
+    align-items: flex-start;
+}
+
+.sm-pd__header-stat {
+    font-size: var(--sm-text-xl);
+    color: var(--sm-text);
+    font-weight: 700;
+}
+
+/* Filter row: search + position chips */
+
+.sm-pd__filter-row {
+    flex-direction: row;
+    align-items: center;
+    padding: var(--sm-s-3) var(--sm-s-5);
+    background-color: var(--sm-surface-2);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+}
+
+.sm-pd__search {
+    flex-grow: 0;
+    width: 320px;
+    margin-right: var(--sm-s-4);
+}
+
+.sm-pd__search > .unity-text-element {
+    font-size: var(--sm-text-sm);
+}
+
+.sm-pd__filters {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.sm-pd__filter-btn {
+    height: 26px;
+    padding: 0 var(--sm-s-3);
+    margin-right: var(--sm-s-2);
+    background-color: transparent;
+    border-width: var(--sm-stroke);
+    border-color: var(--sm-border);
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+    border-radius: 2px;
+}
+
+.sm-pd__filter-btn:hover {
+    color: var(--sm-text);
+    border-color: var(--sm-text-tertiary);
+}
+
+.sm-pd__filter-btn--active {
+    color: var(--sm-bg);
+    background-color: var(--sm-info);
+    border-color: var(--sm-info);
+}
+
+.sm-pd__trait-strip {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: var(--sm-s-2) var(--sm-s-5);
+    background-color: var(--sm-surface-2);
+}
+
+.sm-pd__trait-chip {
+    height: 22px;
+    padding: 0 var(--sm-s-2);
+    margin-right: var(--sm-s-2);
+    margin-bottom: var(--sm-s-1);
+    background-color: transparent;
+    border-width: var(--sm-stroke);
+    border-color: var(--sm-text-tertiary);
+    color: var(--sm-text-secondary);
+    /* Bumped 9px → 10px. Below 10px on UI Toolkit's text rendering
+       the letter-spacing makes characters bleed at typical zoom
+       levels — names/role labels become a smear rather than text. */
+    font-size: 10px;
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+    border-radius: 2px;
+}
+
+.sm-pd__trait-chip--active {
+    color: var(--sm-bg);
+    background-color: var(--sm-warning);
+    border-color: var(--sm-warning);
+}
+
+/* ── Body: canvas (flex) + detail (380) ───────────────────────────── */
+
+.sm-pd__body {
+    flex-direction: row;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.sm-pd__canvas-wrap {
+    flex-grow: 1;
+    position: relative;
+    background-color: var(--sm-bg);
+    overflow: hidden;
+}
+
+.sm-pd__canvas-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.sm-pd__canvas-scroll {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    min-height: 0;
+}
+
+/* When the org chart has very few personnel, the canvas content was
+   smaller than the viewport but ScrollView still permitted bounce/
+   scroll because the contentContainer hugged the content rather than
+   stretching to the viewport. Stretching the canvas to at least the
+   viewport size kills the scroll-on-empty-canvas edge — the
+   contentContainer is now never smaller than what fits, so there's
+   nothing to scroll into.
+   align-items: center keeps a small column count visually centered
+   in the wider viewport. */
+.sm-pd__canvas {
+    flex-direction: column;
+    align-items: center;
+    padding: var(--sm-s-5);
+    min-width: 100%;
+    min-height: 100%;
+}
+
+/* ── Org banner (top of canvas) ──────────────────────────────────── */
+
+.sm-pd__org-banner {
+    flex-direction: column;
+    align-items: center;
+    padding: var(--sm-s-3) var(--sm-s-6);
+    margin-bottom: var(--sm-s-6);
+    background-color: var(--sm-surface);
+    border-width: var(--sm-stroke);
+    border-color: var(--sm-info);
+    border-radius: 3px;
+    min-width: 240px;
+}
+
+.sm-pd__org-name {
+    font-size: var(--sm-text-xl);
+    color: var(--sm-text);
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.sm-pd__org-tag {
+    font-size: 9px;
+    color: var(--sm-info);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+    margin-top: var(--sm-s-1);
+}
+
+/* ── Three role columns ──────────────────────────────────────────── */
+
+.sm-pd__columns {
+    flex-direction: row;
+    flex-grow: 0;
+}
+
+.sm-pd__column {
+    flex-direction: column;
+    margin-right: var(--sm-s-6);
+    width: 240px;
+    flex-shrink: 0;
+}
+
+.sm-pd__column-header {
+    align-items: center;
+    padding: var(--sm-s-2) var(--sm-s-3);
+    margin-bottom: var(--sm-s-3);
+    background-color: var(--sm-surface-2);
+    border-width: var(--sm-stroke);
+    border-color: var(--sm-border);
+    border-radius: 2px;
+}
+
+.sm-pd__column-title {
+    font-size: var(--sm-text-sm);
+    color: var(--sm-info);
+    font-weight: 700;
+    letter-spacing: var(--sm-letter-label);
+}
+
+.sm-pd__column-count {
+    font-size: 9px;
+    color: var(--sm-text-muted);
+    letter-spacing: var(--sm-letter-label);
+    margin-top: 2px;
+}
+
+.sm-pd__column-divider {
+    height: 1px;
+    background-color: var(--sm-border);
+    margin: var(--sm-s-3) 0;
+}
+
+.sm-pd__column-divider-label {
+    font-size: 9px;
+    color: var(--sm-text-tertiary);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+    margin-bottom: var(--sm-s-2);
+    margin-top: var(--sm-s-2);
+}
+
+.sm-pd__column-empty {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-muted);
+    font-style: italic;
+    text-align: center; justify-content: center; align-items: center;
+    padding: var(--sm-s-3);
+}
+
+/* ── Personnel cards ─────────────────────────────────────────────── */
+
+.sm-pd__card {
+    flex-direction: row;
+    align-items: center;
+    padding: var(--sm-s-2) var(--sm-s-3);
+    margin-bottom: var(--sm-s-2);
+    background-color: var(--sm-surface);
+    border-width: var(--sm-stroke);
+    border-color: var(--sm-border);
+    border-radius: 2px;
+    border-left-width: 3px;
+    border-left-color: var(--sm-info);
+    overflow: hidden;
+}
+
+/* Hover lifts the card via background tint + brighter border so
+   the player gets a clear "this is clickable" signal. The previous
+   border-only change was easy to miss on dark backgrounds. */
+.sm-pd__card:hover {
+    border-color: var(--sm-info);
+    background-color: var(--sm-surface-2);
+}
+
+/* Selected state is more prominent than hover — full info-blue
+   border on all sides, surface-2 background, and a subtle inner
+   border on the right edge so the row reads as a "tabbed" record
+   pointing at the dossier pane. */
+.sm-pd__card--selected {
+    border-color: var(--sm-info);
+    background-color: var(--sm-surface-2);
+    border-right-width: 3px;
+    border-right-color: var(--sm-info);
+}
+
+.sm-pd__card--wounded {
+    border-left-color: var(--sm-warning);
+}
+
+/* Dead/retired/captured/MIA states — opacity bumped from 0.55 → 0.72.
+   Player feedback: at 0.55 the legibility of names + meta drops
+   below readable on dark backgrounds. 0.72 still reads as
+   "deprioritised" but stays legible. */
+.sm-pd__card--retired,
+.sm-pd__card--kia,
+.sm-pd__card--captured,
+.sm-pd__card--mia {
+    opacity: 0.72;
+}
+
+.sm-pd__card--retired { border-left-color: var(--sm-text-tertiary); }
+.sm-pd__card--kia      { border-left-color: var(--sm-alert); }
+.sm-pd__card--captured { border-left-color: var(--sm-warning); }
+.sm-pd__card--mia      { border-left-color: var(--sm-text-muted); }
+
+/* Avatar FRAME — holds either a composed PortraitElement (Chip 32×40)
+   or an initials label fallback. The frame is 38×42 so the Chip
+   portrait sits inside with a 3px tinted breathing room on each
+   side; per-role tint classes paint the frame background + border.
+   Width / height stay raw px because they're locked to the Chip
+   portrait's intrinsic size, not part of the responsive scale. */
+.sm-pd__card-avatar {
+    width: 38px;
+    height: 42px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--sm-surface-3);
+    border-width: var(--sm-stroke);
+    border-color: var(--sm-border);
+    border-radius: var(--sm-r-2);
+    margin-right: var(--sm-s-2);
+}
+
+/* Initials fallback inside the avatar frame. */
+.sm-pd__card-avatar-initials {
+    text-align: center; justify-content: center; align-items: center;
+    font-size: 13px;
+    color: var(--sm-text);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* PortraitElement inside the avatar frame — Chip 32×40 sits centered
+   in the 38×42 frame. align-items:center on the frame handles the
+   horizontal centering; the Chip's intrinsic size dictates the rest. */
+.sm-pd__card-avatar-portrait {
+    flex-shrink: 0;
+}
+
+/* Per-role avatar tint. Field officers wear info-blue (operations
+   are the default discipline), analysts wear surveillance-green,
+   researchers wear amber (the warning palette since R&D unlocks
+   the "warn-the-director" tools the rest of the agency depends
+   on). All three use the 0.18α background + 0.55α border treatment
+   shared with other role chips so the screen reads consistently. */
+.sm-pd__card-avatar--field {
+    background-color: rgba(80, 124, 152, 0.22);
+    border-color:     rgba(80, 124, 152, 0.62);
+}
+.sm-pd__card-avatar--analyst {
+    background-color: rgba(94, 156, 110, 0.22);
+    border-color:     rgba(94, 156, 110, 0.62);
+}
+.sm-pd__card-avatar--researcher {
+    background-color: rgba(190, 144, 64, 0.22);
+    border-color:     rgba(190, 144, 64, 0.62);
+}
+
+.sm-pd__card-info {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.sm-pd__card-name {
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text);
+    font-weight: 700;
+}
+
+.sm-pd__card-callsign {
+    font-size: 9px;
+    color: var(--sm-info);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+    margin-top: 1px;
+}
+
+.sm-pd__card-meta {
+    font-size: 9px;
+    color: var(--sm-text-muted);
+    letter-spacing: 0.5px;
+    margin-top: 1px;
+}
+
+.sm-pd__card-stamp {
+    margin-left: var(--sm-s-2);
+    padding: 2px 6px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    border-radius: 2px;
+}
+
+.sm-pd__card-stamp--retired   { color: var(--sm-text-tertiary); background-color: rgba(148, 160, 173, 0.10); border-width: 1px; border-color: var(--sm-text-tertiary); }
+.sm-pd__card-stamp--kia        { color: var(--sm-alert);         background-color: rgba(255, 96, 96, 0.10);  border-width: 1px; border-color: var(--sm-alert); }
+.sm-pd__card-stamp--captured   { color: var(--sm-warning);       background-color: rgba(255, 200, 80, 0.10); border-width: 1px; border-color: var(--sm-warning); }
+.sm-pd__card-stamp--mia        { color: var(--sm-text-muted);    background-color: rgba(122, 134, 148, 0.10); border-width: 1px; border-color: var(--sm-text-muted); }
+
+/* ── Right detail pane ───────────────────────────────────────────── */
+
+.sm-pd__detail {
+    width: 380px;
+    flex-shrink: 0;
+    flex-direction: column;
+    background-color: var(--sm-surface);
+    border-left-width: var(--sm-stroke);
+    border-left-color: var(--sm-border);
+    overflow: hidden;
+}
+
+.sm-pd__empty-detail {
+    flex-grow: 1;
+    flex-direction: column;
+    padding: var(--sm-s-5);
+}
+
+.sm-pd__empty-title {
+    font-size: var(--sm-text-md);
+    color: var(--sm-info);
+    font-weight: 700;
+    letter-spacing: var(--sm-letter-label);
+    margin-bottom: var(--sm-s-3);
+}
+
+.sm-pd__empty-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: var(--sm-s-4);
+}
+
+.sm-pd__empty-stat {
+    flex-direction: column;
+    width: 50%;
+    padding: var(--sm-s-2);
+    margin-bottom: var(--sm-s-2);
+    background-color: var(--sm-surface-2);
+    border-radius: 2px;
+}
+
+.sm-pd__empty-stat-label {
+    font-size: 9px;
+    color: var(--sm-text-muted);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+}
+
+.sm-pd__empty-stat-value {
+    font-size: var(--sm-text-lg);
+    color: var(--sm-text);
+    font-weight: 700;
+    margin-top: 2px;
+    white-space: normal;
+}
+
+/* LONGEST TENURE row gets a full-width treatment because the value
+   ("MARCUS WHITFORD · 156D") routinely overruns the 50% column the
+   other stats sit in. Marker class added by RebuildTeamSummary on
+   the LONGEST TENURE row only. */
+.sm-pd__empty-stat--full {
+    width: 100%;
+}
+.sm-pd__empty-stat--full .sm-pd__empty-stat-value {
+    font-size: var(--sm-text-md);
+    letter-spacing: 0.5px;
+}
+
+.sm-pd__empty-hint {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-muted);
+    font-style: italic;
+    white-space: normal;
+    margin-top: var(--sm-s-2);
+}
+
+/* Identity panel + tabs (keep close to the existing dossier styling
+   so the tab content panels render unchanged). */
+
+.sm-pd__id-panel {
+    flex-direction: column;
+    flex-shrink: 0;
+    padding: var(--sm-s-4) var(--sm-s-5);
+    background-color: var(--sm-surface-2);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+}
+
+.sm-pd__id-header {
+    flex-direction: row;
+    align-items: center;
+}
+
+/* Hero portrait frame in the identity block — wraps a Full-size
+   PortraitElement (100×120) inserted at index 0 of the id-header. The
+   frame paints a per-role tinted background + 1px border so the
+   portrait reads as a framed agent ID photo, matching the discipline
+   colour used on the roster avatar. Frame size includes a 4 px tinted
+   bezel (--sm-s-1) around the 100×120 portrait. */
+.sm-pd__id-portrait {
+    width: 108px;
+    height: 128px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sm-s-1);
+    background-color: var(--sm-surface-3);
+    border-width: var(--sm-stroke);
+    border-color: var(--sm-border);
+    border-radius: var(--sm-r-2);
+    margin-right: var(--sm-s-3);
+    overflow: hidden;
+}
+
+.sm-pd__id-portrait--field {
+    background-color: rgba(80, 124, 152, 0.18);
+    border-color:     rgba(80, 124, 152, 0.62);
+}
+.sm-pd__id-portrait--analyst {
+    background-color: rgba(94, 156, 110, 0.18);
+    border-color:     rgba(94, 156, 110, 0.62);
+}
+.sm-pd__id-portrait--researcher {
+    background-color: rgba(190, 144, 64, 0.18);
+    border-color:     rgba(190, 144, 64, 0.62);
+}
+
+.sm-pd__id-name-col {
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.sm-pd__callsign {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-info);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+}
+
+.sm-pd__fullname {
+    font-size: var(--sm-text-lg);
+    color: var(--sm-text);
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.sm-pd__id-badges {
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.sm-pd__clearance-badge {
+    margin-top: 4px;
+    font-size: 9px;
+    letter-spacing: var(--sm-letter-label);
+}
+
+.sm-pd__id-fields {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: var(--sm-s-2);
+}
+
+.sm-pd__id-field {
+    width: 50%;
+    flex-direction: column;
+    padding: var(--sm-s-1) var(--sm-s-2);
+    margin-bottom: 2px;
+}
+
+.sm-pd__id-value {
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text);
+}
+
+.sm-pd__tabs {
+    flex-direction: row;
+    flex-shrink: 0;
+    background-color: var(--sm-surface-2);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+}
+
+.sm-pd__tab-btn {
+    flex-grow: 1;
+    height: 36px;
+    background-color: transparent;
+    color: var(--sm-text-tertiary);
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+    border-width: 0;
+    border-bottom-width: var(--sm-stroke-2);
+    border-bottom-color: transparent;
+    border-radius: var(--sm-r-0);
+}
+
+.sm-pd__tab-btn:hover { color: var(--sm-text); }
+
+.sm-pd__tab-btn--active {
+    color: var(--sm-text);
+    border-bottom-color: var(--sm-info);
+}
+
+.sm-pd__tab-panels {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-direction: column;
+    /* The previous overflow:hidden was causing the active tab panel to
+       crop into the tab strip when the id-panel was tall (8 fields in a
+       wrapping 2-col grid pushes the panel down 200+ px). Switching to
+       overflow:visible with flex-shrink:1 lets the inner ScrollView own
+       overflow handling, and the column flex direction keeps the active
+       tab stacked below the strip rather than absolute-overlapping. */
+    overflow: visible;
+    min-height: 0;
+}
+
+.sm-pd__tab-panel {
+    display: none;
+    flex-grow: 1;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.sm-pd__tab-panel--active {
+    display: flex;
+    flex-direction: column;
+}
+
+.sm-pd__tab-scroll {
+    flex-grow: 1;
+    padding: var(--sm-s-3) var(--sm-s-4);
+    /* min-height:0 unlocks ScrollView shrinking inside the column flex
+       chain so the strip + id-panel don't get visually overlapped by the
+       tab body when content overflows. */
+    min-height: 0;
+}
+
+/* Inner panels — styled minimally; the dossier rendering code
+   inside PersonnelDossierScreen.cs continues to drop its content
+   into these named hosts unchanged. */
+
+.sm-pd__attrs-panel,
+.sm-pd__skills-panel,
+.sm-pd__psych-panel,
+.sm-pd__loyalty-panel,
+.sm-pd__traits-panel,
+.sm-pd__bonds-panel,
+.sm-pd__note-panel,
+.sm-pd__history-panel {
+    flex-direction: column;
+    padding: var(--sm-s-3);
+    margin-bottom: var(--sm-s-3);
+    background-color: var(--sm-surface-2);
+    border-radius: 2px;
+}
+
+.sm-pd__stats-row {
+    flex-direction: row;
+}
+
+.sm-pd__attrs-panel { width: 50%; margin-right: var(--sm-s-2); }
+
+.sm-pd__attrs-body,
+.sm-pd__skills-body {
+    flex-direction: column;
+    padding: var(--sm-s-2);
+}
+
+.sm-pd__psych-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--sm-s-1);
+}
+
+.sm-pd__psych-label {
+    width: 64px;
+    font-size: 9px;
+    color: var(--sm-text-muted);
+    letter-spacing: var(--sm-letter-label);
+}
+
+.sm-pd__psych-track {
+    flex-grow: 1;
+    height: 6px;
+    background-color: var(--sm-surface-3);
+    border-radius: 1px;
+    margin-right: var(--sm-s-2);
+}
+
+.sm-pd__psych-fill {
+    height: 6px;
+    border-radius: 1px;
+    background-color: var(--sm-info);
+}
+
+.sm-pd__psych-fill--stress  { background-color: var(--sm-warning); }
+.sm-pd__psych-fill--morale  { background-color: var(--sm-success); }
+.sm-pd__psych-fill--burnout { background-color: var(--sm-alert); }
+
+.sm-pd__psych-val {
+    width: 32px;
+    text-align: right; justify-content: right; align-items: center;
+    font-size: 11px;
+    color: var(--sm-text);
+}
+
+.sm-pd__psych-ptsd {
+    color: var(--sm-text-tertiary);
+    font-size: var(--sm-text-xs);
+}
+
+.sm-pd__loyalty-track {
+    height: 8px;
+    background-color: var(--sm-surface-3);
+    border-radius: 1px;
+    margin: var(--sm-s-2) 0;
+    position: relative;
+}
+
+.sm-pd__loyalty-fill {
+    height: 8px;
+    background-color: var(--sm-info);
+}
+
+/* Marker now anchors via top:0 so it lines up with the track top
+   regardless of margin collapsing. The previous margin-top: -2px
+   was fragile across UIToolkit versions. */
+.sm-pd__loyalty-marker {
+    position: absolute;
+    width: 2px;
+    height: 14px;
+    top: -3px;
+    background-color: var(--sm-text);
+}
+
+.sm-pd__loyalty-labels {
+    flex-direction: row;
+}
+
+.sm-pd__loyalty-lo,
+.sm-pd__loyalty-hi {
+    font-size: 9px;
+    color: var(--sm-text-muted);
+    letter-spacing: var(--sm-letter-label);
+}
+
+.sm-pd__loyalty-score {
+    font-size: var(--sm-text-md);
+    color: var(--sm-text);
+    font-weight: 700;
+    margin-top: var(--sm-s-1);
+}
+
+.sm-pd__traits-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: var(--sm-s-1);
+}
+
+.sm-pd__bonds-list {
+    flex-direction: column;
+    padding: var(--sm-s-1);
+}
+
+.sm-pd__note-body {
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-sm);
+    white-space: normal;
+    padding: var(--sm-s-2);
+}
+
+/* Bond observation — LLM-025 narrative paragraph at the top of
+   the BONDS section. Skeleton bars while in flight; tinted card
+   once the bond narrative resolves. Sits between the panel
+   header and the structured bond rows. */
+.sm-pd__bond-observation {
+    background-color: var(--sm-surface-2);
+    border-left-width: 3px;
+    border-left-color: var(--sm-info);
+    padding: var(--sm-s-2);
+    margin-bottom: var(--sm-s-2);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+}
+
+/* Legacy class names kept around for ABI / hot-reload compatibility
+   if any code path still queries by them; treated as plain
+   VisualElements (no inner scroll). New class names below match the
+   UXML revision that removed nested-scroll. */
+.sm-pd__history-scroll,
+.sm-pd__event-scroll,
+.sm-pd__history-list,
+.sm-pd__event-list {
+    flex-grow: 0;
+    flex-direction: column;
+}
+
+.sm-pd__panel-hint {
+    font-size: 9px;
+    color: var(--sm-text-tertiary);
+    letter-spacing: var(--sm-letter-label);
+    margin-left: auto;
+}
+
+.sm-pd__agent-id {
+    font-size: 9px;
+    color: var(--sm-text-tertiary);
+    letter-spacing: var(--sm-letter-label);
+    padding: var(--sm-s-2) var(--sm-s-4);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+    text-align: right; justify-content: right; align-items: center;
+}
+
+
+/* Preview-only chrome — fixed banner identifying this is a
+   generated approximation, not the live game render. */
+.uxml-preview-banner {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: rgba(217, 164, 65, 0.12);
+    border-bottom: 1px solid rgba(217, 164, 65, 0.45);
+    font-size: 11px;
+    color: #D9A441;
+    letter-spacing: 1px;
+}
+.uxml-preview-banner a {
+    color: #4E94B8;
+    margin-left: auto;
+    text-decoration: none;
+}
+</style>
+</head>
+<body>
+<div class="uxml-preview-banner">
+  <span>PersonnelDossier · static preview · regenerate via Tools/UxmlPreviewGen.py</span>
+  <a href="index.html">← all screens</a>
+</div>
+<div class="uxml-root">
+  <div class="sm-l1-base sm-screen sm-pd" id="personnel-dossier">
+    <div class="sm-pd__header" id="pd-header">
+      <div class="sm-col sm-pd__header-title">
+        <div class="sm-pd__title">PEOPLE</div>
+        <div class="sm-pd__subtitle">Your crew — current, retired, fallen. Click any card to open their dossier.</div>
+      </div>
+      <div class="sm-fill"></div>
+      <div class="sm-col sm-pd__header-stats">
+        <div class="sm-label">ROSTER</div>
+        <div class="sm-mono sm-pd__header-stat" id="roster-count">12 TOTAL</div>
+      </div>
+    </div>
+    <div class="sm-row sm-pd__filter-row">
+      <div class="sm-pd__search" id="roster-search">
+        <input placeholder="Search callsign / name / location…" />
+      </div>
+      <div class="sm-row sm-pd__filters">
+        <button class="sm-pd__filter-btn sm-pd__filter-btn--active" id="filter-all" title="Show every personnel — active, retired, fallen.">ALL</button>
+        <button class="sm-pd__filter-btn" id="filter-field" title="Field officers — deployable squad members.">FIELD OFFICERS</button>
+        <button class="sm-pd__filter-btn" id="filter-analyst" title="Analysts — back-office intel processors.">ANALYSTS</button>
+        <button class="sm-pd__filter-btn" id="filter-researcher" title="Researchers — R&amp;D / training role.">RESEARCHERS</button>
+        <button class="sm-pd__filter-btn" id="filter-wounded" title="Personnel currently in recovery.">WND</button>
+      </div>
+    </div>
+    <div class="sm-row sm-pd__trait-strip" id="trait-filter-strip"></div>
+    <div class="sm-pd__body">
+      <div class="sm-pd__canvas-wrap" id="canvas-wrap">
+        <div class="sm-pd__canvas-overlay" id="canvas-overlay"></div>
+        <div class="sm-pd__canvas-scroll" id="canvas-scroll" style="overflow-x:auto; overflow-y:auto;">
+          <div class="sm-pd__canvas" id="canvas-content">
+            <div class="sm-pd__org-banner" id="org-banner">
+              <div class="sm-pd__org-name sm-mono" id="org-name">ECHELON</div>
+              <div class="sm-pd__org-tag" id="org-tag">AGENCY ROSTER</div>
+            </div>
+            <div class="sm-pd__columns" id="columns">
+              <div class="sm-pd__column">
+                <div class="sm-pd__column-header sm-mono">FIELD OFFICERS · 5</div>
+                <div class="sm-pd__card sm-pd__card--selected">
+                  <div class="sm-pd__card-avatar sm-pd__card-avatar--field"><div class="sm-pd__card-avatar-initials sm-mono">MW</div></div>
+                  <div class="sm-pd__card-info">
+                    <div class="sm-pd__card-name">Marcus Whitford</div>
+                    <div class="sm-pd__card-callsign sm-mono">BLACKTHORN</div>
+                    <div class="sm-pd__card-meta sm-mono">GBR · ACTIVE</div>
+                  </div>
+                </div>
+                <div class="sm-pd__card">
+                  <div class="sm-pd__card-avatar sm-pd__card-avatar--field"><div class="sm-pd__card-avatar-initials sm-mono">EV</div></div>
+                  <div class="sm-pd__card-info">
+                    <div class="sm-pd__card-name">Elena Voronova</div>
+                    <div class="sm-pd__card-callsign sm-mono">SPARROW</div>
+                    <div class="sm-pd__card-meta sm-mono">RUS · ON MISSION</div>
+                  </div>
+                </div>
+                <div class="sm-pd__card sm-pd__card--wounded">
+                  <div class="sm-pd__card-avatar sm-pd__card-avatar--field"><div class="sm-pd__card-avatar-initials sm-mono">JK</div></div>
+                  <div class="sm-pd__card-info">
+                    <div class="sm-pd__card-name">Jin Kobayashi</div>
+                    <div class="sm-pd__card-callsign sm-mono">RAVEN</div>
+                    <div class="sm-pd__card-meta sm-mono">JPN · WOUNDED</div>
+                  </div>
+                </div>
+              </div>
+              <div class="sm-pd__column">
+                <div class="sm-pd__column-header sm-mono">ANALYSTS · 4</div>
+                <div class="sm-pd__card">
+                  <div class="sm-pd__card-avatar sm-pd__card-avatar--analyst"><div class="sm-pd__card-avatar-initials sm-mono">DC</div></div>
+                  <div class="sm-pd__card-info">
+                    <div class="sm-pd__card-name">Diana Chen</div>
+                    <div class="sm-pd__card-callsign sm-mono">VECTOR</div>
+                    <div class="sm-pd__card-meta sm-mono">USA · ACTIVE</div>
+                  </div>
+                </div>
+                <div class="sm-pd__card">
+                  <div class="sm-pd__card-avatar sm-pd__card-avatar--analyst"><div class="sm-pd__card-avatar-initials sm-mono">AR</div></div>
+                  <div class="sm-pd__card-info">
+                    <div class="sm-pd__card-name">Aaron Reilly</div>
+                    <div class="sm-pd__card-callsign sm-mono">QUARTZ</div>
+                    <div class="sm-pd__card-meta sm-mono">IRL · ACTIVE</div>
+                  </div>
+                </div>
+              </div>
+              <div class="sm-pd__column">
+                <div class="sm-pd__column-header sm-mono">RESEARCHERS · 3</div>
+                <div class="sm-pd__card">
+                  <div class="sm-pd__card-avatar sm-pd__card-avatar--researcher"><div class="sm-pd__card-avatar-initials sm-mono">PS</div></div>
+                  <div class="sm-pd__card-info">
+                    <div class="sm-pd__card-name">Priya Shah</div>
+                    <div class="sm-pd__card-callsign sm-mono">CIPHER</div>
+                    <div class="sm-pd__card-meta sm-mono">IND · ACTIVE</div>
+                  </div>
+                </div>
+                <div class="sm-pd__card sm-pd__card--retired">
+                  <div class="sm-pd__card-avatar sm-pd__card-avatar--researcher"><div class="sm-pd__card-avatar-initials sm-mono">HG</div></div>
+                  <div class="sm-pd__card-info">
+                    <div class="sm-pd__card-name">Hans Gruber</div>
+                    <div class="sm-pd__card-callsign sm-mono">ATLAS</div>
+                    <div class="sm-pd__card-meta sm-mono">DEU · RETIRED</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sm-pd__detail" id="detail">
+        <div class="sm-pd__empty-detail" id="empty-detail">
+          <div class="sm-pd__empty-title sm-mono">TEAM SUMMARY</div>
+          <div class="sm-pd__empty-grid" id="empty-grid"></div>
+          <div class="sm-pd__empty-hint">Click any card on the org chart to open that personnel's dossier.</div>
+        </div>
+        <div class="sm-pd__id-panel" id="id-panel">
+          <div class="sm-row sm-pd__id-header">
+            <div class="sm-pd__id-name-col">
+              <div class="sm-pd__callsign sm-mono" id="callsign">BLACKTHORN</div>
+              <div class="sm-pd__fullname" id="fullname">Marcus Whitford</div>
+            </div>
+            <div class="sm-fill"></div>
+            <div class="sm-col sm-pd__id-badges">
+              <div class="sm-badge" id="status-badge">ACTIVE</div>
+              <div class="sm-badge sm-pd__clearance-badge" id="clearance-badge">DOSSIER · LVL 3</div>
+            </div>
+          </div>
+          <div class="sm-row sm-pd__id-fields">
+            <div class="sm-pd__id-field">
+              <div class="sm-label">AGE</div>
+              <div class="sm-mono sm-pd__id-value" id="id-age">37</div>
+            </div>
+            <div class="sm-pd__id-field">
+              <div class="sm-label">NATIONAL</div>
+              <div class="sm-mono sm-pd__id-value" id="id-national">GBR</div>
+            </div>
+            <div class="sm-pd__id-field">
+              <div class="sm-label">ROLE</div>
+              <div class="sm-mono sm-pd__id-value" id="id-role">FIELD OFFICER</div>
+            </div>
+            <div class="sm-pd__id-field">
+              <div class="sm-label">LOC</div>
+              <div class="sm-mono sm-pd__id-value" id="id-loc">London</div>
+            </div>
+            <div class="sm-pd__id-field">
+              <div class="sm-label">COVER ID</div>
+              <div class="sm-mono sm-pd__id-value" id="id-cover">James Holloway</div>
+            </div>
+            <div class="sm-pd__id-field">
+              <div class="sm-label">INTEGRITY</div>
+              <div class="sm-mono sm-pd__id-value" id="id-integrity">78%</div>
+            </div>
+            <div class="sm-pd__id-field">
+              <div class="sm-label">TENURE</div>
+              <div class="sm-mono sm-pd__id-value" id="id-tenure">156 DAYS</div>
+            </div>
+            <div class="sm-pd__id-field">
+              <div class="sm-label">LANGUAGES</div>
+              <div class="sm-mono sm-pd__id-value" id="id-languages">EN · FR · RU</div>
+            </div>
+          </div>
+        </div>
+        <div class="sm-pd__tabs">
+          <button class="sm-pd__tab-btn sm-pd__tab-btn--active" id="tab-btn-overview" title="Attributes, skills, psych state, loyalty.">OVERVIEW</button>
+          <button class="sm-pd__tab-btn" id="tab-btn-traits" title="Visible / revealed / hidden traits.">TRAITS</button>
+          <button class="sm-pd__tab-btn" id="tab-btn-ops" title="Bonds + handler note.">RELATIONS</button>
+          <button class="sm-pd__tab-btn" id="tab-btn-history" title="Career log + event feed.">HISTORY</button>
+        </div>
+        <div class="sm-fill sm-pd__tab-panels">
+          <div class="sm-pd__tab-panel sm-pd__tab-panel--active" id="tab-overview">
+            <div class="sm-pd__tab-scroll" style="overflow-x:hidden; overflow-y:auto;">
+              <div class="sm-row sm-pd__stats-row">
+                <div class="sm-pd__attrs-panel">
+                  <div class="sm-panel__header">
+                    <div class="sm-panel__title">ATTRIBUTES</div>
+                  </div>
+                  <div class="sm-pd__attrs-body" id="attrs-body">
+                    <div class="sm-pd__stat-row">
+                      <div class="sm-pd__stat-label">INT</div>
+                      <div class="sm-pd__stat-track"><div class="sm-pd__stat-fill" style="width:75%"></div></div>
+                      <div class="sm-pd__stat-value sm-mono">15</div>
+                    </div>
+                    <div class="sm-pd__stat-row">
+                      <div class="sm-pd__stat-label">COM</div>
+                      <div class="sm-pd__stat-track"><div class="sm-pd__stat-fill" style="width:60%"></div></div>
+                      <div class="sm-pd__stat-value sm-mono">12</div>
+                    </div>
+                    <div class="sm-pd__stat-row">
+                      <div class="sm-pd__stat-label">AGI</div>
+                      <div class="sm-pd__stat-track"><div class="sm-pd__stat-fill" style="width:85%"></div></div>
+                      <div class="sm-pd__stat-value sm-mono">17</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="sm-fill sm-pd__skills-panel">
+                  <div class="sm-panel__header">
+                    <div class="sm-panel__title">SKILLS</div>
+                  </div>
+                  <div class="sm-pd__skills-body" id="skills-body">
+                    <div class="sm-pd__stat-row">
+                      <div class="sm-pd__stat-label">INT</div>
+                      <div class="sm-pd__stat-track"><div class="sm-pd__stat-fill" style="width:75%"></div></div>
+                      <div class="sm-pd__stat-value sm-mono">15</div>
+                    </div>
+                    <div class="sm-pd__stat-row">
+                      <div class="sm-pd__stat-label">COM</div>
+                      <div class="sm-pd__stat-track"><div class="sm-pd__stat-fill" style="width:60%"></div></div>
+                      <div class="sm-pd__stat-value sm-mono">12</div>
+                    </div>
+                    <div class="sm-pd__stat-row">
+                      <div class="sm-pd__stat-label">AGI</div>
+                      <div class="sm-pd__stat-track"><div class="sm-pd__stat-fill" style="width:85%"></div></div>
+                      <div class="sm-pd__stat-value sm-mono">17</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="sm-pd__psych-panel">
+                <div class="sm-panel__header">
+                  <div class="sm-panel__title">PSYCH STATE</div>
+                </div>
+                <div class="sm-pd__psych-gauges">
+                  <div class="sm-pd__psych-row">
+                    <div class="sm-label sm-pd__psych-label">STRESS</div>
+                    <div class="sm-pd__psych-track">
+                      <div class="sm-pd__psych-fill sm-pd__psych-fill--stress" id="psych-stress-fill"></div>
+                    </div>
+                    <div class="sm-mono sm-pd__psych-val" id="psych-stress">42</div>
+                  </div>
+                  <div class="sm-pd__psych-row">
+                    <div class="sm-label sm-pd__psych-label">MORALE</div>
+                    <div class="sm-pd__psych-track">
+                      <div class="sm-pd__psych-fill sm-pd__psych-fill--morale" id="psych-morale-fill"></div>
+                    </div>
+                    <div class="sm-mono sm-pd__psych-val" id="psych-morale">67</div>
+                  </div>
+                  <div class="sm-pd__psych-row">
+                    <div class="sm-label sm-pd__psych-label">BURNOUT</div>
+                    <div class="sm-pd__psych-track">
+                      <div class="sm-pd__psych-fill sm-pd__psych-fill--burnout" id="psych-burnout-fill"></div>
+                    </div>
+                    <div class="sm-mono sm-pd__psych-val" id="psych-burnout">28</div>
+                  </div>
+                  <div class="sm-pd__psych-row">
+                    <div class="sm-label sm-pd__psych-label">PTSD</div>
+                    <div class="sm-mono sm-pd__psych-ptsd" id="psych-ptsd">0 EVENTS</div>
+                  </div>
+                </div>
+              </div>
+              <div class="sm-pd__loyalty-panel">
+                <div class="sm-panel__header">
+                  <div class="sm-panel__title">LOYALTY</div>
+                </div>
+                <div class="sm-mono sm-pd__loyalty-ci" id="loyalty-ci">CI DEPT ASSESSMENT: CI LVL 2 · TRUSTED</div>
+                <div class="sm-pd__loyalty-track">
+                  <div class="sm-pd__loyalty-fill" id="loyalty-fill"></div>
+                  <div class="sm-pd__loyalty-marker" id="loyalty-marker"></div>
+                </div>
+                <div class="sm-row sm-pd__loyalty-labels">
+                  <div class="sm-mono sm-pd__loyalty-lo">DEFECTOR</div>
+                  <div class="sm-fill"></div>
+                  <div class="sm-mono sm-pd__loyalty-hi">TRUE-BELIEVER</div>
+                </div>
+                <div class="sm-mono sm-pd__loyalty-score" id="loyalty-score">+72  ·  IDEOLOGY-ALIGNED</div>
+              </div>
+            </div>
+          </div>
+          <div class="sm-pd__tab-panel" id="tab-traits">
+            <div class="sm-pd__tab-scroll" style="overflow-x:hidden; overflow-y:auto;">
+              <div class="sm-pd__traits-panel">
+                <div class="sm-panel__header">
+                  <div class="sm-panel__title">VISIBLE TRAITS</div>
+                  <div class="sm-mono sm-pd__panel-hint">Observable on first interaction</div>
+                </div>
+                <div class="sm-pd__traits-list" id="traits-visible"></div>
+              </div>
+              <div class="sm-pd__traits-panel">
+                <div class="sm-panel__header">
+                  <div class="sm-panel__title">REVEALED TRAITS</div>
+                  <div class="sm-mono sm-pd__panel-hint">Surfaced through tenure + observation</div>
+                </div>
+                <div class="sm-pd__traits-list" id="traits-revealed"></div>
+              </div>
+              <div class="sm-pd__traits-panel">
+                <div class="sm-panel__header">
+                  <div class="sm-panel__title">HIDDEN TRAITS</div>
+                  <div class="sm-mono sm-pd__panel-hint" id="traits-hidden-hint">? · Increases with tenure + observation</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sm-pd__tab-panel" id="tab-ops">
+            <div class="sm-pd__tab-scroll" style="overflow-x:hidden; overflow-y:auto;">
+              <div class="sm-pd__bonds-panel">
+                <div class="sm-panel__header">
+                  <div class="sm-panel__title">BONDS</div>
+                  <div class="sm-mono sm-pd__bonds-count" id="bonds-count">3</div>
+                </div>
+                <div class="sm-pd__bond-observation" id="bond-observation-host"></div>
+                <div class="sm-pd__bonds-list" id="bonds-list">
+                  <div class="sm-pd__bond-row">
+                    <div class="sm-pd__bond-callsign sm-mono">SPARROW</div>
+                    <div class="sm-pd__bond-role">handler</div>
+                    <div class="sm-pd__bond-strength sm-pd__bond-strength--pos sm-mono">+82</div>
+                  </div>
+                  <div class="sm-pd__bond-row">
+                    <div class="sm-pd__bond-callsign sm-mono">RAVEN</div>
+                    <div class="sm-pd__bond-role">cell partner</div>
+                    <div class="sm-pd__bond-strength sm-pd__bond-strength--pos sm-mono">+54</div>
+                  </div>
+                  <div class="sm-pd__bond-row">
+                    <div class="sm-pd__bond-callsign sm-mono">FOX</div>
+                    <div class="sm-pd__bond-role">rival</div>
+                    <div class="sm-pd__bond-strength sm-pd__bond-strength--neg sm-mono">-31</div>
+                  </div>
+                </div>
+              </div>
+              <div class="sm-pd__note-panel" id="note-panel">
+                <div class="sm-panel__header">
+                  <div class="sm-panel__title">HANDLER BULLETIN</div>
+                  <div class="sm-mono sm-pd__note-meta" id="note-meta">OPS-01 · 3d ago</div>
+                </div>
+                <div class="sm-pd__note-body" id="handler-note">
+                  <div style="padding:8px;">Heat is climbing in CHN sector. Prioritise BLACKTHORN over RAVEN for the upcoming cell-network operation; her cover ID is fresher and her German is operational.  Priority: open a counterintel sweep before the next foreign deployment.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sm-pd__tab-panel" id="tab-history">
+            <div class="sm-pd__tab-scroll" style="overflow-x:hidden; overflow-y:auto;">
+              <div class="sm-pd__history-panel">
+                <div class="sm-panel__header">
+                  <div class="sm-panel__title">CAREER LOG</div>
+                </div>
+                <div class="sm-pd__history-list" id="history-list"></div>
+              </div>
+              <div class="sm-pd__history-panel">
+                <div class="sm-panel__header">
+                  <div class="sm-panel__title">EVENT FEED</div>
+                </div>
+                <div class="sm-pd__event-list" id="event-feed-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sm-mono sm-pd__agent-id" id="agent-id">AGENT-04591 · ECHELON</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

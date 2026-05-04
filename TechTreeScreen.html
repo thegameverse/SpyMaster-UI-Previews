@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TechTreeScreen · UI Preview</title>
+<style>
+
+/* ── Unity UI Toolkit default-shape reset ──────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; min-height: 100%; }
+body {
+    display: flex; flex-direction: column;
+    background-color: var(--sm-bg, #080F14);
+    color: var(--sm-text, #E6EDF3);
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+    font-size: 12px;
+}
+/* Every UXML element defaults to flex-column with shrink:0 — match
+   that here so authored USS that relies on those defaults works. */
+.uxml-root, .uxml-root * {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: relative;
+}
+/* UXML buttons inherit Unity's chrome; default-strip the browser's
+   button skin so per-screen USS is the only source of styling. */
+.uxml-root button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+.uxml-root input {
+    font: inherit;
+    color: inherit;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #212C3B;
+    padding: 4px 8px;
+}
+
+/* ── Assets/UI/Tokens/tokens.uss ── */
+/*
+ * SpyMaster · Design Tokens for Unity UI Toolkit
+ * ------------------------------------------------------------
+ * Source of truth: Claude Design/screens/DesignSheet.png + 01..09 screens
+ * Design direction: DARK · COOL SLATE · ONE WARM ACCENT · ONE SANS · ONE MONO
+ *
+ * Import order:   tokens.uss  →  theme.uss  →  per-screen/component .uss
+ * ------------------------------------------------------------
+ */
+
+:root {
+    /* ── SURFACE ─ cool desaturated slate, dark-first */
+    --sm-bg:              #080F14; /* app background */
+    --sm-surface:         #111821; /* card / panel */
+    --sm-surface-2:       #172030; /* nested, hover */
+    --sm-surface-3:       #1E2838; /* active, raised */
+    --sm-nav-bg:          #0A0E13; /* nav rail */
+    --sm-topbar-bg:       #0D1319;
+    --sm-ticker-bg:       #0A0E13;
+
+    /* ── TEXT
+     *
+     * Phase 23d (project-wide contrast pass): the original tertiary/muted
+     * values were too dark to read on `--sm-surface` — `--sm-text-muted`
+     * (#3E4A58) was 2.0:1 contrast and `--sm-text-tertiary` (#5A6876) was
+     * 3.1:1, both failing WCAG AA (4.5:1). They were applied as-is to key
+     * labels, hint text, captions, and dossier metadata across every
+     * screen, producing the dark-grey-on-dark-background problem the
+     * playtest flagged. Both have been lifted while preserving their
+     * relative hierarchy:
+     *
+     *   --sm-text            E6EDF3   ~14:1 on --sm-surface (unchanged)
+     *   --sm-text-secondary  8B97A6   ~5.7:1 (unchanged, already passing)
+     *   --sm-text-tertiary   94A0AD   ~6.4:1 (was 3.1:1, now passing AA)
+     *   --sm-text-muted      7A8694   ~4.6:1 (was 2.0:1, now passing AA)
+     *
+     * NEVER drop `--sm-text-tertiary` below #828F9C or `--sm-text-muted`
+     * below #6F7B8A on a `--sm-surface*` background — re-introduces the
+     * unreadable-grey regression.
+     */
+    --sm-text:            #E6EDF3;
+    --sm-text-secondary:  #8B97A6;
+    --sm-text-tertiary:   #94A0AD;
+    --sm-text-muted:      #7A8694;
+
+    /* ── SEMANTIC (the one warm accent is --sm-alert) */
+    --sm-alert:           #D14B3D; /* critical only — agency brand mark, CLASSIFIED, etc. */
+    --sm-alert-soft:      rgba(209, 75, 61, 0.12);
+    --sm-success:         #6FA37A;
+    --sm-success-soft:    rgba(111, 163, 122, 0.14);
+    --sm-warning:         #D9A441;
+    --sm-warning-soft:    rgba(217, 164, 65, 0.12);
+    --sm-info:            #4E94B8;
+    --sm-info-soft:       rgba(78, 148, 184, 0.14);
+
+    /* ── DATA PALETTE (charts, categories) */
+    --sm-cat-1:           #4E94B8; /* steel blue */
+    --sm-cat-2:           #8B7BA3; /* muted violet */
+    --sm-cat-3:           #C28A5C; /* desaturated tan */
+    --sm-cat-4:           #6FA37A; /* field green */
+    --sm-cat-5:           #9AA5B3; /* slate */
+
+    /* ── APPROACH COLORS (mission planner) */
+    --sm-approach-stealth:   #8B7BA3; /* violet */
+    --sm-approach-social:    #C28A5C; /* tan */
+    --sm-approach-technical: #4E94B8; /* blue */
+    --sm-approach-kinetic:   #D14B3D; /* red */
+
+    /* ── BORDERS */
+    --sm-border:          #212C3B;
+    --sm-border-strong:   #2A3547;
+    --sm-border-focus:    #4E94B8;
+
+    /* ── TYPOGRAPHY */
+    --sm-font-sans:   "Inter", "Segoe UI", sans-serif;
+    --sm-font-mono:   "JetBrains Mono", "Consolas", monospace;
+
+    --sm-text-xs:   10px;
+    --sm-text-sm:   11px;
+    --sm-text-md:   13px;
+    --sm-text-lg:   15px;
+    --sm-text-xl:   20px;
+    --sm-text-2xl:  28px;
+    --sm-text-3xl:  36px;
+    --sm-text-display: 48px;
+
+    --sm-letter-label: 1.4px;
+
+    /* ── SPACING (4 / 8 scale) */
+    --sm-s-1: 4px;
+    --sm-s-2: 8px;
+    --sm-s-3: 12px;
+    --sm-s-4: 16px;
+    --sm-s-5: 20px;
+    --sm-s-6: 24px;
+    --sm-s-8: 32px;
+    --sm-s-10: 40px;
+    --sm-s-12: 48px;
+
+    /* ── CHROME HEIGHTS */
+    --sm-topbar-h:  56px;
+    --sm-navrail-w: 84px;
+    --sm-ticker-h:  52px;
+
+    /* ── MOTION */
+    --sm-dur-fast:    120ms;
+    --sm-dur-base:    200ms;
+    --sm-dur-slow:    380ms;
+
+    /* ── RADII — minimal, sharp */
+    --sm-r-0: 0;
+    --sm-r-1: 1px;
+    --sm-r-2: 2px;
+
+    /* ── BORDERS (stroke width) */
+    --sm-stroke: 1px;
+    --sm-stroke-2: 2px;
+}
+
+/* ── Assets/UI/Theme/theme.uss ── */
+/*
+ * SpyMaster · Base Theme
+ * ------------------------------------------------------------
+ * Element + utility styles built on tokens.uss. Import both as
+ * StyleSheets on your root PanelSettings.
+ *
+ *   Root (UIDocument) → <UXML> references these classes.
+ *
+ * Fonts (live):
+ *   sans  → Assets/Fonts/Inter/Inter-Regular.ttf  (default on .sm-root)
+ *   mono  → Assets/Fonts/JetBrainsMono/JetBrainsMono-Regular.ttf  (.sm-mono / .sm-num)
+ *   bolds → font-weight: 700;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    
+}
+
+/* =========================================================
+ * LAYOUT PRIMITIVES
+ *   .sm-row  — horizontal flex
+ *   .sm-col  — vertical flex (default for Unity, here for clarity)
+ *   .sm-fill — flex-grow 1
+ * ========================================================= */
+.sm-row { flex-direction: row; }
+.sm-col { flex-direction: column; }
+.sm-fill { flex-grow: 1; }
+
+/* Phase 37-transitions — screen fade-in.
+ * SpyMasterShellUI.ShowScreen() adds this class on the cloned screen
+ * tree, sets opacity:0 immediately, then schedules opacity:1 one frame
+ * later. The transition rule below makes the opacity flip animate.
+ * 220ms (slightly longer than --sm-dur-base 200ms) feels intentional
+ * without dragging on long screen transitions. */
+.sm-screen-fade {
+    transition-property: opacity;
+    transition-duration: 220ms;
+    transition-timing-function: ease-out;
+}
+
+/* Phase 37-endgame — paced reveal animation for the post-campaign
+ * NewGamePlus screen. The controller hides each element (opacity:0,
+ * translate:0 8px) at populate-time, then schedules a staggered class
+ * flip via .sm-endgame-revealed. Effect: a 320ms ease-out slide-up
+ * fade per item, sequenced ~90ms apart, so the score breakdown lands
+ * one beat at a time instead of all at once. Players who earned an S
+ * (or an F) get a dramatic moment to actually feel it.
+ *
+ * The rating letter uses .sm-endgame-rating-punch instead — same
+ * fade, but with a scale 0.65 → 1.0 punch-in over 500ms for the
+ * emotional payoff hit. */
+.sm-endgame-reveal-item {
+    transition-property: opacity, translate;
+    transition-duration: 320ms;
+    transition-timing-function: ease-out;
+}
+.sm-endgame-rating-punch {
+    transition-property: opacity, scale;
+    transition-duration: 500ms;
+    transition-timing-function: ease-out;
+}
+.sm-center { align-items: center; justify-content: center; }
+
+/* =========================================================
+ * PANEL — the fundamental container
+ * ========================================================= */
+.sm-panel {
+    background-color: var(--sm-surface);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+}
+
+.sm-panel--flush {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.sm-panel__header {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
+}
+
+.sm-panel__title {
+    font-size: var(--sm-text-sm);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+    color: var(--sm-text);
+    text-align: left; justify-content: left; align-items: flex-start;
+    /* text-transform not supported by Unity USS — author labels in UPPERCASE directly. */
+}
+
+.sm-panel__body {
+    padding-top: var(--sm-s-4);
+    padding-bottom: var(--sm-s-4);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+}
+
+/* =========================================================
+ * TYPOGRAPHY
+ * ========================================================= */
+.sm-mono {
+    
+}
+.sm-mono-bold {
+    
+    font-weight: 700;
+}
+
+.sm-label {
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+    color: var(--sm-text-secondary);
+}
+.sm-h1 { font-size: var(--sm-text-3xl); font-weight: 400; font-style: normal; color: var(--sm-text); }
+.sm-h2 { font-size: var(--sm-text-2xl); color: var(--sm-text); }
+.sm-h3 { font-size: var(--sm-text-xl);  color: var(--sm-text); }
+.sm-body { font-size: var(--sm-text-md); color: var(--sm-text); }
+.sm-secondary { color: var(--sm-text-secondary); }
+.sm-tertiary  { color: var(--sm-text-tertiary); }
+.sm-muted     { color: var(--sm-text-muted); }
+
+.sm-num {
+    
+    font-weight: 400; font-style: normal;
+}
+
+/* =========================================================
+ * BUTTONS
+ *   Usage: <Button class="sm-btn sm-btn--primary" text="SIGN OFF" />
+ * ========================================================= */
+.sm-btn {
+    height: 32px;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+    background-color: rgba(0,0,0,0);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border-strong);
+    border-right-color: var(--sm-border-strong);
+    border-top-color: var(--sm-border-strong);
+    border-bottom-color: var(--sm-border-strong);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    color: var(--sm-text);
+    font-size: var(--sm-text-sm);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+    transition-property: background-color, border-color, color;
+    transition-duration: var(--sm-dur-fast);
+}
+.sm-btn:hover {
+    background-color: var(--sm-surface-2);
+    border-left-color: var(--sm-border-focus);
+    border-right-color: var(--sm-border-focus);
+    border-top-color: var(--sm-border-focus);
+    border-bottom-color: var(--sm-border-focus);
+}
+.sm-btn:active { background-color: var(--sm-surface-3); }
+.sm-btn:disabled { opacity: 0.4; }
+
+.sm-btn--primary {
+    background-color: var(--sm-alert);
+    border-left-color: var(--sm-alert);
+    border-right-color: var(--sm-alert);
+    border-top-color: var(--sm-alert);
+    border-bottom-color: var(--sm-alert);
+    color: #0B0F14;
+}
+.sm-btn--primary:hover {
+    background-color: #E35A4C;
+    border-left-color: #E35A4C;
+    border-right-color: #E35A4C;
+    border-top-color: #E35A4C;
+    border-bottom-color: #E35A4C;
+}
+
+.sm-btn--outline {
+    border-left-color: var(--sm-text-secondary);
+    border-right-color: var(--sm-text-secondary);
+    border-top-color: var(--sm-text-secondary);
+    border-bottom-color: var(--sm-text-secondary);
+    color: var(--sm-text);
+}
+
+.sm-btn--ghost {
+    border-left-color: rgba(0,0,0,0);
+    border-right-color: rgba(0,0,0,0);
+    border-top-color: rgba(0,0,0,0);
+    border-bottom-color: rgba(0,0,0,0);
+    color: var(--sm-text-secondary);
+}
+.sm-btn--ghost:hover { background-color: var(--sm-surface-2); color: var(--sm-text); }
+
+.sm-btn--danger {
+    background-color: var(--sm-alert-soft);
+    border-left-color: var(--sm-alert);
+    border-right-color: var(--sm-alert);
+    border-top-color: var(--sm-alert);
+    border-bottom-color: var(--sm-alert);
+    color: var(--sm-alert);
+}
+
+/* =========================================================
+ * INPUTS (TextField)
+ * ========================================================= */
+
+/* Global caret + selection colours — UI Toolkit's defaults are dark and
+ * vanish against our dark surfaces. Apply to every TextField's inner
+ * editable element so the caret is always visible regardless of which
+ * .sm-* wrapper class is on the field. */
+TextField > .unity-text-field__input,
+.unity-text-field__input {
+    --unity-cursor-color: var(--sm-text);
+    --unity-selection-color: var(--sm-border-focus);
+}
+
+.sm-input > .unity-text-field__input,
+.sm-input {
+    background-color: var(--sm-surface);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border-strong);
+    border-right-color: var(--sm-border-strong);
+    border-top-color: var(--sm-border-strong);
+    border-bottom-color: var(--sm-border-strong);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    min-height: 30px;
+}
+.sm-input:focus > .unity-text-field__input {
+    border-left-color: var(--sm-border-focus);
+    border-right-color: var(--sm-border-focus);
+    border-top-color: var(--sm-border-focus);
+    border-bottom-color: var(--sm-border-focus);
+}
+
+/* =========================================================
+ * BADGE
+ * ========================================================= */
+.sm-badge {
+    flex-direction: row;
+    align-items: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 7px;
+    padding-right: 7px;
+    background-color: var(--sm-surface-2);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+    color: var(--sm-text-secondary);
+    font-weight: 700;
+}
+.sm-badge--alert   { background-color: var(--sm-alert-soft);   color: var(--sm-alert);   border-left-color: rgba(209,75,61,0.35); border-right-color: rgba(209,75,61,0.35); border-top-color: rgba(209,75,61,0.35); border-bottom-color: rgba(209,75,61,0.35); }
+.sm-badge--success { background-color: var(--sm-success-soft); color: var(--sm-success); border-left-color: rgba(111,163,122,0.3); border-right-color: rgba(111,163,122,0.3); border-top-color: rgba(111,163,122,0.3); border-bottom-color: rgba(111,163,122,0.3); }
+.sm-badge--warning { background-color: var(--sm-warning-soft); color: var(--sm-warning); border-left-color: rgba(217,164,65,0.3); border-right-color: rgba(217,164,65,0.3); border-top-color: rgba(217,164,65,0.3); border-bottom-color: rgba(217,164,65,0.3); }
+.sm-badge--info    { background-color: var(--sm-info-soft);    color: var(--sm-info);    border-left-color: rgba(78,148,184,0.3); border-right-color: rgba(78,148,184,0.3); border-top-color: rgba(78,148,184,0.3); border-bottom-color: rgba(78,148,184,0.3); }
+
+/* =========================================================
+ * STAT BLOCK (label / big number / sub)
+ * ========================================================= */
+.sm-stat { flex-direction: column; }
+.sm-stat__value {
+    font-size: var(--sm-text-xl);
+    font-weight: 700;
+    color: var(--sm-text);
+}
+.sm-stat__sub { font-size: var(--sm-text-sm); color: var(--sm-text-secondary); }
+.sm-stat--alert   > .sm-stat__value { color: var(--sm-alert); }
+.sm-stat--success > .sm-stat__value { color: var(--sm-success); }
+.sm-stat--warning > .sm-stat__value { color: var(--sm-warning); }
+
+/* =========================================================
+ * TICKER BAR — bottom-of-screen event feed
+ * ========================================================= */
+.sm-ticker {
+    height: 28px;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--sm-nav-bg);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+    overflow: hidden;
+}
+.sm-ticker__badge {
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    color: var(--sm-alert);
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+}
+
+/* =========================================================
+ * CLASSIFIED BANNER
+ * ========================================================= */
+.sm-banner--classified {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    background-color: var(--sm-alert-soft);
+    border-left-width: 3px;
+    border-left-color: var(--sm-alert);
+    border-top-width: var(--sm-stroke);
+    border-top-color: rgba(209,75,61,0.3);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: rgba(209,75,61,0.3);
+}
+
+/* =========================================================
+ * CONFIDENCE INTERVAL — see ConfidenceInterval.uss
+ * ========================================================= */
+
+/* =========================================================
+ * LIVE dot (used by TopBar + Ticker) — breathing animation
+ * ========================================================= */
+.sm-live-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--sm-alert);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/* =========================================================
+ * ICON — square line icon using VectorImage (Assets/UI/Icons)
+ * ========================================================= */
+.sm-icon {
+    width: 20px;
+    height: 20px;
+    
+}
+.sm-icon-sm { width: 14px; height: 14px; }
+.sm-icon-lg { width: 28px; height: 28px; }
+.sm-icon--muted {  }
+.sm-icon--alert {  }
+.sm-icon--success {  }
+
+/* =========================================================
+ * EMPTY STATE label (used when lists have no data)
+ * ========================================================= */
+.sm-empty-state {
+    color: var(--sm-text-tertiary);
+    font-size: var(--sm-text-sm);
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    text-align: center; justify-content: center; align-items: center;
+}
+
+/* =========================================================
+ * CUSTOM SCROLLBARS (global)
+ *
+ * Replaces Unity's default chunky scrollbar with a thin,
+ * floating thumb that fades into the background when idle and
+ * snaps to the info-blue accent when dragged.
+ *
+ * Mirrored into theme.uss so every screen that loads this
+ * stylesheet gets the styling automatically — previously the
+ * rules lived only in Shared/Scrollbars.uss and only ShellUI
+ * imported them, leaving MainMenu/CharacterCreation/overlays
+ * with the default Unity scrollbar.
+ *
+ * Unity UITK scrollbar element tree:
+ *   Scroller  (.unity-scroller  +  --vertical / --horizontal)
+ *   ├── RepeatButton  (.unity-scroller__low-button)   ← hidden
+ *   ├── Slider  (.unity-base-slider)
+ *   │   └── .unity-base-slider__input
+ *   │       ├── .unity-base-slider__tracker
+ *   │       └── .unity-base-slider__dragger
+ *   └── RepeatButton  (.unity-scroller__high-button)  ← hidden
+ *
+ * All thumb/track rules are scoped to .unity-scroller so they
+ * never bleed into standalone Slider controls (progress bars).
+ * ========================================================= */
+
+/* Vertical bar — 8 px wide strip; faint 1 px left rule. */
+.unity-scroller--vertical {
+    width: 8px;
+    min-width: 8px;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 1px;
+    border-left-color: rgba(33, 44, 59, 0.55);
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Horizontal bar — 8 px tall strip; faint 1 px top rule. */
+.unity-scroller--horizontal {
+    height: 8px;
+    min-height: 8px;
+    background-color: rgba(0, 0, 0, 0);
+    border-top-width: 1px;
+    border-top-color: rgba(33, 44, 59, 0.55);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* Arrow buttons — removed entirely. */
+.unity-scroller__low-button,
+.unity-scroller__high-button {
+    display: none;
+}
+
+/* Inner slider element holding the track + thumb. */
+.unity-scroller .unity-base-slider {
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+}
+
+.unity-scroller .unity-base-slider__input {
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Track — fully transparent; the 1 px scroller border is the guide. */
+.unity-scroller .unity-base-slider__tracker {
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+}
+
+/* Thumb (dragger) — 4 px visible, three states. */
+.unity-scroller .unity-base-slider__dragger {
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+
+    background-color: rgba(255, 255, 255, 0.10);
+
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+
+    transition-property: background-color;
+    transition-duration: var(--sm-dur-fast);
+    transition-timing-function: ease-out;
+}
+
+.unity-scroller .unity-base-slider__dragger:hover {
+    background-color: rgba(255, 255, 255, 0.24);
+}
+
+.unity-scroller .unity-base-slider__dragger:active {
+    background-color: rgba(78, 148, 184, 0.80);
+}
+
+
+/* ──────────────────────────────────────────────────────────────────── */
+/*  Phase 21 polish: canonical close button.                            */
+/*  Replaces the legacy <Button text="✕"/> pattern that shipped         */
+/*  text-as-icon across 17 modals/overlays. All UXML close affordances  */
+/*  add `class="sm-close-btn"` and the SVG x icon renders at 12 px.     */
+/* ──────────────────────────────────────────────────────────────────── */
+
+.sm-close-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    margin: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("project://database/Assets/UI/Icons/x.svg");
+    
+    
+    color: rgba(0, 0, 0, 0);   /* hide any stray text content */
+    transition-property: background-color, -unity-background-image-tint-color, scale;
+    transition-duration: var(--sm-dur-fast);
+    transition-timing-function: ease-out;
+}
+
+.sm-close-btn:hover {
+    background-color: rgba(220, 60, 60, 0.18);
+    
+}
+
+.sm-close-btn:active {
+    scale: 0.92 0.92;
+    
+}
+
+.sm-close-btn:disabled {
+    
+}
+
+/* ──────────────────────────────────────────────────────────────────── */
+/*  Phase 21b-2: empty-state polish.                                    */
+/*  Inline empty-state labels that hang off list-style panels (Notif    */
+/*  Feed watchlist / event feed, Diplomacy event feed). Slightly        */
+/*  smaller + more muted than full-screen empty states so they fit      */
+/*  comfortably under a header without dominating the panel.            */
+/* ──────────────────────────────────────────────────────────────────── */
+
+.sm-nf__inline-empty,
+.sm-dip__inline-empty,
+.sm-nf__empty {
+    font-size: 11px;
+    color: rgba(140, 150, 165, 0.85);
+    text-align: center; justify-content: center; align-items: center;
+    white-space: normal;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+.sm-dip__list-empty {
+    font-size: 12px;
+    color: rgba(140, 150, 165, 0.85);
+    text-align: center; justify-content: center; align-items: center;
+    white-space: normal;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+/* ──────────────────────────────────────────────────────────────────── */
+/* §31 — LiveSkeletonDisplay                                            */
+/* Canonical async-content shimmer skeleton. Used by every LLM-driven   */
+/* text surface during load. Players see placeholder bars + shimmer     */
+/* pulse, NEVER fallback prose presented as if it were real content.    */
+/* The shimmer is driven by VisualElement.schedule (UI Toolkit lacks    */
+/* CSS @keyframes) — these rules just style the static appearance.     */
+/* ──────────────────────────────────────────────────────────────────── */
+
+.sm-skeleton {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.sm-skeleton-line {
+    height: 12px;
+    background-color: var(--sm-surface-3);
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.sm-skeleton-loading > .sm-skeleton-line {
+    background-color: var(--sm-surface-3);
+}
+
+.sm-skeleton-loaded > .sm-skeleton-line,
+.sm-skeleton-error  > .sm-skeleton-line {
+    display: none;
+}
+
+.sm-skeleton-label {
+    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    white-space: normal;
+}
+
+.sm-skeleton-error {
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+}
+
+.sm-skeleton-error > Label {
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-sm);
+    font-style: italic;
+    white-space: normal;
+    margin-bottom: var(--sm-s-2);
+}
+
+.sm-skeleton-retry {
+    align-self: flex-start;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 10px;
+    letter-spacing: 1.4px;
+}
+
+/*
+ * Track M-9 / F-D14 — z-order taxonomy (CodeConventions §12).
+ *
+ * Unity UI Toolkit stacks siblings by DOM order; these classes are
+ * semantic anchors so:
+ *   • ScreenRouter / overlay managers can reorder roots deterministically;
+ *   • lint / audit can verify every screen carries an explicit layer tag;
+ *   • future Unity versions that honour explicit ordering can wire
+ *     numeric values without churning the UXML.
+ *
+ * Layers (top to bottom in display order):
+ *   sm-l1-base     — base background (world globe, full-screen views)
+ *   sm-l2-panels   — primary panels (top bar, nav rail, screens)
+ *   sm-l3-overlays — non-blocking overlays (dropdowns, flyouts, side sheets)
+ *   sm-l4-modals   — modal dialogs (block interaction beneath)
+ *   sm-l5-tooltips — tooltips / hover popovers (always topmost)
+ */
+.sm-l1-base     { /* base layer */ }
+.sm-l2-panels   { /* primary-panel layer */ }
+.sm-l3-overlays { /* non-blocking-overlay layer */ }
+.sm-l4-modals   { /* modal layer */ }
+.sm-l5-tooltips { /* tooltip layer */ }
+
+/* ── Assets/UI/Screens/TechTreeScreen.uss ── */
+/* 09 · Tech Tree Screen */
+
+.sm-tt {
+    flex-direction: row;
+    background-color: var(--sm-bg);
+}
+
+/* ===== LEFT — R&D DASHBOARD ===== */
+.sm-tt__rd-panel {
+    width: 240px;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--sm-bg);
+    border-right-width: var(--sm-stroke);
+    border-right-color: var(--sm-border);
+}
+.sm-tt__rd-header { flex-direction: row; align-items: center; padding-top: var(--sm-s-3); padding-bottom: var(--sm-s-3); padding-left: var(--sm-s-4); padding-right: var(--sm-s-4); border-bottom-width: var(--sm-stroke); border-bottom-color: var(--sm-border); background-color: var(--sm-surface-2); }
+.sm-tt__rd-cycle { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: var(--sm-letter-label); margin-left: auto; }
+.sm-tt__rd-stats { padding-top: var(--sm-s-3); padding-bottom: var(--sm-s-3); padding-left: var(--sm-s-4); padding-right: var(--sm-s-4); border-bottom-width: var(--sm-stroke); border-bottom-color: var(--sm-border); }
+.sm-tt__rd-stat { flex-grow: 1; flex-direction: column; }
+.sm-tt__rd-stat-value { font-size: var(--sm-text-sm); color: var(--sm-text); font-weight: 700; margin-top: 2px; letter-spacing: 0.3px; }
+.sm-tt__staff-idle { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: 0.3px; margin-top: 2px; }
+
+/* Branches */
+.sm-tt__branches-header { flex-direction: row; align-items: center; padding-top: var(--sm-s-2); padding-bottom: var(--sm-s-2); padding-left: var(--sm-s-4); padding-right: var(--sm-s-4); background-color: var(--sm-surface-2); border-bottom-width: var(--sm-stroke); border-bottom-color: var(--sm-border); }
+.sm-tt__branch-list { flex-direction: column; }
+.sm-tt__branch-row { flex-direction: row; align-items: center; padding-top: var(--sm-s-2); padding-bottom: var(--sm-s-2); padding-left: var(--sm-s-4); padding-right: var(--sm-s-4); border-bottom-width: var(--sm-stroke); border-bottom-color: var(--sm-border); height: 36px; }
+.sm-tt__branch-name     { flex-grow: 1; font-size: var(--sm-text-xs); color: var(--sm-text); font-weight: 700; letter-spacing: var(--sm-letter-label); }
+.sm-tt__branch-count    { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: 0.3px; margin-left: var(--sm-s-2); }
+.sm-tt__branch-progress { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: 0.3px; margin-left: var(--sm-s-2); }
+.sm-tt__branch-staff    { font-size: var(--sm-text-xs); color: var(--sm-info); letter-spacing: 0.3px; margin-left: var(--sm-s-2); }
+
+/* In-progress */
+.sm-tt__inprogress-header { flex-direction: row; align-items: center; padding-top: var(--sm-s-2); padding-bottom: var(--sm-s-2); padding-left: var(--sm-s-4); padding-right: var(--sm-s-4); background-color: var(--sm-surface-2); border-top-width: var(--sm-stroke); border-top-color: var(--sm-border); border-bottom-width: var(--sm-stroke); border-bottom-color: var(--sm-border); }
+.sm-tt__inprogress-count { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: var(--sm-letter-label); margin-left: auto; }
+.sm-tt__inprogress-list  { flex-direction: column; }
+.sm-tt__inprogress-row {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+}
+.sm-tt__inprogress-name  { flex-grow: 1; font-size: var(--sm-text-xs); color: var(--sm-text); letter-spacing: 0.3px; }
+.sm-tt__inprogress-days  { font-size: var(--sm-text-xs); color: var(--sm-warning); letter-spacing: 0.3px; font-weight: 700; }
+.sm-tt__inprogress-track { height: 3px; flex-grow: 1; background-color: var(--sm-surface-3); border-radius: 2px; margin-left: var(--sm-s-2); }
+.sm-tt__inprogress-fill  { height: 3px; background-color: var(--sm-warning); border-radius: 2px; }
+
+/* ===== RIGHT COL — NODE LIST + EVENT FEED ===== */
+.sm-tt__right-col {
+    width: 260px;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--sm-bg);
+    border-left-width: var(--sm-stroke);
+    border-left-color: var(--sm-border);
+}
+
+/* ===== LEFT SIDEBAR (compat — kept for existing usage) ===== */
+.sm-tt__sidebar {
+    width: 260px;
+    background-color: var(--sm-bg);
+    border-right-width: var(--sm-stroke);
+    border-right-color: var(--sm-border);
+}
+.sm-tt__sidebar-header {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
+}
+.sm-tt__unlocked-count { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: var(--sm-letter-label); margin-left: auto; }
+
+/* Tier filters */
+.sm-tt__tier-filters {
+    flex-direction: row;
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+}
+.sm-tt__tier-btn {
+    flex-grow: 1;
+    height: 30px;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0,0,0,0);
+    border-left-width: 0;
+    border-right-width: var(--sm-stroke);
+    border-top-width: 0;
+    border-bottom-width: 2px;
+    border-right-color: var(--sm-border);
+    border-bottom-color: rgba(0,0,0,0);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    color: var(--sm-text-muted);
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+}
+.sm-tt__tier-btn:hover { color: var(--sm-text); background-color: var(--sm-surface-2); }
+.sm-tt__tier-btn--active { color: var(--sm-text); border-bottom-color: var(--sm-warning); }
+
+/* Node list */
+.sm-tt__node-list-scroll { flex-grow: 1; }
+
+/* Tech tree node row.
+   Was: a flat list-item with bottom-border and a 2-px left accent
+   only on the selected row. Result was a vertical list, not a tree.
+   Now: every row reads as a card — bordered, padded, with the
+   branch tint as a left-edge accent. Hover lifts the background;
+   selected adds a full warning-amber border + brighter background
+   to read as "this is the focus." */
+.sm-tt__node-row {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    margin-bottom: 6px;
+    background-color: var(--sm-surface);
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+    border-left-width: 3px;
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-left-color: var(--sm-text-tertiary);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    min-height: 48px;
+}
+.sm-tt__node-row:hover {
+    background-color: var(--sm-surface-2);
+    border-top-color: var(--sm-info);
+    border-bottom-color: var(--sm-info);
+    border-right-color: var(--sm-info);
+}
+.sm-tt__node-row--selected {
+    background-color: var(--sm-surface-2);
+    border-top-color: var(--sm-warning);
+    border-bottom-color: var(--sm-warning);
+    border-right-color: var(--sm-warning);
+    border-left-color: var(--sm-warning);
+}
+
+/* Per-branch left-accent tint — overrides the default tertiary so
+   each column reads visually as its own discipline. The C# binder
+   adds the branch-specific class onto the row. */
+.sm-tt__node-row--combat       { border-left-color: rgb(209, 76, 76); }
+.sm-tt__node-row--cyber        { border-left-color: rgb(76, 140, 217); }
+.sm-tt__node-row--surveillance { border-left-color: rgb(140, 199, 140); }
+.sm-tt__node-row--cover        { border-left-color: rgb(217, 165, 76); }
+.sm-tt__node-row--counterintel { border-left-color: rgb(165, 140, 217); }
+
+/* Locked rows dim slightly so unlocked / available pop visually. */
+.sm-tt__node-row--state-locked { opacity: 0.62; }
+
+.sm-tt__node-icon {
+    width: 28px;
+    height: 28px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    margin-right: var(--sm-s-3);
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.sm-tt__node-icon--locked     { background-color: var(--sm-surface-2);
+                               background-image: url("project://database/Assets/UI/Icons/tech-locked.svg");
+                                }
+.sm-tt__node-icon--available  { background-color: rgba(217,164,65,0.2);
+                               background-image: url("project://database/Assets/UI/Icons/tech-progress.svg");
+                               
+                               border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px;
+                               border-left-color: var(--sm-warning); border-right-color: var(--sm-warning);
+                               border-top-color: var(--sm-warning); border-bottom-color: var(--sm-warning); }
+.sm-tt__node-icon--researching { background-color: rgba(78,148,184,0.2);
+                                background-image: url("project://database/Assets/UI/Icons/tech-progress.svg");
+                                 }
+.sm-tt__node-icon--unlocked   { background-color: rgba(68,102,78,0.3);
+                               background-image: url("project://database/Assets/UI/Icons/tech-unlocked.svg");
+                                }
+
+/* Hide emoji fallback text — SVG background replaces it */
+.sm-tt__node-icon-label { display: none; }
+.sm-tt__node-icon-label--available  { display: none; }
+.sm-tt__node-icon-label--unlocked   { display: none; }
+.sm-tt__node-icon-label--researching { display: none; }
+
+.sm-tt__node-info   { flex-grow: 1; flex-direction: column; }
+.sm-tt__node-name   { font-size: var(--sm-text-sm); color: var(--sm-text); font-weight: 700; letter-spacing: 0.3px; }
+.sm-tt__node-sub    { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: 0.3px; margin-top: 2px; }
+
+/* ===== CENTER DETAIL ===== */
+.sm-tt__detail {
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--sm-bg);
+    border-right-width: var(--sm-stroke);
+    border-right-color: var(--sm-border);
+}
+.sm-tt__detail-header {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
+}
+.sm-tt__detail-tier { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: var(--sm-letter-label); margin-right: var(--sm-s-3); }
+.sm-tt__detail-name { font-size: var(--sm-text-lg); color: var(--sm-text); font-weight: 700; }
+
+.sm-tt__detail-body {
+    flex-direction: column;
+    padding-top: var(--sm-s-4);
+    padding-bottom: var(--sm-s-4);
+    padding-left: var(--sm-s-5);
+    padding-right: var(--sm-s-5);
+    flex-grow: 1;
+}
+.sm-tt__detail-desc {
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text-secondary);
+    white-space: normal;
+    margin-bottom: var(--sm-s-5);
+}
+.sm-tt__prereqs  { margin-bottom: var(--sm-s-5); }
+.sm-tt__effects  { margin-bottom: var(--sm-s-5); }
+.sm-tt__prereqs-label { margin-bottom: var(--sm-s-2); }
+.sm-tt__effects-label { margin-bottom: var(--sm-s-2); }
+.sm-tt__prereqs-list { flex-direction: row; flex-wrap: wrap; }
+.sm-tt__effects-list { flex-direction: column; }
+
+/* Prereq chip — was rendering as a near-strikethrough strip because
+   the top + bottom 1px borders sat close together with only 3px of
+   padding between them, and the chip had NO background colour so
+   the text floated between two coloured rules. Now uses a 3px LEFT-
+   accent + a single 1px outer border + a tinted surface background,
+   matching the cardified pattern used elsewhere (intel rows, mission
+   detail, etc.). */
+.sm-tt__prereq-chip {
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--sm-surface-2);
+    border-left-width: 3px;
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border-strong);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    padding-top: var(--sm-s-1);
+    padding-bottom: var(--sm-s-1);
+    padding-left: var(--sm-s-2);
+    padding-right: var(--sm-s-2);
+    margin-right: var(--sm-s-2);
+    margin-bottom: var(--sm-s-2);
+}
+/* Met / unmet ONLY recolour the 3px left accent — the outer border
+   stays a quiet grey so the chip reads as content first, status
+   second. Less visual noise than the previous all-sides recolour
+   that made every chip look like a warning regardless of state. */
+.sm-tt__prereq-chip--met   { border-left-color: var(--sm-success); }
+.sm-tt__prereq-chip--unmet { border-left-color: var(--sm-alert);   }
+.sm-tt__prereq-chip-label  { font-size: var(--sm-text-xs); color: var(--sm-text); letter-spacing: 0.3px; }
+
+.sm-tt__effect-row      { margin-bottom: var(--sm-s-1); }
+.sm-tt__effect-label    { font-size: var(--sm-text-xs); color: var(--sm-info); letter-spacing: 0.3px; }
+
+.sm-tt__stats { flex-direction: row; }
+.sm-tt__stat  { flex-grow: 1; flex-direction: column; margin-right: var(--sm-s-4); }
+.sm-tt__stat-value { font-size: var(--sm-text-xl); color: var(--sm-text); font-weight: 700; margin-top: var(--sm-s-1); }
+
+.sm-tt__actions {
+    flex-direction: row;
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+}
+.sm-tt__action-btn { flex-grow: 1; }
+.sm-tt__add-lab-btn { margin-left: var(--sm-s-3); flex-grow: 0; }
+
+/* Stat sublabel */
+.sm-tt__stat-sublabel {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-muted);
+    letter-spacing: 0.3px;
+    /* Wrap long sublabels ("3 LABS REQUIRED") instead of letting
+       them overflow into the neighbour stat's column — the rail is
+       320 px and each stat gets ~150 px after the gap, which is
+       tight for longer labs strings. */
+    white-space: normal;
+    margin-top: var(--sm-s-1);
+}
+.sm-tt__stat-labs { color: var(--sm-info); }
+
+/* LLM-042 Field Assessment panel — skeleton bars while the
+   research-description LLM call is in flight, real paragraph once
+   it resolves. Sits between the authored desc and the projected-
+   impact bar so the player gets one terse authored summary, one
+   LLM-generated operational framing. */
+.sm-tt__field-assessment-panel {
+    margin-bottom: var(--sm-s-4);
+    margin-top: var(--sm-s-2);
+}
+.sm-tt__field-assessment-label {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-muted);
+    letter-spacing: var(--sm-letter-label);
+    margin-bottom: var(--sm-s-2);
+}
+.sm-tt__field-assessment {
+    background-color: var(--sm-surface-2);
+    border-left-width: 3px;
+    border-left-color: var(--sm-info);
+    padding: var(--sm-s-3);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+}
+
+/* Projected field impact */
+.sm-tt__field-impact-panel { margin-bottom: var(--sm-s-4); }
+.sm-tt__field-impact-label { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: var(--sm-letter-label); margin-bottom: var(--sm-s-2); }
+.sm-tt__field-approach { font-size: var(--sm-text-xs); color: var(--sm-text-secondary); letter-spacing: 0.3px; margin-bottom: var(--sm-s-2); }
+.sm-tt__field-impact-track {
+    height: 6px;
+    background-color: var(--sm-surface-2);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+.sm-tt__field-impact-fill {
+    height: 6px;
+    background-color: var(--sm-info);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+/* Event feed */
+.sm-tt__event-panel  { }
+.sm-tt__event-scroll { flex-grow: 1; max-height: 160px; }
+.sm-tt__event-row {
+    flex-direction: row;
+    align-items: flex-start;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+}
+.sm-tt__event-time  { font-size: var(--sm-text-xs); color: var(--sm-text-muted); width: 36px; flex-shrink: 0; }
+.sm-tt__event-type  { font-size: var(--sm-text-xs); font-weight: 700; letter-spacing: var(--sm-letter-label); margin-left: var(--sm-s-2); flex-shrink: 0; }
+.sm-tt__event-type--alert { color: var(--sm-alert); }
+.sm-tt__event-type--intel { color: var(--sm-info); }
+.sm-tt__event-type--hr    { color: var(--sm-text-secondary); }
+.sm-tt__event-type--fin   { color: var(--sm-success); }
+.sm-tt__event-msg   { font-size: var(--sm-text-xs); color: var(--sm-text-muted); flex-grow: 1; margin-left: var(--sm-s-2); white-space: normal; }
+
+/* ===== RIGHT PROGRESS (kept for compat) ===== */
+.sm-tt__progress {
+    width: 260px;
+    background-color: var(--sm-bg);
+}
+.sm-tt__progress-header {
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
+}
+
+.sm-tt__level-panel { margin-top: var(--sm-s-4); margin-left: var(--sm-s-4); margin-right: var(--sm-s-4); }
+.sm-tt__level-body  { flex-direction: column; }
+.sm-tt__level-row   { flex-direction: row; align-items: flex-end; margin-top: var(--sm-s-1); margin-bottom: var(--sm-s-2); }
+.sm-tt__level-value { font-size: 36px; color: var(--sm-text); font-weight: 700; margin-right: var(--sm-s-2); }
+.sm-tt__level-name  { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: 0.4px; margin-bottom: 6px; }
+
+.sm-tt__xp-bar  { height: 6px; background-color: var(--sm-surface-2); margin-bottom: var(--sm-s-2); }
+.sm-tt__xp-fill { height: 6px; background-color: var(--sm-warning); }
+.sm-tt__xp-row  { flex-direction: row; justify-content: space-between; }
+.sm-tt__xp-cur  { font-size: var(--sm-text-xs); color: var(--sm-text-secondary); letter-spacing: 0.3px; }
+.sm-tt__xp-next { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: 0.3px; }
+
+.sm-tt__rnd-panel { margin-top: var(--sm-s-4); margin-left: var(--sm-s-4); margin-right: var(--sm-s-4); flex-grow: 1; }
+.sm-tt__rnd-count { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: var(--sm-letter-label); margin-left: auto; }
+.sm-tt__rnd-list  { flex-grow: 1; }
+
+.sm-tt__rnd-row {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+    height: 40px;
+}
+.sm-tt__rnd-row:hover { background-color: var(--sm-surface-2); }
+.sm-tt__rnd-name  { flex-grow: 1; font-size: var(--sm-text-sm); color: var(--sm-text); }
+.sm-tt__rnd-state { font-size: var(--sm-text-xs); color: var(--sm-text-muted); letter-spacing: 0.3px; }
+.sm-tt__rnd-state--idle    { color: var(--sm-success); }
+.sm-tt__rnd-state--busy    { color: var(--sm-warning); }
+
+/* Research readiness checklist — live ✓/✗ rows that gate START RESEARCH. */
+.sm-tt__readiness {
+    flex-direction: column;
+    margin-top: var(--sm-s-3);
+    padding: var(--sm-s-3);
+    background-color: var(--sm-surface-2);
+    border-left-width: 1px; border-right-width: 1px;
+    border-top-width: 1px; border-bottom-width: 1px;
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-top-left-radius: var(--sm-r-1);
+    border-top-right-radius: var(--sm-r-1);
+    border-bottom-left-radius: var(--sm-r-1);
+    border-bottom-right-radius: var(--sm-r-1);
+}
+
+.sm-tt__readiness-head {
+    align-items: center;
+    margin-bottom: var(--sm-s-2);
+}
+
+.sm-tt__readiness-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--sm-text-muted);
+}
+
+.sm-tt__readiness-summary {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--sm-text-tertiary);
+}
+.sm-tt__readiness-summary--ok      { color: var(--sm-success); }
+.sm-tt__readiness-summary--blocked { color: var(--sm-alert); }
+
+.sm-tt__readiness-body { flex-direction: column; }
+
+.sm-tt__readiness-row {
+    flex-direction: row;
+    align-items: center;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.sm-tt__readiness-icon {
+    /* Phase 25b-2: SVG check/x driven by --ok/--blocked modifier
+       on the parent row. */
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    margin-right: 8px;
+    
+}
+.sm-tt__readiness-row--ok .sm-tt__readiness-icon {
+    background-image: url("project://database/Assets/UI/Icons/outcome-success.svg");
+    
+}
+.sm-tt__readiness-row--blocked .sm-tt__readiness-icon {
+    background-image: url("project://database/Assets/UI/Icons/outcome-failed.svg");
+    
+}
+
+.sm-tt__readiness-label {
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text);
+    white-space: normal;
+}
+.sm-tt__readiness-row--blocked .sm-tt__readiness-label { color: var(--sm-text-secondary); }
+
+/* =========================================================
+ * STRUCTURAL REDESIGN — overrides applied when the root carries
+ * the .sm-tt--graph modifier. Switches the layout from the
+ * 3-column LEFT/CENTER/RIGHT panel arrangement to:
+ *   TOP STRIP (branch tabs) → MAIN ROW (tree canvas + detail rail)
+ *     → BOTTOM STRIP (skill points, ultimate-perks lock, R&D stats).
+ * Preserves every C#-bound element name; existing per-row styles
+ * (branch-row, node-row, readiness-row, etc.) keep applying inside
+ * their new containers.
+ * ========================================================= */
+
+.sm-tt--graph {
+    flex-direction: column;
+}
+
+/* Hide the legacy event-feed mount — kept in UXML for binding
+   safety but pushed off-screen so it doesn't take layout space. */
+.sm-tt__hidden-mount {
+    display: none;
+}
+
+/* ── TOP STRIP ──────────────────────────────────────────────── */
+
+.sm-tt__topstrip {
+    flex-direction: row;
+    align-items: center;
+    height: 56px;
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    background-color: var(--sm-surface-2);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+}
+
+.sm-tt__topleft {
+    flex-direction: row;
+    align-items: center;
+}
+
+/* Eyebrow next to the branch tabs — replaces the LT/RT placeholder
+   crumbs from the reference design. Reads as a small-caps screen
+   tag rather than a controller-binding hint. */
+.sm-tt__top-eyebrow {
+    color: var(--sm-info);
+    font-size: var(--sm-text-xs);
+    letter-spacing: 2px;
+    font-weight: 700;
+    padding-right: var(--sm-s-3);
+    margin-right: var(--sm-s-3);
+    border-right-width: 1px;
+    border-right-color: var(--sm-border);
+}
+
+/* Legacy crumb class — kept here as a no-op so any external
+   binding that still references it doesn't NRE. The UXML no longer
+   ships these elements. */
+.sm-tt__topcrumb {
+    display: none;
+}
+
+/* Branch tab strip — repurposed branch-list container. The C#
+   binder's existing branch-row class still applies; in graph mode
+   we lay them in a row, give each a tab-shape with bottom-border
+   highlight on the active branch. */
+.sm-tt--graph .sm-tt__branch-tabs {
+    flex-direction: row;
+    align-items: center;
+    margin-left: var(--sm-s-2);
+}
+
+.sm-tt--graph .sm-tt__branch-row {
+    flex-direction: row;
+    align-items: center;
+    height: 40px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0,0,0,0);    /* transparent until active */
+    background-color: rgba(0,0,0,0);
+    margin-right: var(--sm-s-3);
+}
+
+.sm-tt--graph .sm-tt__branch-row--active {
+    border-bottom-color: var(--sm-warning);
+}
+
+.sm-tt--graph .sm-tt__branch-row--active .sm-tt__branch-name {
+    color: var(--sm-warning);
+}
+
+.sm-tt__topright {
+    flex-direction: row;
+    align-items: center;
+}
+
+/* PERKS / ABILITIES section strip retired — see UXML notes. The
+   classes stay here as no-ops so older UXML revs hot-reloading
+   don't NRE on style query. */
+.sm-tt__section-strip,
+.sm-tt__section-label,
+.sm-tt__section-rule {
+    display: none;
+}
+
+/* ── MAIN ROW ───────────────────────────────────────────────── */
+
+.sm-tt__main {
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.sm-tt__tree {
+    flex-grow: 1;
+    background-color: var(--sm-bg);
+    position: relative;
+}
+
+.sm-tt__graph-scroll {
+    flex-grow: 1;
+}
+
+/* Status strip — thin row between top-strip and main canvas. Holds
+   the IN PROGRESS chip (and any future research-status pills) so
+   they sit in their own visual lane instead of floating absolute
+   over the tree canvas. */
+.sm-tt__status-strip {
+    flex-direction: row;
+    align-items: center;
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    background-color: var(--sm-bg);
+}
+
+/* IN PROGRESS chip — was an absolute-positioned floating card that
+   overlapped the first branch column's header. Now an inline pill
+   in the status strip, laid out as a single horizontal row:
+   [title]  [count]  [active-research-rows]  so the player can scan
+   "what's being researched right now" without losing tree real-
+   estate. Warning-amber left-edge accent + tinted background
+   preserved from the previous treatment. */
+.sm-tt__inprogress-chip {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-1);
+    padding-bottom: var(--sm-s-1);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    background-color: rgba(217, 164, 65, 0.08);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-left-width: 3px;
+    border-top-color: rgba(217, 164, 65, 0.45);
+    border-bottom-color: rgba(217, 164, 65, 0.45);
+    border-right-color: rgba(217, 164, 65, 0.45);
+    border-left-color: var(--sm-warning);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    min-width: 180px;
+}
+
+.sm-tt__inprogress-chip-title {
+    color: var(--sm-warning);
+    font-size: 9px;
+    letter-spacing: 1.6px;
+    font-weight: 700;
+    margin-right: var(--sm-s-2);
+}
+
+/* The "0" / "3" count sits to the RIGHT of the IN PROGRESS title now
+   that the chip is laid out as a horizontal pill in the status strip
+   — vertical margin-top from the old stacked layout would push it
+   off-baseline. 14 px bold keeps it the headline number visually. */
+.sm-tt__inprogress-chip .sm-tt__inprogress-count {
+    font-size: 14px;
+    color: var(--sm-text);
+    font-weight: 700;
+    letter-spacing: 0;
+    margin-right: var(--sm-s-3);
+}
+
+/* Active-research rows next to the count. Kept as a flex row so
+   multiple in-flight projects fan out horizontally instead of
+   stacking vertically (which is what blew up the chip's height
+   under the old absolute layout). */
+.sm-tt__inprogress-chip .sm-tt__inprogress-list {
+    flex-direction: row;
+    flex-grow: 1;
+    align-items: center;
+}
+
+.sm-tt__inprogress-chip .sm-tt__inprogress-row {
+    border-bottom-width: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: var(--sm-s-2);
+    padding-right: var(--sm-s-2);
+    margin-right: var(--sm-s-2);
+}
+
+/* In graph mode, node rows render as octagonal-ish chips inside
+   a flow that wraps — the C# binder handles tier grouping by
+   adding container rows. Per-node base styling stays in
+   .sm-tt__node-row from the legacy section. */
+
+/* ── RIGHT RAIL (detail) ────────────────────────────────────── */
+
+.sm-tt--graph .sm-tt__detail {
+    width: 320px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-direction: column;
+    background-color: var(--sm-surface);
+    border-left-width: var(--sm-stroke);
+    border-left-color: var(--sm-border);
+    overflow: hidden;
+}
+
+.sm-tt__hero {
+    height: 110px;
+    background-color: var(--sm-info-soft);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding-left: var(--sm-s-4);
+    padding-bottom: var(--sm-s-3);
+}
+
+.sm-tt--graph .sm-tt__detail-tier {
+    color: var(--sm-text);
+    font-size: var(--sm-text-xs);
+    letter-spacing: 1.5px;
+    background-color: var(--sm-surface);
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.sm-tt__detail-headline {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+}
+
+.sm-tt--graph .sm-tt__detail-name {
+    color: var(--sm-warning);
+    font-size: var(--sm-text-lg);
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    flex-grow: 1;
+}
+
+.sm-tt--graph .sm-tt__detail-status {
+    margin-left: var(--sm-s-2);
+    font-size: 9px;
+    letter-spacing: 1.2px;
+}
+
+.sm-tt--graph .sm-tt__detail-body {
+    flex-grow: 1;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    overflow: scroll;
+}
+
+.sm-tt--graph .sm-tt__detail-desc {
+    color: var(--sm-text);
+    font-size: var(--sm-text-sm);
+    white-space: normal;
+    margin-bottom: var(--sm-s-3);
+    line-height: 1.4;
+}
+
+/* Bullet-cost rows (effects-list). The C# binder appends rows
+   per effect; in graph mode each row gets a leading glyph
+   (◇ icon) and a trailing cost stamp (e.g. (1 ⚙)(1 hourglass)). */
+.sm-tt--graph .sm-tt__effects-list {
+    flex-direction: column;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+    margin-top: var(--sm-s-2);
+}
+
+.sm-tt--graph .sm-tt__effects-label {
+    color: var(--sm-text-tertiary);
+    font-size: 9px;
+    letter-spacing: 1.4px;
+    margin-bottom: var(--sm-s-2);
+}
+
+/* Stats row stays the existing styling — already tight in graph
+   mode. Pin it under the bullet rows. */
+.sm-tt--graph .sm-tt__stats {
+    margin-top: var(--sm-s-3);
+    padding-top: var(--sm-s-2);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+}
+
+.sm-tt--graph .sm-tt__actions {
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+}
+
+/* ── BOTTOM STRIP ───────────────────────────────────────────── */
+
+.sm-tt__bottom-strip {
+    flex-direction: row;
+    align-items: center;
+    height: 70px;
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    background-color: var(--sm-surface-2);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+}
+
+/* Ultimate-perks row retired — see UXML notes. Kept as no-ops so
+   any cached USS lookup against the old class doesn't surface
+   ghost layout. */
+.sm-tt__ultimate-row,
+.sm-tt__ultimate-lock-icon,
+.sm-tt__ultimate-label {
+    display: none;
+}
+
+.sm-tt__bottom-stats {
+    flex-direction: row;
+    align-items: center;
+}
+
+.sm-tt--graph .sm-tt__tier-filters {
+    flex-direction: row;
+    margin-bottom: var(--sm-s-2);
+}
+
+.sm-tt--graph .sm-tt__rd-stats {
+    flex-direction: row;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-bottom-width: 0;
+}
+
+.sm-tt--graph .sm-tt__rd-stat {
+    margin-left: var(--sm-s-3);
+}
+
+
+
+/* Preview-only chrome — fixed banner identifying this is a
+   generated approximation, not the live game render. */
+.uxml-preview-banner {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: rgba(217, 164, 65, 0.12);
+    border-bottom: 1px solid rgba(217, 164, 65, 0.45);
+    font-size: 11px;
+    color: #D9A441;
+    letter-spacing: 1px;
+}
+.uxml-preview-banner a {
+    color: #4E94B8;
+    margin-left: auto;
+    text-decoration: none;
+}
+</style>
+</head>
+<body>
+<div class="uxml-preview-banner">
+  <span>TechTreeScreen · static preview · regenerate via Tools/UxmlPreviewGen.py</span>
+  <a href="index.html">← all screens</a>
+</div>
+<div class="uxml-root">
+  <div class="sm-l1-base sm-screen sm-tt sm-tt--graph" id="tech-tree-screen">
+    <div class="sm-tt__topstrip">
+      <div class="sm-tt__topleft">
+        <div class="sm-tt__top-eyebrow sm-mono">R&amp;D · TECH TREE</div>
+        <div class="sm-tt__branch-tabs" id="branch-list">
+          <div class="sm-tt__branch-row sm-tt__branch-row--active">
+            <div class="sm-tt__branch-name">COMBAT &amp; FIELD</div>
+            <div class="sm-tt__branch-count sm-mono">1/3</div>
+          </div>
+          <div class="sm-tt__branch-row">
+            <div class="sm-tt__branch-name">CYBER &amp; INTRUSION</div>
+            <div class="sm-tt__branch-count sm-mono">0/3</div>
+          </div>
+          <div class="sm-tt__branch-row">
+            <div class="sm-tt__branch-name">SURVEILLANCE</div>
+            <div class="sm-tt__branch-count sm-mono">0/2</div>
+          </div>
+          <div class="sm-tt__branch-row">
+            <div class="sm-tt__branch-name">COVER &amp; LOGISTICS</div>
+            <div class="sm-tt__branch-count sm-mono">1/2</div>
+          </div>
+          <div class="sm-tt__branch-row">
+            <div class="sm-tt__branch-name">COUNTER-INTEL</div>
+            <div class="sm-tt__branch-count sm-mono">0/4</div>
+          </div>
+        </div>
+      </div>
+      <div class="sm-fill"></div>
+      <div class="sm-tt__topright">
+        <div class="sm-mono sm-tt__rd-cycle" id="rd-cycle">CYCLE 03</div>
+      </div>
+    </div>
+    <div class="sm-tt__status-strip">
+      <div class="sm-tt__inprogress-chip">
+        <div class="sm-mono sm-tt__inprogress-chip-title">IN PROGRESS</div>
+        <div class="sm-mono sm-tt__inprogress-count" id="inprogress-count">1</div>
+        <div class="sm-tt__inprogress-list" id="inprogress-list">
+          <div class="sm-tt__inprogress-row">
+            <div class="sm-tt__inprogress-name">Polygraph Machine</div>
+            <div class="sm-tt__inprogress-track"><div class="sm-tt__inprogress-fill" style="width:55%"></div></div>
+            <div class="sm-tt__inprogress-days sm-mono">5d</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sm-tt__main">
+      <div class="sm-tt__tree" id="tt-graph-canvas">
+        <div class="sm-tt__graph-scroll" id="node-list" style="overflow-x:auto; overflow-y:auto;">
+          <div style="flex-direction: row; align-items: flex-start; padding: 10px;">
+            <div style="flex-grow:1; flex-basis:0; margin-right:8px; margin-left:4px; padding-top:4px;">
+              <div style="flex-direction:row; align-items:center; padding:6px 10px; margin-bottom:8px; background-color:rgba(209,75,61,0.12); border:1px solid rgba(209,75,61,0.55); border-radius:3px;">
+                <div class="sm-mono" style="font-size:11px; color:#D14B3D; letter-spacing:1.6px; flex-grow:1;">COMBAT &amp; FIELD</div>
+                <div class="sm-mono" style="font-size:10px; color:#D14B3D;">1/3</div>
+              </div>
+              <div style="flex-direction:row; align-items:center; margin-bottom:6px;">
+                <div class="sm-mono" style="font-size:9px; color:#6FA37A; padding:2px 6px; background:#1E2838; border-radius:2px; margin-right:8px;">TIER 1</div>
+                <div class="sm-mono" style="font-size:8px; color:#6FA37A; margin-right:8px;">1/1</div>
+                <div style="flex-grow:1; height:1px; background:rgba(111,163,122,0.22);"></div>
+              </div>
+              <div class="sm-tt__node-row sm-tt__node-row--combat sm-tt__node-row--state-unlocked">
+                <div class="sm-tt__node-icon"><div class="sm-tt__node-icon-label">✓</div></div>
+                <div class="sm-tt__node-info">
+                  <div class="sm-tt__node-name">Marksmanship Program</div>
+                  <div class="sm-tt__node-sub sm-mono">TIER 1  ·  UNLOCKED</div>
+                </div>
+              </div>
+              <div style="flex-direction:row; align-items:center; margin-top:12px; margin-bottom:6px;">
+                <div class="sm-mono" style="font-size:9px; color:#94A0AD; padding:2px 6px; background:#1E2838; border-radius:2px; margin-right:8px;">TIER 2</div>
+                <div class="sm-mono" style="font-size:8px; color:#94A0AD; margin-right:8px;">0/2</div>
+                <div style="flex-grow:1; height:1px; background:rgba(148,160,173,0.22);"></div>
+              </div>
+              <div class="sm-tt__node-row sm-tt__node-row--combat sm-tt__node-row--state-available">
+                <div class="sm-tt__node-icon"><div class="sm-tt__node-icon-label">▶</div></div>
+                <div class="sm-tt__node-info">
+                  <div class="sm-tt__node-name">Advanced Marksman Trait</div>
+                  <div class="sm-tt__node-sub sm-mono">TIER 2  ·  AVAILABLE</div>
+                </div>
+              </div>
+              <div class="sm-tt__node-row sm-tt__node-row--combat sm-tt__node-row--state-locked">
+                <div class="sm-tt__node-icon"><div class="sm-tt__node-icon-label">✕</div></div>
+                <div class="sm-tt__node-info">
+                  <div class="sm-tt__node-name">Kit Overhaul</div>
+                  <div class="sm-tt__node-sub sm-mono">TIER 2  ·  LOCKED</div>
+                </div>
+              </div>
+            </div>
+            <div style="flex-grow:1; flex-basis:0; margin-right:8px; margin-left:4px; padding-top:4px;">
+              <div style="flex-direction:row; align-items:center; padding:6px 10px; margin-bottom:8px; background-color:rgba(78,148,184,0.12); border:1px solid rgba(78,148,184,0.55); border-radius:3px;">
+                <div class="sm-mono" style="font-size:11px; color:#4E94B8; letter-spacing:1.6px; flex-grow:1;">CYBER &amp; INTRUSION</div>
+                <div class="sm-mono" style="font-size:10px; color:#4E94B8;">0/3</div>
+              </div>
+              <div class="sm-tt__node-row sm-tt__node-row--cyber sm-tt__node-row--state-available">
+                <div class="sm-tt__node-icon"><div class="sm-tt__node-icon-label">▶</div></div>
+                <div class="sm-tt__node-info">
+                  <div class="sm-tt__node-name">Cyber Primer</div>
+                  <div class="sm-tt__node-sub sm-mono">TIER 1  ·  AVAILABLE</div>
+                </div>
+              </div>
+              <div class="sm-tt__node-row sm-tt__node-row--cyber sm-tt__node-row--state-locked">
+                <div class="sm-tt__node-icon"><div class="sm-tt__node-icon-label">✕</div></div>
+                <div class="sm-tt__node-info">
+                  <div class="sm-tt__node-name">Wiretap Tech</div>
+                  <div class="sm-tt__node-sub sm-mono">TIER 2  ·  LOCKED</div>
+                </div>
+              </div>
+            </div>
+            <div style="flex-grow:1; flex-basis:0; margin-right:8px; margin-left:4px; padding-top:4px;">
+              <div style="flex-direction:row; align-items:center; padding:6px 10px; margin-bottom:8px; background-color:rgba(111,163,122,0.12); border:1px solid rgba(111,163,122,0.55); border-radius:3px;">
+                <div class="sm-mono" style="font-size:11px; color:#6FA37A; letter-spacing:1.6px; flex-grow:1;">SURVEILLANCE</div>
+                <div class="sm-mono" style="font-size:10px; color:#6FA37A;">0/2</div>
+              </div>
+              <div class="sm-tt__node-row sm-tt__node-row--surveillance sm-tt__node-row--state-available">
+                <div class="sm-tt__node-icon"><div class="sm-tt__node-icon-label">▶</div></div>
+                <div class="sm-tt__node-info">
+                  <div class="sm-tt__node-name">Surveillance Basics</div>
+                  <div class="sm-tt__node-sub sm-mono">TIER 1  ·  AVAILABLE</div>
+                </div>
+              </div>
+            </div>
+            <div style="flex-grow:1; flex-basis:0; margin-right:8px; margin-left:4px; padding-top:4px;">
+              <div style="flex-direction:row; align-items:center; padding:6px 10px; margin-bottom:8px; background-color:rgba(217,164,65,0.12); border:1px solid rgba(217,164,65,0.55); border-radius:3px;">
+                <div class="sm-mono" style="font-size:11px; color:#D9A441; letter-spacing:1.6px; flex-grow:1;">COVER &amp; LOGISTICS</div>
+                <div class="sm-mono" style="font-size:10px; color:#D9A441;">1/2</div>
+              </div>
+              <div class="sm-tt__node-row sm-tt__node-row--cover sm-tt__node-row--state-unlocked">
+                <div class="sm-tt__node-icon"><div class="sm-tt__node-icon-label">✓</div></div>
+                <div class="sm-tt__node-info">
+                  <div class="sm-tt__node-name">Logistics Doctrine</div>
+                  <div class="sm-tt__node-sub sm-mono">TIER 1  ·  UNLOCKED</div>
+                </div>
+              </div>
+            </div>
+            <div style="flex-grow:1; flex-basis:0; margin-right:8px; margin-left:4px; padding-top:4px;">
+              <div style="flex-direction:row; align-items:center; padding:6px 10px; margin-bottom:8px; background-color:rgba(139,123,163,0.12); border:1px solid rgba(139,123,163,0.55); border-radius:3px;">
+                <div class="sm-mono" style="font-size:11px; color:#8B7BA3; letter-spacing:1.6px; flex-grow:1;">COUNTER-INTEL</div>
+                <div class="sm-mono" style="font-size:10px; color:#8B7BA3;">0/4</div>
+              </div>
+              <div class="sm-tt__node-row sm-tt__node-row--counterintel sm-tt__node-row--state-available">
+                <div class="sm-tt__node-icon"><div class="sm-tt__node-icon-label">▶</div></div>
+                <div class="sm-tt__node-info">
+                  <div class="sm-tt__node-name">Polygraph Machine</div>
+                  <div class="sm-tt__node-sub sm-mono">TIER 1  ·  AVAILABLE</div>
+                </div>
+              </div>
+              <div class="sm-tt__node-row sm-tt__node-row--counterintel sm-tt__node-row--state-locked sm-tt__node-row--selected">
+                <div class="sm-tt__node-icon"><div class="sm-tt__node-icon-label">✕</div></div>
+                <div class="sm-tt__node-info">
+                  <div class="sm-tt__node-name">Deep Background Check Protocol</div>
+                  <div class="sm-tt__node-sub sm-mono">TIER 3  ·  LOCKED</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sm-fill sm-tt__detail" id="tt-detail">
+        <div class="sm-tt__hero" id="tt-detail-hero">
+          <div class="sm-tt__detail-tier sm-mono" id="detail-tier">TIER 3</div>
+        </div>
+        <div class="sm-tt__detail-headline">
+          <div class="sm-tt__detail-name" id="detail-name">Deep Background Check Protocol</div>
+          <div class="sm-badge sm-tt__detail-status" id="detail-status-badge">LOCKED</div>
+        </div>
+        <div class="sm-tt__detail-body" id="tt-detail-body">
+          <div class="sm-tt__detail-desc" id="detail-desc">Background-check reruns surface 50% more flags on Saboteur-tier personnel.</div>
+          <div class="sm-tt__field-assessment-panel">
+            <div class="sm-label sm-tt__field-assessment-label">FIELD ASSESSMENT</div>
+            <div class="sm-tt__field-assessment" id="field-assessment-host">
+              <div style="padding:8px;">A hardened background-check protocol shifts the agency's vetting cadence from spot-checks to scheduled re-audits. Saboteurs slip through the gap when an asset goes 90+ days without a re-screen; this capability closes that window and routes anomalies straight to the counterintel desk.</div>
+            </div>
+          </div>
+          <div class="sm-tt__effects" id="effects-section">
+            <div class="sm-tt__effects-label sm-mono" id="effects-section-label">UNLOCKS</div>
+            <div class="sm-tt__effects-list" id="effects-list">
+              <div class="sm-tt__effect-row">
+                <div class="sm-tt__effect-label sm-mono">► +50% on Background Check Thoroughness</div>
+              </div>
+              <div class="sm-tt__effect-row">
+                <div class="sm-tt__effect-label sm-mono">► COUNTER-INTEL · SPEED UP SYSTEM</div>
+              </div>
+            </div>
+          </div>
+          <div class="sm-row sm-tt__stats">
+            <div class="sm-tt__stat">
+              <div class="sm-label">COST</div>
+              <div class="sm-tt__stat-value sm-num" id="stat-cost">$14K</div>
+              <div class="sm-mono sm-tt__stat-sublabel">one-time</div>
+            </div>
+            <div class="sm-tt__stat">
+              <div class="sm-label">DURATION</div>
+              <div class="sm-tt__stat-value sm-num" id="stat-duration">28 DAYS</div>
+              <div class="sm-mono sm-tt__stat-sublabel sm-tt__stat-labs" id="stat-labs">3 LABS REQUIRED</div>
+            </div>
+          </div>
+          <div class="sm-tt__prereqs" id="prereqs-section">
+            <div class="sm-label sm-tt__prereqs-label">PREREQUISITES</div>
+            <div class="sm-tt__prereqs-list" id="prereqs-list">
+              <div class="sm-tt__prereq-chip sm-tt__prereq-chip--unmet">
+                <div class="sm-tt__prereq-chip-label">Honeypot Mission Templates</div>
+              </div>
+            </div>
+          </div>
+          <div class="sm-tt__field-impact-panel">
+            <div class="sm-label sm-tt__field-impact-label">PROJECTED FIELD IMPACT</div>
+            <div class="sm-mono sm-tt__field-approach" id="field-approach">COUNTER-INTEL APPROACH  ·  ~50% projected uplift</div>
+            <div class="sm-tt__field-impact-track">
+              <div class="sm-tt__field-impact-fill" id="field-impact-fill"></div>
+            </div>
+          </div>
+          <div class="sm-tt__readiness" id="tt-readiness">
+            <div class="sm-row sm-tt__readiness-head">
+              <div class="sm-tt__readiness-title">RESEARCH CHECKLIST</div>
+              <div class="sm-fill"></div>
+              <div class="sm-mono sm-tt__readiness-summary" id="tt-readiness-summary">3 / 5</div>
+            </div>
+            <div class="sm-tt__readiness-body" id="tt-readiness-body">
+              <div class="sm-tt__check-row">
+                <div class="sm-tt__check-icon sm-tt__check-icon--ok">✓</div>
+                <div class="sm-tt__check-label">Node still locked — research can proceed</div>
+              </div>
+              <div class="sm-tt__check-row">
+                <div class="sm-tt__check-icon sm-tt__check-icon--bad">✕</div>
+                <div class="sm-tt__check-label">Prerequisite chain incomplete</div>
+              </div>
+              <div class="sm-tt__check-row">
+                <div class="sm-tt__check-icon sm-tt__check-icon--ok">✓</div>
+                <div class="sm-tt__check-label">Lab slot free · 0/1 in use</div>
+              </div>
+              <div class="sm-tt__check-row">
+                <div class="sm-tt__check-icon sm-tt__check-icon--bad">✕</div>
+                <div class="sm-tt__check-label">No idle R&amp;D-capable scientists</div>
+              </div>
+              <div class="sm-tt__check-row">
+                <div class="sm-tt__check-icon sm-tt__check-icon--ok">✓</div>
+                <div class="sm-tt__check-label">Budget covers cost ($14K / $2.00M)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sm-row sm-tt__actions">
+          <button class="sm-btn sm-btn--primary sm-tt__action-btn" id="btn-research" title="Begin research on the selected node.">START RESEARCH</button>
+          <button class="sm-btn sm-tt__action-btn sm-tt__add-lab-btn" id="btn-add-lab" title="Add lab action.">ADD +1 LAB</button>
+        </div>
+      </div>
+    </div>
+    <div class="sm-tt__bottom-strip">
+      <div class="sm-row sm-tt__tier-filters">
+        <button class="sm-tt__tier-btn sm-tt__tier-btn--active" id="tier-all" title="Show every research tier.">ALL TIERS</button>
+        <button class="sm-tt__tier-btn" id="tier-1" title="Tier 1 — fundamentals.">T1</button>
+        <button class="sm-tt__tier-btn" id="tier-2" title="Tier 2 — applied tradecraft.">T2</button>
+        <button class="sm-tt__tier-btn" id="tier-3" title="Tier 3 — specialised systems.">T3</button>
+        <button class="sm-tt__tier-btn" id="tier-4" title="Tier 4 — frontier research.">T4</button>
+        <button class="sm-tt__tier-btn" id="tier-5" title="Tier 5 — bleeding-edge programs.">T5</button>
+      </div>
+      <div class="sm-fill"></div>
+      <div class="sm-row sm-tt__rd-stats">
+        <div class="sm-tt__rd-stat">
+          <div class="sm-label">R&amp;D BUDGET</div>
+          <div class="sm-mono sm-tt__rd-stat-value" id="rd-budget">$140K /wk</div>
+        </div>
+        <div class="sm-tt__rd-stat">
+          <div class="sm-label">LAB LOAD</div>
+          <div class="sm-mono sm-tt__rd-stat-value" id="lab-load">2 / 3</div>
+          <div class="sm-mono sm-tt__staff-idle" id="staff-idle">1 STAFF IDLE</div>
+        </div>
+        <div class="sm-tt__rd-stat">
+          <div class="sm-label">UNLOCKED</div>
+          <div class="sm-mono sm-tt__rd-stat-value" id="unlocked-count">4 / 14</div>
+        </div>
+      </div>
+    </div>
+    <div class="sm-tt__hidden-mount">
+      <div class="sm-tt__event-scroll" id="event-feed-list" style="overflow-x:hidden; overflow-y:auto;"></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

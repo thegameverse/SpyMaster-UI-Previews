@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ArchivesScreen · UI Preview</title>
+<style>
+
+/* ── Unity UI Toolkit default-shape reset ──────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; min-height: 100%; }
+body {
+    display: flex; flex-direction: column;
+    background-color: var(--sm-bg, #080F14);
+    color: var(--sm-text, #E6EDF3);
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+    font-size: 12px;
+}
+/* Every UXML element defaults to flex-column with shrink:0 — match
+   that here so authored USS that relies on those defaults works. */
+.uxml-root, .uxml-root * {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: relative;
+}
+/* UXML buttons inherit Unity's chrome; default-strip the browser's
+   button skin so per-screen USS is the only source of styling. */
+.uxml-root button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+.uxml-root input {
+    font: inherit;
+    color: inherit;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #212C3B;
+    padding: 4px 8px;
+}
+
+/* missing: Assets/UI/Tokens/tokens.uss?fileID=7433441132597879392&guid=ee6a9bd5587604f42becd9383b078d4c&type=3#tokens */
+/* missing: Assets/UI/Theme/theme.uss?fileID=7433441132597879392&guid=a029fd05ba822d64e8776449311beb39&type=3#theme */
+/* missing: Assets/UI/Screens/ArchivesScreen.uss?fileID=7433441132597879392&guid=1a779059ab62aae449baa556a8fbf392&type=3#ArchivesScreen */
+
+/* Preview-only chrome — fixed banner identifying this is a
+   generated approximation, not the live game render. */
+.uxml-preview-banner {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: rgba(217, 164, 65, 0.12);
+    border-bottom: 1px solid rgba(217, 164, 65, 0.45);
+    font-size: 11px;
+    color: #D9A441;
+    letter-spacing: 1px;
+}
+.uxml-preview-banner a {
+    color: #4E94B8;
+    margin-left: auto;
+    text-decoration: none;
+}
+</style>
+</head>
+<body>
+<div class="uxml-preview-banner">
+  <span>ArchivesScreen · static preview · regenerate via Tools/UxmlPreviewGen.py</span>
+  <a href="index.html">← all screens</a>
+</div>
+<div class="uxml-root">
+  <div class="sm-l1-base sm-archives sm-fill" id="arch-screen">
+    <div class="sm-arc__header" id="arch-header">
+      <div class="sm-arc__header-icon" id="arch-header-icon"></div>
+      <div class="sm-arc__screen-title" id="arch-screen-title">ARCHIVES</div>
+      <div class="sm-arc__divider-v"></div>
+      <div class="sm-arc__count-chip" id="arch-count-chip">
+        <div class="sm-arc__count-label" id="arch-count-label">0 DOCUMENTS</div>
+      </div>
+      <div class="sm-fill"></div>
+      <button class="sm-arc__header-close-btn sm-close-btn" id="arch-close-btn" title="Close (Esc)."></button>
+    </div>
+    <div class="sm-arc__body" id="arch-body">
+      <div class="sm-arc__left" id="arch-left">
+        <div class="sm-arc__col-title">FILTER</div>
+        <div class="sm-arc__search" id="arch-search">
+          <input placeholder="Search documents…" />
+        </div>
+        <div class="sm-arc__col-subtitle">TYPE</div>
+        <div class="sm-arc__filter-group">
+          <button class="sm-arc__filter-btn sm-arc__filter-btn--active" id="arch-filter-all" title="Show all archived records.">ALL</button>
+          <button class="sm-arc__filter-btn" id="arch-filter-mission" title="Filter to mission post-mortems only.">MISSIONS</button>
+          <button class="sm-arc__filter-btn" id="arch-filter-day" title="Filter to day-reports only.">DAY REPORTS</button>
+          <button class="sm-arc__filter-btn" id="arch-filter-arc" title="Filter to investigation-arc reveal records only.">ARC REVEALS</button>
+          <button class="sm-arc__filter-btn" id="arch-filter-predecessor" title="Filter to predecessor case files only.">PREDECESSOR</button>
+        </div>
+        <div class="sm-fill"></div>
+        <div class="sm-arc__filter-count" id="arch-filter-count"></div>
+      </div>
+      <div class="sm-arc__center" id="arch-center">
+        <div class="sm-arc__col-title">DOCUMENTS</div>
+        <div class="sm-arc__list-scroll" id="arch-list-scroll" style="overflow-x:hidden; overflow-y:auto;">
+          <div class="sm-arc__list" id="arch-list"></div>
+        </div>
+        <div class="sm-arc__list-empty" id="arch-list-empty">
+          <div class="sm-arc__list-empty-icon">—</div>
+          <div class="sm-arc__list-empty-title" id="arch-list-empty-title">No documents match your filter.</div>
+          <div class="sm-arc__list-empty-hint" id="arch-list-empty-hint">Adjust the type filter or clear the search to see more.</div>
+          <button class="sm-btn sm-btn--ghost sm-arc__list-empty-cta" id="arch-list-empty-clear" title="Clear all archive filters and show every record.">CLEAR FILTERS</button>
+        </div>
+      </div>
+      <div class="sm-arc__right" id="arch-right">
+        <div class="sm-arc__col-title">DOCUMENT</div>
+        <div class="sm-arc__empty-state" id="arch-empty-state">
+          <div class="sm-arc__empty-label">Select a document to read</div>
+        </div>
+        <div class="sm-hidden" id="arch-detail">
+          <div class="sm-arc__detail-title" id="arch-detail-title"></div>
+          <div class="sm-arc__detail-meta-row">
+            <div class="sm-arc__detail-type" id="arch-detail-type"></div>
+            <div class="sm-arc__detail-day" id="arch-detail-day"></div>
+          </div>
+          <div class="sm-arc__detail-divider"></div>
+          <div class="sm-arc__detail-scroll" id="arch-detail-scroll" style="overflow-x:hidden; overflow-y:auto;">
+            <div class="sm-arc__detail-body" id="arch-detail-body"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sm-arc__footer" id="arch-footer">
+      <div class="sm-arc__footer-summary" id="arch-footer-summary"></div>
+      <div class="sm-fill"></div>
+      <div class="sm-row sm-arc__footer-chip-row" id="arch-footer-stats-row">
+        <div class="sm-arc__footer-chip" id="arch-stat-mission">
+          <div class="sm-arc__footer-chip-label">MISSION</div>
+          <div class="sm-arc__footer-chip-value sm-mono" id="arch-stat-mission-val">0</div>
+        </div>
+        <div class="sm-arc__footer-chip" id="arch-stat-day">
+          <div class="sm-arc__footer-chip-label">DAY</div>
+          <div class="sm-arc__footer-chip-value sm-mono" id="arch-stat-day-val">0</div>
+        </div>
+        <div class="sm-arc__footer-chip" id="arch-stat-arc">
+          <div class="sm-arc__footer-chip-label">ARC</div>
+          <div class="sm-arc__footer-chip-value sm-mono" id="arch-stat-arc-val">0</div>
+        </div>
+        <div class="sm-arc__footer-chip" id="arch-stat-pred">
+          <div class="sm-arc__footer-chip-label">PREDECESSOR</div>
+          <div class="sm-arc__footer-chip-value sm-mono" id="arch-stat-pred-val">0</div>
+        </div>
+        <div class="sm-arc__footer-chip sm-arc__footer-chip--unread" id="arch-stat-unread">
+          <div class="sm-arc__footer-chip-label">UNREAD</div>
+          <div class="sm-arc__footer-chip-value sm-mono" id="arch-stat-unread-val">0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

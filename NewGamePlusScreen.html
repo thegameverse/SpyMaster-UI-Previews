@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NewGamePlusScreen · UI Preview</title>
+<style>
+
+/* ── Unity UI Toolkit default-shape reset ──────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; min-height: 100%; }
+body {
+    display: flex; flex-direction: column;
+    background-color: var(--sm-bg, #080F14);
+    color: var(--sm-text, #E6EDF3);
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+    font-size: 12px;
+}
+/* Every UXML element defaults to flex-column with shrink:0 — match
+   that here so authored USS that relies on those defaults works. */
+.uxml-root, .uxml-root * {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: relative;
+}
+/* UXML buttons inherit Unity's chrome; default-strip the browser's
+   button skin so per-screen USS is the only source of styling. */
+.uxml-root button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+.uxml-root input {
+    font: inherit;
+    color: inherit;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #212C3B;
+    padding: 4px 8px;
+}
+
+/* ── Assets/UI/Tokens/tokens.uss ── */
+/*
+ * SpyMaster · Design Tokens for Unity UI Toolkit
+ * ------------------------------------------------------------
+ * Source of truth: Claude Design/screens/DesignSheet.png + 01..09 screens
+ * Design direction: DARK · COOL SLATE · ONE WARM ACCENT · ONE SANS · ONE MONO
+ *
+ * Import order:   tokens.uss  →  theme.uss  →  per-screen/component .uss
+ * ------------------------------------------------------------
+ */
+
+:root {
+    /* ── SURFACE ─ cool desaturated slate, dark-first */
+    --sm-bg:              #080F14; /* app background */
+    --sm-surface:         #111821; /* card / panel */
+    --sm-surface-2:       #172030; /* nested, hover */
+    --sm-surface-3:       #1E2838; /* active, raised */
+    --sm-nav-bg:          #0A0E13; /* nav rail */
+    --sm-topbar-bg:       #0D1319;
+    --sm-ticker-bg:       #0A0E13;
+
+    /* ── TEXT
+     *
+     * Phase 23d (project-wide contrast pass): the original tertiary/muted
+     * values were too dark to read on `--sm-surface` — `--sm-text-muted`
+     * (#3E4A58) was 2.0:1 contrast and `--sm-text-tertiary` (#5A6876) was
+     * 3.1:1, both failing WCAG AA (4.5:1). They were applied as-is to key
+     * labels, hint text, captions, and dossier metadata across every
+     * screen, producing the dark-grey-on-dark-background problem the
+     * playtest flagged. Both have been lifted while preserving their
+     * relative hierarchy:
+     *
+     *   --sm-text            E6EDF3   ~14:1 on --sm-surface (unchanged)
+     *   --sm-text-secondary  8B97A6   ~5.7:1 (unchanged, already passing)
+     *   --sm-text-tertiary   94A0AD   ~6.4:1 (was 3.1:1, now passing AA)
+     *   --sm-text-muted      7A8694   ~4.6:1 (was 2.0:1, now passing AA)
+     *
+     * NEVER drop `--sm-text-tertiary` below #828F9C or `--sm-text-muted`
+     * below #6F7B8A on a `--sm-surface*` background — re-introduces the
+     * unreadable-grey regression.
+     */
+    --sm-text:            #E6EDF3;
+    --sm-text-secondary:  #8B97A6;
+    --sm-text-tertiary:   #94A0AD;
+    --sm-text-muted:      #7A8694;
+
+    /* ── SEMANTIC (the one warm accent is --sm-alert) */
+    --sm-alert:           #D14B3D; /* critical only — agency brand mark, CLASSIFIED, etc. */
+    --sm-alert-soft:      rgba(209, 75, 61, 0.12);
+    --sm-success:         #6FA37A;
+    --sm-success-soft:    rgba(111, 163, 122, 0.14);
+    --sm-warning:         #D9A441;
+    --sm-warning-soft:    rgba(217, 164, 65, 0.12);
+    --sm-info:            #4E94B8;
+    --sm-info-soft:       rgba(78, 148, 184, 0.14);
+
+    /* ── DATA PALETTE (charts, categories) */
+    --sm-cat-1:           #4E94B8; /* steel blue */
+    --sm-cat-2:           #8B7BA3; /* muted violet */
+    --sm-cat-3:           #C28A5C; /* desaturated tan */
+    --sm-cat-4:           #6FA37A; /* field green */
+    --sm-cat-5:           #9AA5B3; /* slate */
+
+    /* ── APPROACH COLORS (mission planner) */
+    --sm-approach-stealth:   #8B7BA3; /* violet */
+    --sm-approach-social:    #C28A5C; /* tan */
+    --sm-approach-technical: #4E94B8; /* blue */
+    --sm-approach-kinetic:   #D14B3D; /* red */
+
+    /* ── BORDERS */
+    --sm-border:          #212C3B;
+    --sm-border-strong:   #2A3547;
+    --sm-border-focus:    #4E94B8;
+
+    /* ── TYPOGRAPHY */
+    --sm-font-sans:   "Inter", "Segoe UI", sans-serif;
+    --sm-font-mono:   "JetBrains Mono", "Consolas", monospace;
+
+    --sm-text-xs:   10px;
+    --sm-text-sm:   11px;
+    --sm-text-md:   13px;
+    --sm-text-lg:   15px;
+    --sm-text-xl:   20px;
+    --sm-text-2xl:  28px;
+    --sm-text-3xl:  36px;
+    --sm-text-display: 48px;
+
+    --sm-letter-label: 1.4px;
+
+    /* ── SPACING (4 / 8 scale) */
+    --sm-s-1: 4px;
+    --sm-s-2: 8px;
+    --sm-s-3: 12px;
+    --sm-s-4: 16px;
+    --sm-s-5: 20px;
+    --sm-s-6: 24px;
+    --sm-s-8: 32px;
+    --sm-s-10: 40px;
+    --sm-s-12: 48px;
+
+    /* ── CHROME HEIGHTS */
+    --sm-topbar-h:  56px;
+    --sm-navrail-w: 84px;
+    --sm-ticker-h:  52px;
+
+    /* ── MOTION */
+    --sm-dur-fast:    120ms;
+    --sm-dur-base:    200ms;
+    --sm-dur-slow:    380ms;
+
+    /* ── RADII — minimal, sharp */
+    --sm-r-0: 0;
+    --sm-r-1: 1px;
+    --sm-r-2: 2px;
+
+    /* ── BORDERS (stroke width) */
+    --sm-stroke: 1px;
+    --sm-stroke-2: 2px;
+}
+
+/* ── Assets/UI/Theme/theme.uss ── */
+/*
+ * SpyMaster · Base Theme
+ * ------------------------------------------------------------
+ * Element + utility styles built on tokens.uss. Import both as
+ * StyleSheets on your root PanelSettings.
+ *
+ *   Root (UIDocument) → <UXML> references these classes.
+ *
+ * Fonts (live):
+ *   sans  → Assets/Fonts/Inter/Inter-Regular.ttf  (default on .sm-root)
+ *   mono  → Assets/Fonts/JetBrainsMono/JetBrainsMono-Regular.ttf  (.sm-mono / .sm-num)
+ *   bolds → font-weight: 700;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    
+}
+
+/* =========================================================
+ * LAYOUT PRIMITIVES
+ *   .sm-row  — horizontal flex
+ *   .sm-col  — vertical flex (default for Unity, here for clarity)
+ *   .sm-fill — flex-grow 1
+ * ========================================================= */
+.sm-row { flex-direction: row; }
+.sm-col { flex-direction: column; }
+.sm-fill { flex-grow: 1; }
+
+/* Phase 37-transitions — screen fade-in.
+ * SpyMasterShellUI.ShowScreen() adds this class on the cloned screen
+ * tree, sets opacity:0 immediately, then schedules opacity:1 one frame
+ * later. The transition rule below makes the opacity flip animate.
+ * 220ms (slightly longer than --sm-dur-base 200ms) feels intentional
+ * without dragging on long screen transitions. */
+.sm-screen-fade {
+    transition-property: opacity;
+    transition-duration: 220ms;
+    transition-timing-function: ease-out;
+}
+
+/* Phase 37-endgame — paced reveal animation for the post-campaign
+ * NewGamePlus screen. The controller hides each element (opacity:0,
+ * translate:0 8px) at populate-time, then schedules a staggered class
+ * flip via .sm-endgame-revealed. Effect: a 320ms ease-out slide-up
+ * fade per item, sequenced ~90ms apart, so the score breakdown lands
+ * one beat at a time instead of all at once. Players who earned an S
+ * (or an F) get a dramatic moment to actually feel it.
+ *
+ * The rating letter uses .sm-endgame-rating-punch instead — same
+ * fade, but with a scale 0.65 → 1.0 punch-in over 500ms for the
+ * emotional payoff hit. */
+.sm-endgame-reveal-item {
+    transition-property: opacity, translate;
+    transition-duration: 320ms;
+    transition-timing-function: ease-out;
+}
+.sm-endgame-rating-punch {
+    transition-property: opacity, scale;
+    transition-duration: 500ms;
+    transition-timing-function: ease-out;
+}
+.sm-center { align-items: center; justify-content: center; }
+
+/* =========================================================
+ * PANEL — the fundamental container
+ * ========================================================= */
+.sm-panel {
+    background-color: var(--sm-surface);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+}
+
+.sm-panel--flush {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.sm-panel__header {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
+}
+
+.sm-panel__title {
+    font-size: var(--sm-text-sm);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+    color: var(--sm-text);
+    text-align: left; justify-content: left; align-items: flex-start;
+    /* text-transform not supported by Unity USS — author labels in UPPERCASE directly. */
+}
+
+.sm-panel__body {
+    padding-top: var(--sm-s-4);
+    padding-bottom: var(--sm-s-4);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+}
+
+/* =========================================================
+ * TYPOGRAPHY
+ * ========================================================= */
+.sm-mono {
+    
+}
+.sm-mono-bold {
+    
+    font-weight: 700;
+}
+
+.sm-label {
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+    color: var(--sm-text-secondary);
+}
+.sm-h1 { font-size: var(--sm-text-3xl); font-weight: 400; font-style: normal; color: var(--sm-text); }
+.sm-h2 { font-size: var(--sm-text-2xl); color: var(--sm-text); }
+.sm-h3 { font-size: var(--sm-text-xl);  color: var(--sm-text); }
+.sm-body { font-size: var(--sm-text-md); color: var(--sm-text); }
+.sm-secondary { color: var(--sm-text-secondary); }
+.sm-tertiary  { color: var(--sm-text-tertiary); }
+.sm-muted     { color: var(--sm-text-muted); }
+
+.sm-num {
+    
+    font-weight: 400; font-style: normal;
+}
+
+/* =========================================================
+ * BUTTONS
+ *   Usage: <Button class="sm-btn sm-btn--primary" text="SIGN OFF" />
+ * ========================================================= */
+.sm-btn {
+    height: 32px;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+    background-color: rgba(0,0,0,0);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border-strong);
+    border-right-color: var(--sm-border-strong);
+    border-top-color: var(--sm-border-strong);
+    border-bottom-color: var(--sm-border-strong);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    color: var(--sm-text);
+    font-size: var(--sm-text-sm);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+    transition-property: background-color, border-color, color;
+    transition-duration: var(--sm-dur-fast);
+}
+.sm-btn:hover {
+    background-color: var(--sm-surface-2);
+    border-left-color: var(--sm-border-focus);
+    border-right-color: var(--sm-border-focus);
+    border-top-color: var(--sm-border-focus);
+    border-bottom-color: var(--sm-border-focus);
+}
+.sm-btn:active { background-color: var(--sm-surface-3); }
+.sm-btn:disabled { opacity: 0.4; }
+
+.sm-btn--primary {
+    background-color: var(--sm-alert);
+    border-left-color: var(--sm-alert);
+    border-right-color: var(--sm-alert);
+    border-top-color: var(--sm-alert);
+    border-bottom-color: var(--sm-alert);
+    color: #0B0F14;
+}
+.sm-btn--primary:hover {
+    background-color: #E35A4C;
+    border-left-color: #E35A4C;
+    border-right-color: #E35A4C;
+    border-top-color: #E35A4C;
+    border-bottom-color: #E35A4C;
+}
+
+.sm-btn--outline {
+    border-left-color: var(--sm-text-secondary);
+    border-right-color: var(--sm-text-secondary);
+    border-top-color: var(--sm-text-secondary);
+    border-bottom-color: var(--sm-text-secondary);
+    color: var(--sm-text);
+}
+
+.sm-btn--ghost {
+    border-left-color: rgba(0,0,0,0);
+    border-right-color: rgba(0,0,0,0);
+    border-top-color: rgba(0,0,0,0);
+    border-bottom-color: rgba(0,0,0,0);
+    color: var(--sm-text-secondary);
+}
+.sm-btn--ghost:hover { background-color: var(--sm-surface-2); color: var(--sm-text); }
+
+.sm-btn--danger {
+    background-color: var(--sm-alert-soft);
+    border-left-color: var(--sm-alert);
+    border-right-color: var(--sm-alert);
+    border-top-color: var(--sm-alert);
+    border-bottom-color: var(--sm-alert);
+    color: var(--sm-alert);
+}
+
+/* =========================================================
+ * INPUTS (TextField)
+ * ========================================================= */
+
+/* Global caret + selection colours — UI Toolkit's defaults are dark and
+ * vanish against our dark surfaces. Apply to every TextField's inner
+ * editable element so the caret is always visible regardless of which
+ * .sm-* wrapper class is on the field. */
+TextField > .unity-text-field__input,
+.unity-text-field__input {
+    --unity-cursor-color: var(--sm-text);
+    --unity-selection-color: var(--sm-border-focus);
+}
+
+.sm-input > .unity-text-field__input,
+.sm-input {
+    background-color: var(--sm-surface);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border-strong);
+    border-right-color: var(--sm-border-strong);
+    border-top-color: var(--sm-border-strong);
+    border-bottom-color: var(--sm-border-strong);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    min-height: 30px;
+}
+.sm-input:focus > .unity-text-field__input {
+    border-left-color: var(--sm-border-focus);
+    border-right-color: var(--sm-border-focus);
+    border-top-color: var(--sm-border-focus);
+    border-bottom-color: var(--sm-border-focus);
+}
+
+/* =========================================================
+ * BADGE
+ * ========================================================= */
+.sm-badge {
+    flex-direction: row;
+    align-items: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 7px;
+    padding-right: 7px;
+    background-color: var(--sm-surface-2);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+    color: var(--sm-text-secondary);
+    font-weight: 700;
+}
+.sm-badge--alert   { background-color: var(--sm-alert-soft);   color: var(--sm-alert);   border-left-color: rgba(209,75,61,0.35); border-right-color: rgba(209,75,61,0.35); border-top-color: rgba(209,75,61,0.35); border-bottom-color: rgba(209,75,61,0.35); }
+.sm-badge--success { background-color: var(--sm-success-soft); color: var(--sm-success); border-left-color: rgba(111,163,122,0.3); border-right-color: rgba(111,163,122,0.3); border-top-color: rgba(111,163,122,0.3); border-bottom-color: rgba(111,163,122,0.3); }
+.sm-badge--warning { background-color: var(--sm-warning-soft); color: var(--sm-warning); border-left-color: rgba(217,164,65,0.3); border-right-color: rgba(217,164,65,0.3); border-top-color: rgba(217,164,65,0.3); border-bottom-color: rgba(217,164,65,0.3); }
+.sm-badge--info    { background-color: var(--sm-info-soft);    color: var(--sm-info);    border-left-color: rgba(78,148,184,0.3); border-right-color: rgba(78,148,184,0.3); border-top-color: rgba(78,148,184,0.3); border-bottom-color: rgba(78,148,184,0.3); }
+
+/* =========================================================
+ * STAT BLOCK (label / big number / sub)
+ * ========================================================= */
+.sm-stat { flex-direction: column; }
+.sm-stat__value {
+    font-size: var(--sm-text-xl);
+    font-weight: 700;
+    color: var(--sm-text);
+}
+.sm-stat__sub { font-size: var(--sm-text-sm); color: var(--sm-text-secondary); }
+.sm-stat--alert   > .sm-stat__value { color: var(--sm-alert); }
+.sm-stat--success > .sm-stat__value { color: var(--sm-success); }
+.sm-stat--warning > .sm-stat__value { color: var(--sm-warning); }
+
+/* =========================================================
+ * TICKER BAR — bottom-of-screen event feed
+ * ========================================================= */
+.sm-ticker {
+    height: 28px;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--sm-nav-bg);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+    overflow: hidden;
+}
+.sm-ticker__badge {
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    color: var(--sm-alert);
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+    font-weight: 700;
+}
+
+/* =========================================================
+ * CLASSIFIED BANNER
+ * ========================================================= */
+.sm-banner--classified {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    background-color: var(--sm-alert-soft);
+    border-left-width: 3px;
+    border-left-color: var(--sm-alert);
+    border-top-width: var(--sm-stroke);
+    border-top-color: rgba(209,75,61,0.3);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: rgba(209,75,61,0.3);
+}
+
+/* =========================================================
+ * CONFIDENCE INTERVAL — see ConfidenceInterval.uss
+ * ========================================================= */
+
+/* =========================================================
+ * LIVE dot (used by TopBar + Ticker) — breathing animation
+ * ========================================================= */
+.sm-live-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--sm-alert);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/* =========================================================
+ * ICON — square line icon using VectorImage (Assets/UI/Icons)
+ * ========================================================= */
+.sm-icon {
+    width: 20px;
+    height: 20px;
+    
+}
+.sm-icon-sm { width: 14px; height: 14px; }
+.sm-icon-lg { width: 28px; height: 28px; }
+.sm-icon--muted {  }
+.sm-icon--alert {  }
+.sm-icon--success {  }
+
+/* =========================================================
+ * EMPTY STATE label (used when lists have no data)
+ * ========================================================= */
+.sm-empty-state {
+    color: var(--sm-text-tertiary);
+    font-size: var(--sm-text-sm);
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    text-align: center; justify-content: center; align-items: center;
+}
+
+/* =========================================================
+ * CUSTOM SCROLLBARS (global)
+ *
+ * Replaces Unity's default chunky scrollbar with a thin,
+ * floating thumb that fades into the background when idle and
+ * snaps to the info-blue accent when dragged.
+ *
+ * Mirrored into theme.uss so every screen that loads this
+ * stylesheet gets the styling automatically — previously the
+ * rules lived only in Shared/Scrollbars.uss and only ShellUI
+ * imported them, leaving MainMenu/CharacterCreation/overlays
+ * with the default Unity scrollbar.
+ *
+ * Unity UITK scrollbar element tree:
+ *   Scroller  (.unity-scroller  +  --vertical / --horizontal)
+ *   ├── RepeatButton  (.unity-scroller__low-button)   ← hidden
+ *   ├── Slider  (.unity-base-slider)
+ *   │   └── .unity-base-slider__input
+ *   │       ├── .unity-base-slider__tracker
+ *   │       └── .unity-base-slider__dragger
+ *   └── RepeatButton  (.unity-scroller__high-button)  ← hidden
+ *
+ * All thumb/track rules are scoped to .unity-scroller so they
+ * never bleed into standalone Slider controls (progress bars).
+ * ========================================================= */
+
+/* Vertical bar — 8 px wide strip; faint 1 px left rule. */
+.unity-scroller--vertical {
+    width: 8px;
+    min-width: 8px;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 1px;
+    border-left-color: rgba(33, 44, 59, 0.55);
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Horizontal bar — 8 px tall strip; faint 1 px top rule. */
+.unity-scroller--horizontal {
+    height: 8px;
+    min-height: 8px;
+    background-color: rgba(0, 0, 0, 0);
+    border-top-width: 1px;
+    border-top-color: rgba(33, 44, 59, 0.55);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* Arrow buttons — removed entirely. */
+.unity-scroller__low-button,
+.unity-scroller__high-button {
+    display: none;
+}
+
+/* Inner slider element holding the track + thumb. */
+.unity-scroller .unity-base-slider {
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+}
+
+.unity-scroller .unity-base-slider__input {
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Track — fully transparent; the 1 px scroller border is the guide. */
+.unity-scroller .unity-base-slider__tracker {
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+}
+
+/* Thumb (dragger) — 4 px visible, three states. */
+.unity-scroller .unity-base-slider__dragger {
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+
+    background-color: rgba(255, 255, 255, 0.10);
+
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+
+    transition-property: background-color;
+    transition-duration: var(--sm-dur-fast);
+    transition-timing-function: ease-out;
+}
+
+.unity-scroller .unity-base-slider__dragger:hover {
+    background-color: rgba(255, 255, 255, 0.24);
+}
+
+.unity-scroller .unity-base-slider__dragger:active {
+    background-color: rgba(78, 148, 184, 0.80);
+}
+
+
+/* ──────────────────────────────────────────────────────────────────── */
+/*  Phase 21 polish: canonical close button.                            */
+/*  Replaces the legacy <Button text="✕"/> pattern that shipped         */
+/*  text-as-icon across 17 modals/overlays. All UXML close affordances  */
+/*  add `class="sm-close-btn"` and the SVG x icon renders at 12 px.     */
+/* ──────────────────────────────────────────────────────────────────── */
+
+.sm-close-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    margin: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("project://database/Assets/UI/Icons/x.svg");
+    
+    
+    color: rgba(0, 0, 0, 0);   /* hide any stray text content */
+    transition-property: background-color, -unity-background-image-tint-color, scale;
+    transition-duration: var(--sm-dur-fast);
+    transition-timing-function: ease-out;
+}
+
+.sm-close-btn:hover {
+    background-color: rgba(220, 60, 60, 0.18);
+    
+}
+
+.sm-close-btn:active {
+    scale: 0.92 0.92;
+    
+}
+
+.sm-close-btn:disabled {
+    
+}
+
+/* ──────────────────────────────────────────────────────────────────── */
+/*  Phase 21b-2: empty-state polish.                                    */
+/*  Inline empty-state labels that hang off list-style panels (Notif    */
+/*  Feed watchlist / event feed, Diplomacy event feed). Slightly        */
+/*  smaller + more muted than full-screen empty states so they fit      */
+/*  comfortably under a header without dominating the panel.            */
+/* ──────────────────────────────────────────────────────────────────── */
+
+.sm-nf__inline-empty,
+.sm-dip__inline-empty,
+.sm-nf__empty {
+    font-size: 11px;
+    color: rgba(140, 150, 165, 0.85);
+    text-align: center; justify-content: center; align-items: center;
+    white-space: normal;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+.sm-dip__list-empty {
+    font-size: 12px;
+    color: rgba(140, 150, 165, 0.85);
+    text-align: center; justify-content: center; align-items: center;
+    white-space: normal;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+/* ──────────────────────────────────────────────────────────────────── */
+/* §31 — LiveSkeletonDisplay                                            */
+/* Canonical async-content shimmer skeleton. Used by every LLM-driven   */
+/* text surface during load. Players see placeholder bars + shimmer     */
+/* pulse, NEVER fallback prose presented as if it were real content.    */
+/* The shimmer is driven by VisualElement.schedule (UI Toolkit lacks    */
+/* CSS @keyframes) — these rules just style the static appearance.     */
+/* ──────────────────────────────────────────────────────────────────── */
+
+.sm-skeleton {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.sm-skeleton-line {
+    height: 12px;
+    background-color: var(--sm-surface-3);
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.sm-skeleton-loading > .sm-skeleton-line {
+    background-color: var(--sm-surface-3);
+}
+
+.sm-skeleton-loaded > .sm-skeleton-line,
+.sm-skeleton-error  > .sm-skeleton-line {
+    display: none;
+}
+
+.sm-skeleton-label {
+    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    white-space: normal;
+}
+
+.sm-skeleton-error {
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+}
+
+.sm-skeleton-error > Label {
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-sm);
+    font-style: italic;
+    white-space: normal;
+    margin-bottom: var(--sm-s-2);
+}
+
+.sm-skeleton-retry {
+    align-self: flex-start;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 10px;
+    letter-spacing: 1.4px;
+}
+
+/*
+ * Track M-9 / F-D14 — z-order taxonomy (CodeConventions §12).
+ *
+ * Unity UI Toolkit stacks siblings by DOM order; these classes are
+ * semantic anchors so:
+ *   • ScreenRouter / overlay managers can reorder roots deterministically;
+ *   • lint / audit can verify every screen carries an explicit layer tag;
+ *   • future Unity versions that honour explicit ordering can wire
+ *     numeric values without churning the UXML.
+ *
+ * Layers (top to bottom in display order):
+ *   sm-l1-base     — base background (world globe, full-screen views)
+ *   sm-l2-panels   — primary panels (top bar, nav rail, screens)
+ *   sm-l3-overlays — non-blocking overlays (dropdowns, flyouts, side sheets)
+ *   sm-l4-modals   — modal dialogs (block interaction beneath)
+ *   sm-l5-tooltips — tooltips / hover popovers (always topmost)
+ */
+.sm-l1-base     { /* base layer */ }
+.sm-l2-panels   { /* primary-panel layer */ }
+.sm-l3-overlays { /* non-blocking-overlay layer */ }
+.sm-l4-modals   { /* modal layer */ }
+.sm-l5-tooltips { /* tooltip layer */ }
+
+/* ── Assets/UI/Screens/NewGamePlusScreen.uss ── */
+/* New Game+ Screen */
+
+.sm-ngp__root {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--sm-bg);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-top: var(--sm-s-6);
+    padding-bottom: var(--sm-s-6);
+}
+
+.sm-ngp__title {
+    font-size: var(--sm-text-2xl);
+    color: var(--sm-warning);
+    font-weight: 700;
+    letter-spacing: 4px;
+    margin-bottom: var(--sm-s-2);
+}
+
+.sm-ngp__subtitle {
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text-secondary);
+    margin-bottom: var(--sm-s-4);
+}
+
+.sm-ngp__rating {
+    font-size: 48px;
+    color: var(--sm-warning);
+    font-weight: 700;
+    margin-bottom: var(--sm-s-4);
+}
+
+.sm-ngp__section-header {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-tertiary);
+    letter-spacing: 2px;
+    margin-bottom: var(--sm-s-2);
+}
+
+.sm-ngp__scroll {
+    width: 480px;
+    max-height: 320px;
+    background-color: var(--sm-surface);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-color: var(--sm-border);
+    border-radius: 4px;
+    margin-bottom: var(--sm-s-4);
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+}
+
+/* Modifier row */
+.sm-ngp__modifier-row {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--sm-border);
+}
+
+.sm-ngp__modifier-icon {
+    /* Phase 25b-2: SVG-driven modifier icon. Per-kind modifier
+       classes point background-image at the right asset; tint stays
+       success-green for "this is a positive perk". */
+    width: 18px;
+    height: 18px;
+    margin-right: var(--sm-s-3);
+    flex-shrink: 0;
+    
+    
+}
+.sm-ngp__modifier-icon--budget {
+    background-image: url("project://database/Assets/UI/Icons/confidence-bars.svg");
+}
+.sm-ngp__modifier-icon--clock {
+    background-image: url("project://database/Assets/UI/Icons/clock.svg");
+}
+.sm-ngp__modifier-icon--star {
+    background-image: url("project://database/Assets/UI/Icons/star-prestige.svg");
+}
+.sm-ngp__modifier-icon--thermometer {
+    background-image: url("project://database/Assets/UI/Icons/thermometer.svg");
+}
+.sm-ngp__modifier-icon--trait-spark {
+    background-image: url("project://database/Assets/UI/Icons/trait-spark.svg");
+}
+
+.sm-ngp__modifier-body {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.sm-ngp__modifier-name {
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text);
+}
+
+.sm-ngp__modifier-desc {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-tertiary);
+    margin-top: 2px;
+}
+
+.sm-ngp__actions {
+    flex-direction: row;
+    margin-top: var(--sm-s-3);
+}
+
+.sm-ngp__actions > * {
+    margin-left: var(--sm-s-3);
+    margin-right: var(--sm-s-3);
+}
+
+/* Resolution header card — appears above the modifier list when
+   ResolutionScreenReadyEvent fires (audit-fix). */
+.sm-ngp__resolution-card {
+    flex-direction: column;
+    margin-bottom: var(--sm-s-3);
+    border-left-width: 3px;
+    border-left-color: var(--sm-info);
+    background-color: var(--sm-surface);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-top-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+}
+.sm-ngp__resolution-card--victory { border-left-color: var(--sm-success); }
+.sm-ngp__resolution-card--defeat  { border-left-color: var(--sm-alert); }
+
+
+/* Preview-only chrome — fixed banner identifying this is a
+   generated approximation, not the live game render. */
+.uxml-preview-banner {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: rgba(217, 164, 65, 0.12);
+    border-bottom: 1px solid rgba(217, 164, 65, 0.45);
+    font-size: 11px;
+    color: #D9A441;
+    letter-spacing: 1px;
+}
+.uxml-preview-banner a {
+    color: #4E94B8;
+    margin-left: auto;
+    text-decoration: none;
+}
+</style>
+</head>
+<body>
+<div class="uxml-preview-banner">
+  <span>NewGamePlusScreen · static preview · regenerate via Tools/UxmlPreviewGen.py</span>
+  <a href="index.html">← all screens</a>
+</div>
+<div class="uxml-root">
+  <div class="sm-l1-base sm-ngp__root" id="ngp-root">
+    <div class="sm-ngp__title" id="ngp-title">NEW GAME +</div>
+    <div class="sm-ngp__subtitle" id="ngp-subtitle">Your agency's legacy carries forward.</div>
+    <div class="sm-ngp__rating" id="ngp-rating-label"></div>
+    <div class="sm-ngp__section-header">EARNED MODIFIERS</div>
+    <div class="sm-ngp__scroll" id="ngp-modifier-scroll" style="overflow-x:hidden; overflow-y:auto;"></div>
+    <div class="sm-ngp__actions">
+      <button class="sm-btn sm-btn--primary" id="btn-ngp-confirm" title="Ngp confirm action.">Begin New Campaign</button>
+      <button class="sm-btn sm-btn--ghost" id="btn-ngp-standard" title="Ngp standard action.">Standard New Game</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

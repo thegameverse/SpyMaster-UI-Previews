@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WorldGlobe · UI Preview</title>
+<style>
+
+/* ── Unity UI Toolkit default-shape reset ──────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; min-height: 100%; }
+body {
+    display: flex; flex-direction: column;
+    background-color: var(--sm-bg, #080F14);
+    color: var(--sm-text, #E6EDF3);
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+    font-size: 12px;
+}
+/* Every UXML element defaults to flex-column with shrink:0 — match
+   that here so authored USS that relies on those defaults works. */
+.uxml-root, .uxml-root * {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: relative;
+}
+/* UXML buttons inherit Unity's chrome; default-strip the browser's
+   button skin so per-screen USS is the only source of styling. */
+.uxml-root button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+.uxml-root input {
+    font: inherit;
+    color: inherit;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #212C3B;
+    padding: 4px 8px;
+}
+
+/* missing: Assets/UI/Tokens/tokens.uss?fileID=7433441132597879392&guid=ee6a9bd5587604f42becd9383b078d4c&type=3#tokens */
+/* missing: Assets/UI/Theme/theme.uss?fileID=7433441132597879392&guid=a029fd05ba822d64e8776449311beb39&type=3#theme */
+/* missing: Assets/UI/Screens/WorldGlobe.uss?fileID=7433441132597879392&guid=69f70023e19102449892068339756b47&type=3#WorldGlobe */
+
+/* Preview-only chrome — fixed banner identifying this is a
+   generated approximation, not the live game render. */
+.uxml-preview-banner {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: rgba(217, 164, 65, 0.12);
+    border-bottom: 1px solid rgba(217, 164, 65, 0.45);
+    font-size: 11px;
+    color: #D9A441;
+    letter-spacing: 1px;
+}
+.uxml-preview-banner a {
+    color: #4E94B8;
+    margin-left: auto;
+    text-decoration: none;
+}
+</style>
+</head>
+<body>
+<div class="uxml-preview-banner">
+  <span>WorldGlobe · static preview · regenerate via Tools/UxmlPreviewGen.py</span>
+  <a href="index.html">← all screens</a>
+</div>
+<div class="uxml-root">
+  <div class="sm-l1-base sm-screen sm-wg" id="world-globe">
+    <div class="sm-col sm-wg__left" id="left">
+      <div class="sm-panel sm-wg__layers">
+        <div class="sm-panel__header">
+          <div class="sm-panel__title">MAP LAYERS</div>
+        </div>
+        <div class="sm-panel__body sm-wg__layers-body" id="layer-list">
+          <div class="sm-wg__layer-row" id="layer-heat">
+            <label class="sm-wg__layer-toggle" id="toggle-heat" title="Toggle the global heat overlay — country tints driven by current detection pressure.">
+              <input type="checkbox" />
+              <span></span>
+            </label>
+            <div class="sm-wg__layer-name">Heat overlay</div>
+            <div class="sm-wg__layer-count" id="count-heat">0</div>
+          </div>
+          <div class="sm-wg__layer-row" id="layer-ops">
+            <label class="sm-wg__layer-toggle" id="toggle-ops" title="Toggle visibility of your active operations (mission pins) on the globe.">
+              <input type="checkbox" />
+              <span></span>
+            </label>
+            <div class="sm-wg__layer-name">Active operations</div>
+            <div class="sm-wg__layer-count" id="count-ops">0</div>
+          </div>
+          <div class="sm-wg__layer-row" id="layer-safe">
+            <label class="sm-wg__layer-toggle" id="toggle-safe" title="Toggle visibility of your safe houses + station footprints.">
+              <input type="checkbox" />
+              <span></span>
+            </label>
+            <div class="sm-wg__layer-name">Safe houses</div>
+            <div class="sm-wg__layer-count" id="count-safe">0</div>
+          </div>
+          <div class="sm-wg__layer-row" id="layer-enemy">
+            <label class="sm-wg__layer-toggle" id="toggle-enemy" title="Show inferred enemy counter-operations (only what your intel has confirmed).">
+              <input type="checkbox" />
+              <span></span>
+            </label>
+            <div class="sm-wg__layer-name">Enemy counter-ops</div>
+            <div class="sm-wg__layer-count" id="count-enemy">0</div>
+          </div>
+          <div class="sm-wg__layer-row" id="layer-diplo">
+            <label class="sm-wg__layer-toggle" id="toggle-diplo" title="Toggle diplomatic event markers (treaties, sanctions, summits).">
+              <input type="checkbox" />
+              <span></span>
+            </label>
+            <div class="sm-wg__layer-name">Diplomatic events</div>
+            <div class="sm-wg__layer-count" id="count-diplo">0</div>
+          </div>
+          <div class="sm-wg__layer-row" id="layer-grat">
+            <label class="sm-wg__layer-toggle" id="toggle-grat" title="Show the lat/long graticule grid at 15° spacing.">
+              <input type="checkbox" />
+              <span></span>
+            </label>
+            <div class="sm-wg__layer-name">Graticule</div>
+            <div class="sm-wg__layer-count">15°</div>
+          </div>
+        </div>
+      </div>
+      <div class="sm-panel sm-wg__ops sm-fill">
+        <div class="sm-panel__header">
+          <div class="sm-panel__title">ACTIVE OPERATIONS</div>
+          <div class="sm-wg__ops-count" id="active-ops-count">00</div>
+        </div>
+        <div class="sm-wg__ops-scroll" id="ops-list" style="overflow-x:hidden; overflow-y:auto;"></div>
+        <div class="sm-wg__ops-slots" id="ops-slots">Handler slots used · review in —d</div>
+        <div class="sm-wg__ops-warn" id="ops-warn">
+          <div class="sm-wg__ops-warn-glyph"></div>
+          <div class="sm-wg__ops-warn-text" id="ops-warn-text"></div>
+        </div>
+      </div>
+    </div>
+    <div class="sm-fill sm-wg__canvas" id="canvas">
+      <div class="sm-wg__canvas-top">
+        <div class="sm-wg__live-chip" title="Simulation status — pulses while time is advancing.">
+          <div class="sm-live-dot sm-wg__proj-live"></div>
+          <div class="sm-mono sm-wg__proj-live-text">LIVE</div>
+        </div>
+        <div class="sm-wg__horizon" id="event-horizon" title="Time-pressured events on the world clock — click to focus the relevant country."></div>
+        <div class="sm-fill"></div>
+        <button class="sm-wg__canvas-btn sm-wg__canvas-btn--find" id="btn-find" title="Find a country by name (Ctrl+F).">
+          <div class="sm-wg__btn-icon sm-wg__btn-icon--find"></div>
+          <div class="sm-wg__canvas-btn-label">FIND</div>
+        </button>
+        <button class="sm-wg__canvas-btn sm-wg__canvas-btn--filter" id="btn-filter" title="Filter map layers + heat bands.">
+          <div class="sm-wg__btn-icon sm-wg__btn-icon--filter"></div>
+          <div class="sm-wg__canvas-btn-label">FILTER</div>
+        </button>
+        <button class="sm-wg__canvas-btn sm-wg__canvas-btn--log" id="btn-alerts-log" title="Recent dismissed enemy-probe alerts.">LOG · 0</button>
+      </div>
+      <div class="sm-wg__alert" id="enemy-alert">
+        <div class="sm-wg__alert-text">
+          <div class="sm-wg__alert-label">ENEMY PROBE</div>
+          <div class="sm-wg__alert-body" id="alert-body">SVR assets triangulating on Cairo station.</div>
+        </div>
+        <button class="sm-wg__alert-close sm-close-btn" id="alert-close" title="Dismiss alert (Esc)."></button>
+      </div>
+      <div class="sm-wg__compass">
+        <div class="sm-mono sm-wg__compass-label">N</div>
+        <div class="sm-wg__compass-arrow">▲</div>
+      </div>
+      <div class="sm-wg__legend">
+        <div class="sm-wg__legend-item">
+          <div class="sm-wg__legend-swatch sm-wg__legend-swatch--high"></div>
+          <div class="sm-wg__legend-label">High heat (60+)</div>
+        </div>
+        <div class="sm-wg__legend-item">
+          <div class="sm-wg__legend-swatch sm-wg__legend-swatch--mid"></div>
+          <div class="sm-wg__legend-label">Elevated (30–60)</div>
+        </div>
+        <div class="sm-wg__legend-item">
+          <div class="sm-wg__legend-dot sm-wg__legend-dot--op"></div>
+          <div class="sm-wg__legend-label">Active op</div>
+        </div>
+        <div class="sm-wg__legend-item">
+          <div class="sm-wg__legend-dot sm-wg__legend-dot--safe"></div>
+          <div class="sm-wg__legend-label">Safe house</div>
+        </div>
+        <div class="sm-wg__legend-item">
+          <div class="sm-wg__legend-dot sm-wg__legend-dot--event"></div>
+          <div class="sm-wg__legend-label">Event</div>
+        </div>
+        <div class="sm-fill"></div>
+        <div class="sm-mono sm-wg__rotate-label">JUMP TO</div>
+        <button class="sm-wg__bookmark sm-wg__bookmark--home" id="bookmark-home" title="Focus the globe on your agency&#x27;s home country.">HOME</button>
+        <button class="sm-wg__bookmark sm-wg__bookmark--hot" id="bookmark-hot" title="Focus the country with the highest current heat.">HOT</button>
+        <button class="sm-wg__bookmark sm-wg__bookmark--last" id="bookmark-last" title="Re-focus the most recently selected country.">LAST</button>
+      </div>
+    </div>
+    <div class="sm-col sm-wg__right" id="right">
+      <div class="sm-wg__country-header">
+        <div class="sm-row sm-wg__ch-top">
+          <div class="sm-mono sm-wg__country-flag" id="country-flag">—</div>
+          <div class="sm-h3 sm-wg__country-name" id="country-name">— No country selected —</div>
+          <div class="sm-mono sm-wg__country-pill" id="country-pill"></div>
+          <div class="sm-fill"></div>
+          <button class="sm-wg__country-close sm-close-btn" id="country-close" title="Close panel (Esc)"></button>
+        </div>
+        <div class="sm-wg__country-sub" id="country-sub">click a country on the globe</div>
+        <div class="sm-row sm-wg__stats">
+          <div class="sm-stat sm-wg__stat">
+            <div class="sm-wg__stat-header">
+              <div class="sm-label">STABILITY</div>
+              <div class="sm-wg__stat-trend" id="st-stability-trend"></div>
+            </div>
+            <div class="sm-stat__value sm-num" id="st-stability">—</div>
+            <div class="sm-wg__stat-bar">
+              <div class="sm-wg__stat-bar-fill sm-wg__stat-bar-fill--stability" id="st-stability-bar"></div>
+            </div>
+          </div>
+          <div class="sm-stat sm-wg__stat">
+            <div class="sm-wg__stat-header">
+              <div class="sm-label">HEAT</div>
+              <div class="sm-wg__stat-trend" id="st-heat-trend"></div>
+            </div>
+            <div class="sm-stat__value sm-num" id="st-heat">—</div>
+            <div class="sm-wg__stat-bar">
+              <div class="sm-wg__stat-bar-fill sm-wg__stat-bar-fill--heat" id="st-heat-bar"></div>
+            </div>
+          </div>
+          <div class="sm-stat sm-wg__stat">
+            <div class="sm-wg__stat-header">
+              <div class="sm-label">RELATIONS</div>
+              <div class="sm-wg__stat-trend" id="st-relations-trend"></div>
+            </div>
+            <div class="sm-stat__value sm-num" id="st-relations">—</div>
+            <div class="sm-wg__stat-bar">
+              <div class="sm-wg__stat-bar-fill sm-wg__stat-bar-fill--relations" id="st-relations-bar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sm-panel sm-wg__safe">
+        <div class="sm-panel__header">
+          <div class="sm-panel__title">SAFE HOUSES</div>
+        </div>
+        <div class="sm-panel__body" id="safe-list"></div>
+      </div>
+      <div class="sm-panel sm-wg__threats">
+        <div class="sm-panel__header">
+          <div class="sm-panel__title">ACTIVE THREAT</div>
+        </div>
+        <div class="sm-panel__body" id="threat-list"></div>
+      </div>
+      <div class="sm-panel sm-wg__recent sm-fill">
+        <div class="sm-panel__header">
+          <div class="sm-panel__title">RECENT ACTIVITY</div>
+        </div>
+        <div class="sm-wg__recent-scroll" id="activity-list" style="overflow-x:hidden; overflow-y:auto;"></div>
+      </div>
+      <div class="sm-row sm-wg__actions">
+        <button class="sm-btn sm-wg__btn-dossier" id="btn-dossier" title="Dossier action.">OPEN DOSSIER  →</button>
+        <button class="sm-btn sm-btn--outline sm-wg__btn-citymap" id="btn-citymap" title="Citymap action.">CITY MAP  →</button>
+        <button class="sm-btn sm-btn--outline sm-wg__btn-pin" id="btn-pin" title="Pin this country to the dashboard for quick monitoring.">+ PIN</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
