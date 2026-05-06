@@ -1174,8 +1174,9 @@ TextField > .unity-text-field__input,
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;
 }
-.sm-ad__arc-track-fill--layers { background-color: var(--sm-info); }
-.sm-ad__arc-track-fill--intel  { background-color: var(--sm-success); }
+.sm-ad__arc-track-fill--layers     { background-color: var(--sm-info); }
+.sm-ad__arc-track-fill--mastermind { background-color: var(--sm-warning); }
+.sm-ad__arc-track-fill--intel      { background-color: var(--sm-success); }
 
 /* Primary terminal target chip — sits at the end of the tracks row */
 .sm-ad__arc-target {
@@ -2090,9 +2091,9 @@ TextField > .unity-text-field__input,
           </div>
         </div>
         <div class="sm-row sm-ad__arc-tracks">
-          <div class="sm-ad__arc-track" title="Conspiracy layers revealed. Each successful layer reveal exposes the next tier of cells; reaching the Mastermind layer (last) unlocks the terminal-state ops.">
+          <div class="sm-ad__arc-track" title="UNMASKED victory condition. Reveal every conspiracy layer (Layer 0 → Mastermind) to unlock this ending. Each successful layer reveal exposes the next tier of cells.">
             <div class="sm-row sm-ad__arc-track-head">
-              <div class="sm-mono sm-label">LAYERS REVEALED</div>
+              <div class="sm-mono sm-label">UNMASKED</div>
               <div class="sm-fill"></div>
               <div class="sm-num sm-ad__arc-track-value" id="arc-layers-value">—/—</div>
             </div>
@@ -2100,9 +2101,19 @@ TextField > .unity-text-field__input,
               <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--layers" id="arc-layers-fill"></div>
             </div>
           </div>
-          <div class="sm-ad__arc-track" title="Distinct intel types corroborated against the conspiracy (HUMINT / SIGINT / CYBINT / OSINT / IMINT / FININT / GEOINT / TECHINT / MASINT). Higher coverage strengthens evidence weight at terminal-state ops.">
+          <div class="sm-ad__arc-track" title="DECAPITATION STRIKE victory condition. Reveal every named conspirator at the Mastermind layer (the deepest layer of the conspiracy) to unlock this ending — the lore-correct gate for the assassination/decapitation path.">
             <div class="sm-row sm-ad__arc-track-head">
-              <div class="sm-mono sm-label">INTEL TYPES CORROBORATED</div>
+              <div class="sm-mono sm-label">DECAPITATION</div>
+              <div class="sm-fill"></div>
+              <div class="sm-num sm-ad__arc-track-value" id="arc-mastermind-value">—/—</div>
+            </div>
+            <div class="sm-ad__arc-track-rail">
+              <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--mastermind" id="arc-mastermind-fill"></div>
+            </div>
+          </div>
+          <div class="sm-ad__arc-track" title="Distinct intel types corroborated against the conspiracy (HUMINT / SIGINT / CYBINT / OSINT / IMINT / FININT / GEOINT / TECHINT / MASINT). Strengthens evidence weight at terminal-state ops; some terminals have minimum-coverage gates.">
+            <div class="sm-row sm-ad__arc-track-head">
+              <div class="sm-mono sm-label">EVIDENCE WEIGHT</div>
               <div class="sm-fill"></div>
               <div class="sm-num sm-ad__arc-track-value" id="arc-intel-value">—/9</div>
             </div>
@@ -2110,7 +2121,7 @@ TextField > .unity-text-field__input,
               <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--intel" id="arc-intel-fill"></div>
             </div>
           </div>
-          <div class="sm-ad__arc-target" title="Primary terminal target — the ending the campaign is currently best positioned for. Drive the corresponding terminal-state op before the doomsday clock expires to win.">
+          <div class="sm-ad__arc-target" title="Primary terminal target — the ending your campaign DNA is currently best positioned for. Drive the corresponding terminal-state op before the doomsday clock expires to win.">
             <div class="sm-mono sm-label">PRIMARY TARGET</div>
             <div class="sm-num sm-ad__arc-target-value" id="arc-target-value">—</div>
           </div>
