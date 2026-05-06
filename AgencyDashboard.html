@@ -1052,6 +1052,145 @@ TextField > .unity-text-field__input,
     flex-direction: row;
     margin-bottom: var(--sm-s-3);
 }
+
+/* ========== Phase 25.48 — Investigation Arc ribbon ==========
+   Strategic-context strip between Row 2 and Row 3. Reveal-stage
+   markers + 2 stat bars + primary terminal chip. Slim — ~110 px tall
+   so it doesn't crowd Row 3, but big enough to render the stage rail
+   legibly. */
+.sm-ad__arc {
+    margin-bottom: var(--sm-s-3);
+}
+.sm-ad__arc-body {
+    flex-direction: column;
+    padding: var(--sm-s-3);
+}
+.sm-ad__arc-doomsday {
+    color: var(--sm-text-secondary);
+    font-weight: 700;
+}
+.sm-ad__arc-doomsday--alert { color: var(--sm-alert); }
+.sm-ad__arc-doomsday--warn  { color: var(--sm-warning); }
+
+/* Stage marker — 3 dots connected by 2 rails. Active stage gets
+   filled-circle treatment + accent colour; passed stages stay
+   tinted; future stages render as dim hollow circles. */
+.sm-ad__arc-stages {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--sm-s-3);
+}
+.sm-ad__arc-stage {
+    flex-direction: row;
+    align-items: center;
+}
+.sm-ad__arc-stage-dot {
+    width: 12px;
+    height: 12px;
+    margin-right: var(--sm-s-2);
+    background-color: var(--sm-surface-3);
+    border-color: var(--sm-text-secondary);
+    border-top-width: 1.5px;
+    border-bottom-width: 1.5px;
+    border-left-width: 1.5px;
+    border-right-width: 1.5px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+.sm-ad__arc-stage-label {
+    color: var(--sm-text-secondary);
+    margin-right: var(--sm-s-3);
+    font-size: 10px;
+    letter-spacing: 1.4px;
+}
+/* Stage states — set on each .sm-ad__arc-stage container by C# */
+.sm-ad__arc-stage--reached > .sm-ad__arc-stage-dot {
+    background-color: var(--sm-info);
+    border-color: var(--sm-info);
+}
+.sm-ad__arc-stage--reached > .sm-ad__arc-stage-label {
+    color: var(--sm-text);
+}
+.sm-ad__arc-stage--current > .sm-ad__arc-stage-dot {
+    background-color: var(--sm-success);
+    border-color: var(--sm-success);
+    width: 14px;
+    height: 14px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
+.sm-ad__arc-stage--current > .sm-ad__arc-stage-label {
+    color: var(--sm-success);
+    font-weight: 700;
+}
+.sm-ad__arc-stage-rail {
+    flex-grow: 1;
+    flex-shrink: 1;
+    height: 2px;
+    margin-right: var(--sm-s-3);
+    background-color: var(--sm-surface-3);
+}
+.sm-ad__arc-stage-rail--reached {
+    background-color: var(--sm-info);
+}
+
+/* Stat tracks — layers revealed + intel types corroborated */
+.sm-ad__arc-tracks {
+    flex-direction: row;
+    align-items: stretch;
+}
+.sm-ad__arc-track {
+    flex-grow: 1;
+    flex-basis: 0;
+    flex-direction: column;
+    margin-right: var(--sm-s-3);
+}
+.sm-ad__arc-track-head {
+    align-items: center;
+    margin-bottom: var(--sm-s-1);
+}
+.sm-ad__arc-track-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--sm-text);
+}
+.sm-ad__arc-track-rail {
+    height: 4px;
+    background-color: var(--sm-surface-3);
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+.sm-ad__arc-track-fill {
+    height: 4px;
+    width: 0;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+.sm-ad__arc-track-fill--layers { background-color: var(--sm-info); }
+.sm-ad__arc-track-fill--intel  { background-color: var(--sm-success); }
+
+/* Primary terminal target chip — sits at the end of the tracks row */
+.sm-ad__arc-target {
+    flex-direction: column;
+    justify-content: center;
+    min-width: 160px;
+    padding-left: var(--sm-s-3);
+    border-left-color: var(--sm-surface-3);
+    border-left-width: 1px;
+}
+.sm-ad__arc-target-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--sm-text);
+}
 /* 4-panel Row 2: Depts(2) · Budget(3) · Personnel(2) · Gov(2) — AD-27 adds Personnel */
 .sm-ad__depts      { flex-grow: 2; flex-basis: 0; margin-right: var(--sm-s-3); }
 .sm-ad__budget     { flex-grow: 3; flex-basis: 0; margin-right: var(--sm-s-3); }
@@ -1923,6 +2062,57 @@ TextField > .unity-text-field__input,
           <div class="sm-ad__gov-review" id="gov-review">
             <div class="sm-label sm-ad__gov-review-header">REVIEW</div>
             <div id="gov-review-notes"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sm-panel sm-ad__arc">
+      <div class="sm-panel__header">
+        <div class="sm-panel__title">INVESTIGATION ARC</div>
+        <div class="sm-fill"></div>
+        <div class="sm-mono sm-label sm-ad__arc-doomsday" id="arc-doomsday" title="Days until the conspiracy executes its plan. Resolve a primary terminal-state op before this hits zero.">DOOMSDAY · — d</div>
+      </div>
+      <div class="sm-panel__body sm-ad__arc-body">
+        <div class="sm-ad__arc-stages" id="arc-stages">
+          <div class="sm-ad__arc-stage" id="arc-stage-0">
+            <div class="sm-ad__arc-stage-dot"></div>
+            <div class="sm-mono sm-label sm-ad__arc-stage-label">UNKNOWN</div>
+          </div>
+          <div class="sm-ad__arc-stage-rail"></div>
+          <div class="sm-ad__arc-stage" id="arc-stage-1">
+            <div class="sm-ad__arc-stage-dot"></div>
+            <div class="sm-mono sm-label sm-ad__arc-stage-label">NETWORK KNOWN</div>
+          </div>
+          <div class="sm-ad__arc-stage-rail"></div>
+          <div class="sm-ad__arc-stage" id="arc-stage-2">
+            <div class="sm-ad__arc-stage-dot"></div>
+            <div class="sm-mono sm-label sm-ad__arc-stage-label">MASTERMIND</div>
+          </div>
+        </div>
+        <div class="sm-row sm-ad__arc-tracks">
+          <div class="sm-ad__arc-track" title="Conspiracy layers revealed. Each successful layer reveal exposes the next tier of cells; reaching the Mastermind layer (last) unlocks the terminal-state ops.">
+            <div class="sm-row sm-ad__arc-track-head">
+              <div class="sm-mono sm-label">LAYERS REVEALED</div>
+              <div class="sm-fill"></div>
+              <div class="sm-num sm-ad__arc-track-value" id="arc-layers-value">—/—</div>
+            </div>
+            <div class="sm-ad__arc-track-rail">
+              <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--layers" id="arc-layers-fill"></div>
+            </div>
+          </div>
+          <div class="sm-ad__arc-track" title="Distinct intel types corroborated against the conspiracy (HUMINT / SIGINT / CYBINT / OSINT / IMINT / FININT / GEOINT / TECHINT / MASINT). Higher coverage strengthens evidence weight at terminal-state ops.">
+            <div class="sm-row sm-ad__arc-track-head">
+              <div class="sm-mono sm-label">INTEL TYPES CORROBORATED</div>
+              <div class="sm-fill"></div>
+              <div class="sm-num sm-ad__arc-track-value" id="arc-intel-value">—/9</div>
+            </div>
+            <div class="sm-ad__arc-track-rail">
+              <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--intel" id="arc-intel-fill"></div>
+            </div>
+          </div>
+          <div class="sm-ad__arc-target" title="Primary terminal target — the ending the campaign is currently best positioned for. Drive the corresponding terminal-state op before the doomsday clock expires to win.">
+            <div class="sm-mono sm-label">PRIMARY TARGET</div>
+            <div class="sm-num sm-ad__arc-target-value" id="arc-target-value">—</div>
           </div>
         </div>
       </div>
