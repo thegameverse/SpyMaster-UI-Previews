@@ -1350,7 +1350,15 @@ TextField > .unity-text-field__input,
 }
 
 .sm-rc__bg-button {
-    margin-right: auto;
+    /* margin-right: auto WAS pushing this button to the left edge
+       and making the strip + decisions row absorb the remaining
+       space — but auto-margin behaves like flex-grow on the
+       margins, which fights with the strip's flex-grow:1. Use a
+       fixed gap instead so the layout has only one growing element
+       (the strip) absorbing variable space. */
+    margin-right: var(--sm-s-3);
+    flex-shrink: 0;
+    flex-grow: 0;
 }
 
 .sm-rc__bg-progress {
@@ -1409,6 +1417,13 @@ TextField > .unity-text-field__input,
 
 .sm-rc__decisions {
     flex-direction: row;
+    /* Phase 25.63 — pin the decisions row so it doesn't expand or
+       shrink as the negotiation strip's content text widths swing
+       between emotion tiers. Previously the row inherited the
+       footer's auto sizing and fought with the strip for space,
+       which moved the slider physically under the cursor mid-drag. */
+    flex-shrink: 0;
+    flex-grow: 0;
 }
 
 .sm-rc__decisions Button {
