@@ -110,6 +110,20 @@ body {
     --sm-cat-3:           #C28A5C; /* desaturated tan */
     --sm-cat-4:           #6FA37A; /* field green */
     --sm-cat-5:           #9AA5B3; /* slate */
+    /* Phase 25.78 — per-cat soft backgrounds. Used by
+       InvestigationGraph node-type header tints (rgba(N,N,N,0.18))
+       which were hand-typed RGBA literals matching the cat colours
+       above. Now: derived once, used everywhere. */
+    --sm-cat-1-soft:      rgba(78, 148, 184, 0.18);
+    --sm-cat-2-soft:      rgba(139, 123, 163, 0.18);
+    --sm-cat-3-soft:      rgba(194, 138, 92, 0.18);
+    --sm-cat-4-soft:      rgba(111, 163, 122, 0.18);
+    --sm-cat-5-soft:      rgba(154, 165, 179, 0.18);
+    /* Mastermind highlight — apex-tier alert tint, stronger than
+       --sm-alert-soft (0.12) because it has to read as "this is
+       the boss" against the dim canvas background. */
+    --sm-alert-strong:    rgba(200, 50, 50, 0.22);
+    --sm-alert-strong-border: rgba(200, 50, 50, 0.45);
 
     /* ── APPROACH COLORS (mission planner) */
     --sm-approach-stealth:   #8B7BA3; /* violet */
