@@ -1310,9 +1310,9 @@ TextField > .unity-text-field__input,
 
 .sm-wi__drawer {
     width: 440px;
-    background-color: #111821;
+    background-color: var(--sm-surface);
     border-left-width: 1px;
-    border-left-color: #2A3547;
+    border-left-color: var(--sm-border-strong);
     align-items: stretch;
     overflow: hidden;
 }
@@ -1322,7 +1322,7 @@ TextField > .unity-text-field__input,
 .sm-wi__drawer-header {
     padding: 12px 16px;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
     flex-direction: row;
     align-items: center;
     flex-shrink: 0;
@@ -1333,10 +1333,10 @@ TextField > .unity-text-field__input,
     padding: 2px 6px;
     margin-left: 8px;
     background-color: rgba(209, 75, 61, 0.15);
-    border-color: #D14B3D;
+    border-color: var(--sm-identity);
     border-width: 1px;
     border-radius: 8px;
-    color: #D14B3D;
+    color: var(--sm-identity);
     
     letter-spacing: 1px;
 }
@@ -1346,8 +1346,8 @@ TextField > .unity-text-field__input,
     height: 28px;
     background-color: transparent;
     border-width: 1px;
-    border-color: #212C3B;
-    color: #8B97A6;
+    border-color: var(--sm-border);
+    color: var(--sm-text-secondary);
     font-size: 13px;
     padding: 0;
     cursor: link;
@@ -1356,9 +1356,9 @@ TextField > .unity-text-field__input,
     transition-duration: var(--sm-dur-fast);
 }
 .sm-wi__close-btn:hover {
-    background-color: #172030;
-    border-color: #2A3547;
-    color: #E6EDF3;
+    background-color: var(--sm-surface-2);
+    border-color: var(--sm-border-strong);
+    color: var(--sm-text);
 }
 
 /* ── Stat strip ────────────────────────────────────────────────────────────── */
@@ -1367,8 +1367,8 @@ TextField > .unity-text-field__input,
     flex-direction: row;
     margin: 0 16px 12px 16px;
     border-width: 1px;
-    border-color: #212C3B;
-    background-color: #172030;
+    border-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
     padding: 8px 12px;
     flex-shrink: 0;
 }
@@ -1377,19 +1377,19 @@ TextField > .unity-text-field__input,
     flex: 1;
     align-items: center;
     border-left-width: 1px;
-    border-left-color: #212C3B;
+    border-left-color: var(--sm-border);
     padding: 0 8px;
 }
 .sm-wi__stat-chip--first { border-left-width: 0; }
 
 .sm-wi__chip-value {
     font-size: 18px;
-    color: #E6EDF3;
+    color: var(--sm-text);
     margin-top: 2px;
     text-align: center; justify-content: center; align-items: center;
 }
 .sm-wi__chip-value--success { color: #6FA37A; }
-.sm-wi__chip-value--muted   { color: #3E4A58; }
+.sm-wi__chip-value--muted   { color: var(--sm-text-muted); }
 
 /* ── Scroll / empty ────────────────────────────────────────────────────────── */
 
@@ -1406,13 +1406,13 @@ TextField > .unity-text-field__input,
 }
 .sm-wi__empty-icon {
     font-size: 32px;
-    color: #3E4A58;
+    color: var(--sm-text-muted);
     margin-bottom: 12px;
     text-align: center; justify-content: center; align-items: center;
 }
 .sm-wi__empty-title {
     font-size: 12px;
-    color: #3E4A58;
+    color: var(--sm-text-muted);
     letter-spacing: 2px;
     
     margin-bottom: 8px;
@@ -1420,7 +1420,7 @@ TextField > .unity-text-field__input,
 }
 .sm-wi__empty-hint {
     font-size: 11px;
-    color: #2A3547;
+    color: var(--sm-border-strong);
     white-space: normal;
     text-align: center; justify-content: center; align-items: flex-start;
 }
@@ -1433,13 +1433,13 @@ TextField > .unity-text-field__input,
  * room inside (12/14 padding). Reads as a real personnel-file row, not
  * a tight SaaS list item. */
 .sm-wi__card {
-    background-color: #172030;
+    background-color: var(--sm-surface-2);
     border-width: 1px;
-    border-color: #212C3B;
+    border-color: var(--sm-border);
     border-radius: 2px;
     margin-bottom: 16px;
     border-left-width: 3px;
-    border-left-color: #D14B3D;   /* alert red — these are potentially hostile contacts */
+    border-left-color: var(--sm-identity);   /* alert red — these are potentially hostile contacts */
     overflow: hidden;
 }
 
@@ -1450,13 +1450,13 @@ TextField > .unity-text-field__input,
     align-items: center;
     padding: 12px 14px 10px 14px;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
     background-color: rgba(209, 75, 61, 0.05);
 }
 
 .sm-wi__card-org {
     font-size: 12px;
-    color: #E6EDF3;
+    color: var(--sm-text);
     letter-spacing: 1.2px;
     
     flex: 1;
@@ -1471,8 +1471,8 @@ TextField > .unity-text-field__input,
     
     letter-spacing: 1px;
     background-color: rgba(90, 104, 118, 0.20);
-    border-color: #3E4A58;
-    color: #8B97A6;
+    border-color: var(--sm-text-muted);
+    color: var(--sm-text-secondary);
 }
 
 .sm-wi__card-intel-badge {
@@ -1484,8 +1484,8 @@ TextField > .unity-text-field__input,
     
     letter-spacing: 1px;
     background-color: rgba(217, 164, 65, 0.12);
-    border-color: #D9A441;
-    color: #D9A441;
+    border-color: var(--sm-warning);
+    color: var(--sm-warning);
 }
 
 /* ── Card meta row: expiry ───────────────────────────────────────────────── */
@@ -1495,12 +1495,12 @@ TextField > .unity-text-field__input,
     align-items: center;
     padding: 8px 14px;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
 }
 
 .sm-wi__card-expiry-label {
     font-size: 10px;
-    color: #5A6876;
+    color: var(--sm-text-muted);
     letter-spacing: 0.8px;
     flex: 1;
 }
@@ -1510,9 +1510,9 @@ TextField > .unity-text-field__input,
     
     letter-spacing: 0.8px;
 }
-.sm-wi__card-expiry-value--urgent { color: #D14B3D; }
-.sm-wi__card-expiry-value--warning { color: #D9A441; }
-.sm-wi__card-expiry-value--normal  { color: #5A6876; }
+.sm-wi__card-expiry-value--urgent { color: var(--sm-identity); }
+.sm-wi__card-expiry-value--warning { color: var(--sm-warning); }
+.sm-wi__card-expiry-value--normal  { color: var(--sm-text-muted); }
 
 /* ── Card briefing text ──────────────────────────────────────────────────── */
 
@@ -1523,12 +1523,12 @@ TextField > .unity-text-field__input,
     padding: 12px 14px;
     font-size: 12px;
     font-style: italic;
-    color: #8B97A6;
+    color: var(--sm-text-secondary);
     
     white-space: normal;
     text-align: left; justify-content: left; align-items: flex-start;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
 }
 /* Phase 16-5 — sm-wi__card-briefing--loading retired. Loading shimmer
    now comes from the canonical sm-live-text--loading class. */
@@ -1567,8 +1567,8 @@ TextField > .unity-text-field__input,
 
 /* VET — info blue */
 .sm-wi__card-btn--vet {
-    color: #4E94B8;
-    border-color: #4E94B8;
+    color: var(--sm-info);
+    border-color: var(--sm-info);
     background-color: transparent;
 }
 .sm-wi__card-btn--vet:hover {
@@ -1577,14 +1577,14 @@ TextField > .unity-text-field__input,
 
 /* REJECT — muted */
 .sm-wi__card-btn--reject {
-    color: #5A6876;
-    border-color: #3E4A58;
+    color: var(--sm-text-muted);
+    border-color: var(--sm-text-muted);
     background-color: transparent;
 }
 .sm-wi__card-btn--reject:hover {
     background-color: rgba(90, 104, 118, 0.10);
-    border-color: #5A6876;
-    color: #8B97A6;
+    border-color: var(--sm-text-muted);
+    color: var(--sm-text-secondary);
 }
 
 /* ── Assets/UI/Theme/theme-present-polish.uss ── */

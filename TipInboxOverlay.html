@@ -1317,9 +1317,9 @@ TextField > .unity-text-field__input,
 
 .sm-ti__drawer {
     width: 420px;
-    background-color: #111821;
+    background-color: var(--sm-surface);
     border-left-width: 1px;
-    border-left-color: #2A3547;
+    border-left-color: var(--sm-border-strong);
     align-items: stretch;
     overflow: hidden;
 }
@@ -1329,7 +1329,7 @@ TextField > .unity-text-field__input,
 .sm-ti__drawer-header {
     padding: 12px 16px;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
     flex-direction: row;
     align-items: center;
     flex-shrink: 0;
@@ -1340,17 +1340,17 @@ TextField > .unity-text-field__input,
     padding: 2px 6px;
     margin-left: 8px;
     background-color: rgba(217, 164, 65, 0.15);
-    border-color: #D9A441;
+    border-color: var(--sm-warning);
     border-width: 1px;
     border-radius: 8px;
-    color: #D9A441;
+    color: var(--sm-warning);
     
     letter-spacing: 1px;
 }
 
 .sm-ti__missed-label {
     font-size: 10px;
-    color: #D14B3D;
+    color: var(--sm-identity);
     letter-spacing: 1px;
     margin-right: 10px;
 }
@@ -1360,8 +1360,8 @@ TextField > .unity-text-field__input,
     height: 28px;
     background-color: transparent;
     border-width: 1px;
-    border-color: #212C3B;
-    color: #8B97A6;
+    border-color: var(--sm-border);
+    color: var(--sm-text-secondary);
     font-size: 13px;
     padding: 0;
     cursor: link;
@@ -1370,9 +1370,9 @@ TextField > .unity-text-field__input,
     transition-duration: var(--sm-dur-fast);
 }
 .sm-ti__close-btn:hover {
-    background-color: #172030;
-    border-color: #2A3547;
-    color: #E6EDF3;
+    background-color: var(--sm-surface-2);
+    border-color: var(--sm-border-strong);
+    color: var(--sm-text);
 }
 
 /* ── Stat strip ────────────────────────────────────────────────────────────── */
@@ -1381,8 +1381,8 @@ TextField > .unity-text-field__input,
     flex-direction: row;
     margin: 0 16px 12px 16px;
     border-width: 1px;
-    border-color: #212C3B;
-    background-color: #172030;
+    border-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
     padding: 8px 12px;
     flex-shrink: 0;
 }
@@ -1391,13 +1391,13 @@ TextField > .unity-text-field__input,
     flex: 1;
     align-items: center;
     border-left-width: 1px;
-    border-left-color: #212C3B;
+    border-left-color: var(--sm-border);
     padding: 0 8px;
 }
 .sm-ti__stat-chip--first { border-left-width: 0; }
 .sm-ti__chip-value {
     font-size: 18px;
-    color: #E6EDF3;
+    color: var(--sm-text);
     margin-top: 2px;
     text-align: center; justify-content: center; align-items: center;
 }
@@ -1405,7 +1405,7 @@ TextField > .unity-text-field__input,
     color: #6FA37A;
 }
 .sm-ti__chip-value--alert {
-    color: #D14B3D;
+    color: var(--sm-identity);
 }
 
 /* ── Tip list scrollview ───────────────────────────────────────────────────── */
@@ -1443,7 +1443,7 @@ TextField > .unity-text-field__input,
 }
 .sm-ti__empty-hint {
     font-size: 11px;
-    color: #5A6876;
+    color: var(--sm-text-muted);
     white-space: normal;
     text-align: center; justify-content: center; align-items: flex-start;
 }
@@ -1453,29 +1453,29 @@ TextField > .unity-text-field__input,
 /* ═══════════════════════════════════════════════════════════════════════════ */
 
 .sm-ti__card {
-    background-color: #172030;
+    background-color: var(--sm-surface-2);
     border-width: 1px;
-    border-color: #212C3B;
+    border-color: var(--sm-border);
     border-radius: 2px;
     margin-bottom: 10px;
     overflow: hidden;
 }
 .sm-ti__card:hover {
-    border-color: #2A3547;
+    border-color: var(--sm-border-strong);
 }
 
 /* ── Card accent stripe (left border, coloured by urgency) ─────────────────── */
 .sm-ti__card--urgent {
     border-left-width: 3px;
-    border-left-color: #D14B3D;
+    border-left-color: var(--sm-identity);
 }
 .sm-ti__card--warning {
     border-left-width: 3px;
-    border-left-color: #D9A441;
+    border-left-color: var(--sm-warning);
 }
 .sm-ti__card--normal {
     border-left-width: 3px;
-    border-left-color: #4E94B8;
+    border-left-color: var(--sm-info);
 }
 
 /* ── Card header row ────────────────────────────────────────────────────────── */
@@ -1485,12 +1485,12 @@ TextField > .unity-text-field__input,
     align-items: center;
     padding: 8px 12px 6px 12px;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
 }
 
 .sm-ti__card-threat-type {
     font-size: 11px;
-    color: #E6EDF3;
+    color: var(--sm-text);
     letter-spacing: 1.2px;
     
     flex: 1;
@@ -1505,8 +1505,8 @@ TextField > .unity-text-field__input,
     
     letter-spacing: 1px;
     background-color: rgba(78, 148, 184, 0.10);
-    border-color: #4E94B8;
-    color: #4E94B8;
+    border-color: var(--sm-info);
+    color: var(--sm-info);
 }
 
 .sm-ti__card-source-badge {
@@ -1518,8 +1518,8 @@ TextField > .unity-text-field__input,
     
     letter-spacing: 1px;
     background-color: rgba(90, 104, 118, 0.20);
-    border-color: #3E4A58;
-    color: #8B97A6;
+    border-color: var(--sm-text-muted);
+    color: var(--sm-text-secondary);
 }
 
 /* ── Card meta row (confidence + expiry) ────────────────────────────────────── */
@@ -1529,12 +1529,12 @@ TextField > .unity-text-field__input,
     align-items: center;
     padding: 5px 12px;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
 }
 
 .sm-ti__card-conf-label {
     font-size: 10px;
-    color: #5A6876;
+    color: var(--sm-text-muted);
     letter-spacing: 1px;
     width: 80px;
 }
@@ -1542,23 +1542,23 @@ TextField > .unity-text-field__input,
 .sm-ti__card-conf-track {
     flex: 1;
     height: 4px;
-    background-color: #212C3B;
+    background-color: var(--sm-border);
     border-radius: 2px;
     margin: 0 8px;
     overflow: hidden;
 }
 .sm-ti__card-conf-fill {
     height: 4px;
-    background-color: #D9A441;
+    background-color: var(--sm-warning);
     border-radius: 2px;
 }
 /* When confidence is high (set from C# via style.width) the fill gets a
    different color — handled by C# adding modifier class. */
 .sm-ti__card-conf-fill--high {
-    background-color: #D14B3D;
+    background-color: var(--sm-identity);
 }
 .sm-ti__card-conf-fill--low {
-    background-color: #4E94B8;
+    background-color: var(--sm-info);
 }
 
 .sm-ti__card-expiry {
@@ -1568,13 +1568,13 @@ TextField > .unity-text-field__input,
     margin-left: 8px;
 }
 .sm-ti__card-expiry--urgent {
-    color: #D14B3D;
+    color: var(--sm-identity);
 }
 .sm-ti__card-expiry--warning {
-    color: #D9A441;
+    color: var(--sm-warning);
 }
 .sm-ti__card-expiry--normal {
-    color: #5A6876;
+    color: var(--sm-text-muted);
 }
 
 /* ── Card flavor text ───────────────────────────────────────────────────────── */
@@ -1582,11 +1582,11 @@ TextField > .unity-text-field__input,
 .sm-ti__card-flavor {
     padding: 7px 12px 8px 12px;
     font-size: 11px;
-    color: #8B97A6;
+    color: var(--sm-text-secondary);
     white-space: normal;
     text-align: left; justify-content: left; align-items: flex-start;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
 }
 /* Phase 16-5 — sm-ti__card-flavor--loading retired. Loading shimmer
    now comes from the canonical sm-live-text--loading class. */
@@ -1615,8 +1615,8 @@ TextField > .unity-text-field__input,
 
 /* INVESTIGATE — info blue */
 .sm-ti__card-btn--investigate {
-    color: #4E94B8;
-    border-color: #4E94B8;
+    color: var(--sm-info);
+    border-color: var(--sm-info);
     background-color: transparent;
 }
 .sm-ti__card-btn--investigate:hover {
@@ -1625,20 +1625,20 @@ TextField > .unity-text-field__input,
 
 /* DISMISS — muted / secondary */
 .sm-ti__card-btn--dismiss {
-    color: #5A6876;
-    border-color: #3E4A58;
+    color: var(--sm-text-muted);
+    border-color: var(--sm-text-muted);
     background-color: transparent;
 }
 .sm-ti__card-btn--dismiss:hover {
     background-color: rgba(90, 104, 118, 0.12);
-    border-color: #5A6876;
-    color: #8B97A6;
+    border-color: var(--sm-text-muted);
+    color: var(--sm-text-secondary);
 }
 
 /* PASS — warning amber */
 .sm-ti__card-btn--pass {
-    color: #D9A441;
-    border-color: #D9A441;
+    color: var(--sm-warning);
+    border-color: var(--sm-warning);
     background-color: transparent;
 }
 .sm-ti__card-btn--pass:hover {

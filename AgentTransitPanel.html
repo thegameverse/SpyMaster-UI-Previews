@@ -1312,9 +1312,9 @@ TextField > .unity-text-field__input,
 
 .sm-atp__drawer {
     width: 400px;
-    background-color: #111821;
+    background-color: var(--sm-surface);
     border-left-width: 1px;
-    border-left-color: #2A3547;
+    border-left-color: var(--sm-border-strong);
     align-items: stretch;
     overflow: hidden;
 }
@@ -1324,7 +1324,7 @@ TextField > .unity-text-field__input,
 .sm-atp__drawer-header {
     padding: 12px 16px;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
     flex-direction: row;
     align-items: center;
     flex-shrink: 0;
@@ -1335,10 +1335,10 @@ TextField > .unity-text-field__input,
     padding: 2px 6px;
     margin-left: 8px;
     background-color: rgba(78, 148, 184, 0.15);
-    border-color: #4E94B8;
+    border-color: var(--sm-info);
     border-width: 1px;
     border-radius: 8px;
-    color: #4E94B8;
+    color: var(--sm-info);
     letter-spacing: 1px;
 }
 
@@ -1347,8 +1347,8 @@ TextField > .unity-text-field__input,
     height: 28px;
     background-color: transparent;
     border-width: 1px;
-    border-color: #212C3B;
-    color: #8B97A6;
+    border-color: var(--sm-border);
+    color: var(--sm-text-secondary);
     font-size: 13px;
     padding: 0;
     cursor: link;
@@ -1357,9 +1357,9 @@ TextField > .unity-text-field__input,
     transition-duration: var(--sm-dur-fast);
 }
 .sm-atp__close-btn:hover {
-    background-color: #172030;
-    border-color: #2A3547;
-    color: #E6EDF3;
+    background-color: var(--sm-surface-2);
+    border-color: var(--sm-border-strong);
+    color: var(--sm-text);
 }
 
 /* ── Section headers ───────────────────────────────────────────────────────── */
@@ -1373,20 +1373,20 @@ TextField > .unity-text-field__input,
 
 .sm-atp__log-header {
     border-top-width: 1px;
-    border-top-color: #212C3B;
+    border-top-color: var(--sm-border);
     margin-top: 4px;
 }
 
 .sm-atp__section-title {
     font-size: 10px;
-    color: #5A6876;
+    color: var(--sm-text-muted);
     letter-spacing: 1.8px;
     flex: 1;
 }
 
 .sm-atp__section-count {
     font-size: 10px;
-    color: #3E4A58;
+    color: var(--sm-text-muted);
 }
 
 /* ── Active transit list ───────────────────────────────────────────────────── */
@@ -1415,14 +1415,14 @@ TextField > .unity-text-field__input,
 }
 .sm-atp__empty-title {
     font-size: 11px;
-    color: #3E4A58;
+    color: var(--sm-text-muted);
     letter-spacing: 2px;
     margin-bottom: 6px;
     text-align: center; justify-content: center; align-items: center;
 }
 .sm-atp__empty-hint {
     font-size: 11px;
-    color: #2A3547;
+    color: var(--sm-border-strong);
     white-space: normal;
     text-align: center; justify-content: center; align-items: flex-start;
 }
@@ -1442,7 +1442,7 @@ TextField > .unity-text-field__input,
 }
 .sm-atp__log-empty-hint {
     font-size: 11px;
-    color: #3E4A58;
+    color: var(--sm-text-muted);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════ */
@@ -1450,13 +1450,13 @@ TextField > .unity-text-field__input,
 /* ═══════════════════════════════════════════════════════════════════════════ */
 
 .sm-atp__transit-card {
-    background-color: #172030;
+    background-color: var(--sm-surface-2);
     border-width: 1px;
-    border-color: #212C3B;
+    border-color: var(--sm-border);
     border-radius: 2px;
     margin-bottom: 8px;
     border-left-width: 3px;
-    border-left-color: #4E94B8;
+    border-left-color: var(--sm-info);
     overflow: hidden;
 }
 
@@ -1470,14 +1470,14 @@ TextField > .unity-text-field__input,
 
 .sm-atp__card-agent-name {
     font-size: 12px;
-    color: #E6EDF3;
+    color: var(--sm-text);
     letter-spacing: 0.6px;
     flex: 1;
 }
 
 .sm-atp__card-route {
     font-size: 11px;
-    color: #8B97A6;
+    color: var(--sm-text-secondary);
     letter-spacing: 0.6px;
 }
 
@@ -1489,13 +1489,13 @@ TextField > .unity-text-field__input,
     text-align: right; justify-content: right; align-items: center;
 }
 .sm-atp__card-days--urgent {
-    color: #D14B3D;
+    color: var(--sm-identity);
 }
 .sm-atp__card-days--arriving {
-    color: #6FA37A;
+    color: var(--sm-success);
 }
 .sm-atp__card-days--normal {
-    color: #5A6876;
+    color: var(--sm-text-muted);
 }
 
 /* ── Transit card progress row ───────────────────────────────────────────── */
@@ -1505,25 +1505,25 @@ TextField > .unity-text-field__input,
     align-items: center;
     padding: 3px 10px 6px 10px;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
 }
 
 .sm-atp__card-progress-track {
     flex: 1;
     height: 3px;
-    background-color: #212C3B;
+    background-color: var(--sm-border);
     border-radius: 2px;
     overflow: hidden;
 }
 .sm-atp__card-progress-fill {
     height: 3px;
-    background-color: #4E94B8;
+    background-color: var(--sm-info);
     border-radius: 2px;
 }
 
 .sm-atp__card-cover {
     font-size: 10px;
-    color: #3E4A58;
+    color: var(--sm-text-muted);
     margin-left: 10px;
     letter-spacing: 0.6px;
     
@@ -1540,7 +1540,7 @@ TextField > .unity-text-field__input,
 
 .sm-atp__card-encounter-label {
     font-size: 10px;
-    color: #D9A441;
+    color: var(--sm-warning);
     letter-spacing: 1px;
 }
 
@@ -1549,9 +1549,9 @@ TextField > .unity-text-field__input,
 /* ═══════════════════════════════════════════════════════════════════════════ */
 
 .sm-atp__log-row {
-    background-color: #172030;
+    background-color: var(--sm-surface-2);
     border-width: 1px;
-    border-color: #212C3B;
+    border-color: var(--sm-border);
     border-radius: 2px;
     margin-bottom: 8px;
     overflow: hidden;
@@ -1560,23 +1560,23 @@ TextField > .unity-text-field__input,
 /* Outcome colour on left border */
 .sm-atp__log-row--benign {
     border-left-width: 3px;
-    border-left-color: #4E94B8;
+    border-left-color: var(--sm-info);
 }
 .sm-atp__log-row--compromised {
     border-left-width: 3px;
-    border-left-color: #D14B3D;
+    border-left-color: var(--sm-identity);
 }
 .sm-atp__log-row--arrested {
     border-left-width: 3px;
-    border-left-color: #D14B3D;
+    border-left-color: var(--sm-identity);
 }
 .sm-atp__log-row--suspicious {
     border-left-width: 3px;
-    border-left-color: #D9A441;
+    border-left-color: var(--sm-warning);
 }
 .sm-atp__log-row--arrival {
     border-left-width: 3px;
-    border-left-color: #6FA37A;
+    border-left-color: var(--sm-success);
 }
 
 /* ── Log row header ──────────────────────────────────────────────────────── */
@@ -1586,19 +1586,19 @@ TextField > .unity-text-field__input,
     align-items: center;
     padding: 6px 10px 4px 10px;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
 }
 
 .sm-atp__log-agent {
     font-size: 11px;
-    color: #E6EDF3;
+    color: var(--sm-text);
     letter-spacing: 0.6px;
     flex: 1;
 }
 
 .sm-atp__log-type {
     font-size: 10px;
-    color: #5A6876;
+    color: var(--sm-text-muted);
     letter-spacing: 1px;
     margin-right: 8px;
 }
@@ -1611,24 +1611,24 @@ TextField > .unity-text-field__input,
     letter-spacing: 1px;
 }
 .sm-atp__log-outcome--benign {
-    color: #4E94B8;
-    border-color: #4E94B8;
+    color: var(--sm-info);
+    border-color: var(--sm-info);
     background-color: rgba(78, 148, 184, 0.10);
 }
 .sm-atp__log-outcome--compromised,
 .sm-atp__log-outcome--arrested {
-    color: #D14B3D;
-    border-color: #D14B3D;
+    color: var(--sm-identity);
+    border-color: var(--sm-identity);
     background-color: rgba(209, 75, 61, 0.10);
 }
 .sm-atp__log-outcome--suspicious {
-    color: #D9A441;
-    border-color: #D9A441;
+    color: var(--sm-warning);
+    border-color: var(--sm-warning);
     background-color: rgba(217, 164, 65, 0.10);
 }
 .sm-atp__log-outcome--arrived {
-    color: #6FA37A;
-    border-color: #6FA37A;
+    color: var(--sm-success);
+    border-color: var(--sm-success);
     background-color: rgba(111, 163, 122, 0.10);
 }
 
@@ -1637,7 +1637,7 @@ TextField > .unity-text-field__input,
 .sm-atp__log-narrative {
     padding: 5px 10px 7px 10px;
     font-size: 11px;
-    color: #8B97A6;
+    color: var(--sm-text-secondary);
     white-space: normal;
     text-align: left; justify-content: left; align-items: flex-start;
 }

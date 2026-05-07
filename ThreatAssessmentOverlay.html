@@ -1318,9 +1318,9 @@ TextField > .unity-text-field__input,
 
 .sm-ta__drawer {
     width: 360px;
-    background-color: #111821; /* --sm-surface */
+    background-color: var(--sm-surface); /* --sm-surface */
     border-left-width: 1px;
-    border-left-color: #2A3547; /* --sm-border-strong */
+    border-left-color: var(--sm-border-strong); /* --sm-border-strong */
     align-items: stretch;
     overflow: hidden;
 }
@@ -1330,7 +1330,7 @@ TextField > .unity-text-field__input,
 .sm-ta__drawer-header {
     padding: 12px 16px 12px 16px;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B; /* --sm-border */
+    border-bottom-color: var(--sm-border); /* --sm-border */
     flex-direction: row;
     align-items: center;
 }
@@ -1340,8 +1340,8 @@ TextField > .unity-text-field__input,
     height: 28px;
     background-color: transparent;
     border-width: 1px;
-    border-color: #212C3B;
-    color: #8B97A6;
+    border-color: var(--sm-border);
+    color: var(--sm-text-secondary);
     font-size: 13px;
     padding: 0;
     cursor: link;
@@ -1350,9 +1350,9 @@ TextField > .unity-text-field__input,
     transition-duration: var(--sm-dur-fast);
 }
 .sm-ta__close-btn:hover {
-    background-color: #172030;
-    border-color: #2A3547;
-    color: #E6EDF3;
+    background-color: var(--sm-surface-2);
+    border-color: var(--sm-border-strong);
+    color: var(--sm-text);
 }
 
 /* ── Threat level row ──────────────────────────────────────────────────────── */
@@ -1374,35 +1374,35 @@ TextField > .unity-text-field__input,
 
 /* Badge colour variants by threat level (set via class by C#) */
 .sm-ta__threat-badge--low {
-    color: #6FA37A;
-    border-color: #6FA37A;
+    color: var(--sm-success);
+    border-color: var(--sm-success);
     background-color: rgba(111, 163, 122, 0.14);
 }
 .sm-ta__threat-badge--moderate {
-    color: #D9A441;
-    border-color: #D9A441;
+    color: var(--sm-warning);
+    border-color: var(--sm-warning);
     background-color: rgba(217, 164, 65, 0.12);
 }
 .sm-ta__threat-badge--high {
-    color: #E08A42;
-    border-color: #E08A42;
+    color: var(--sm-warning);
+    border-color: var(--sm-warning);
     background-color: rgba(224, 138, 66, 0.12);
 }
 .sm-ta__threat-badge--critical {
-    color: #D14B3D;
-    border-color: #D14B3D;
+    color: var(--sm-identity);
+    border-color: var(--sm-identity);
     background-color: rgba(209, 75, 61, 0.12);
 }
 
 .sm-ta__week-label {
     font-size: 11px;
-    color: #5A6876;
+    color: var(--sm-text-muted);
     letter-spacing: 1.4px;
     margin-right: 8px;
 }
 .sm-ta__day-label {
     font-size: 11px;
-    color: #3E4A58;
+    color: var(--sm-text-muted);
 }
 
 /* ── Stat chip row ─────────────────────────────────────────────────────────── */
@@ -1411,8 +1411,8 @@ TextField > .unity-text-field__input,
     flex-direction: row;
     margin: 0 16px 12px 16px;
     border-width: 1px;
-    border-color: #212C3B;
-    background-color: #172030;
+    border-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
     padding: 8px 12px;
 }
 
@@ -1420,12 +1420,12 @@ TextField > .unity-text-field__input,
     flex: 1;
     align-items: center;
     border-right-width: 1px;
-    border-right-color: #212C3B;
+    border-right-color: var(--sm-border);
     padding: 0 8px;
 }
 .sm-ta__chip-value {
     font-size: 18px;
-    color: #E6EDF3;
+    color: var(--sm-text);
     
     margin-top: 2px;
     text-align: center; justify-content: center; align-items: center;
@@ -1434,7 +1434,7 @@ TextField > .unity-text-field__input,
     font-size: 12px;
     
     letter-spacing: 0.5px;
-    color: #8B97A6;
+    color: var(--sm-text-secondary);
 }
 
 /* ── Loading / empty states ────────────────────────────────────────────────── */
@@ -1444,7 +1444,7 @@ TextField > .unity-text-field__input,
     padding: 20px;
 }
 .sm-ta__loading-label {
-    color: #5A6876;
+    color: var(--sm-text-muted);
     font-size: 11px;
     letter-spacing: 1.4px;
 }
@@ -1454,7 +1454,7 @@ TextField > .unity-text-field__input,
     align-items: center;
 }
 .sm-ta__empty-hint {
-    color: #5A6876;
+    color: var(--sm-text-muted);
     font-size: 12px;
     white-space: normal;
     text-align: center; justify-content: center; align-items: flex-start;
@@ -1465,22 +1465,22 @@ TextField > .unity-text-field__input,
 .sm-ta__content-panel {
     margin: 0 16px 8px 16px;
     border-width: 1px;
-    border-color: #212C3B;
-    background-color: #172030;
+    border-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
 }
 
 .sm-ta__content-text {
-    color: #8B97A6;
+    color: var(--sm-text-secondary);
     font-size: 12px;
     white-space: normal;
     text-align: left; justify-content: left; align-items: flex-start;
 }
 
 .sm-ta__content-text--risks {
-    color: #D9A441; /* warning tint for risk text */
+    color: var(--sm-warning); /* warning tint for risk text */
 }
 .sm-ta__content-text--actions {
-    color: #4E94B8; /* info tint for actions text */
+    color: var(--sm-info); /* info tint for actions text */
 }
 
 /* ── Archive panel ─────────────────────────────────────────────────────────── */
@@ -1488,15 +1488,15 @@ TextField > .unity-text-field__input,
 .sm-ta__archive-panel {
     margin: 0 16px 16px 16px;
     border-width: 1px;
-    border-color: #212C3B;
-    background-color: #172030;
+    border-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
     flex: 1;
     min-height: 100px;
 }
 
 .sm-ta__archive-count {
     font-size: 11px;
-    color: #5A6876;
+    color: var(--sm-text-muted);
 }
 
 .sm-ta__archive-scroll {
@@ -1510,24 +1510,24 @@ TextField > .unity-text-field__input,
     align-items: center;
     padding: 8px 12px;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
     cursor: link;
     transition-property: background-color;
     transition-duration: var(--sm-dur-fast);
 }
 .sm-ta__archive-row:hover {
-    background-color: #1E2838;
+    background-color: var(--sm-surface-3);
 }
 .sm-ta__archive-row--selected {
     background-color: rgba(78, 148, 184, 0.10);
     border-left-width: 2px;
-    border-left-color: #4E94B8;
+    border-left-color: var(--sm-info);
 }
 
 .sm-ta__archive-row__week {
     font-size: 11px;
     
-    color: #5A6876;
+    color: var(--sm-text-muted);
     width: 60px;
 }
 .sm-ta__archive-row__badge {
@@ -1542,7 +1542,7 @@ TextField > .unity-text-field__input,
 .sm-ta__archive-row__summary {
     flex: 1;
     font-size: 11px;
-    color: #5A6876;
+    color: var(--sm-text-muted);
     white-space: normal;
 }
 

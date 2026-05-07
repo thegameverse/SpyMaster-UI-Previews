@@ -1313,9 +1313,9 @@ TextField > .unity-text-field__input,
 
 .sm-ico__modal {
     width: 480px;
-    background-color: #111821;
+    background-color: var(--sm-surface);
     border-width: 1px;
-    border-color: #2A3547;
+    border-color: var(--sm-border-strong);
     border-radius: 2px;
     overflow: hidden;
     /* Subtle drop-shadow via background overlay trick */
@@ -1329,7 +1329,7 @@ TextField > .unity-text-field__input,
     padding: 14px 16px;
     background-color: rgba(111, 163, 122, 0.06); /* success tint */
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
 }
 
 .sm-ico__header-badge {
@@ -1342,8 +1342,8 @@ TextField > .unity-text-field__input,
     height: 26px;
     background-color: transparent;
     border-width: 1px;
-    border-color: #212C3B;
-    color: #5A6876;
+    border-color: var(--sm-border);
+    color: var(--sm-text-muted);
     font-size: 12px;
     padding: 0;
     text-align: center; justify-content: center; align-items: center;
@@ -1352,8 +1352,8 @@ TextField > .unity-text-field__input,
     transition-duration: var(--sm-dur-fast);
 }
 .sm-ico__close-btn:hover {
-    background-color: #172030;
-    color: #E6EDF3;
+    background-color: var(--sm-surface-2);
+    color: var(--sm-text);
 }
 
 /* ── Asset identity row ────────────────────────────────────────────────────── */
@@ -1363,15 +1363,15 @@ TextField > .unity-text-field__input,
     align-items: flex-start;
     padding: 16px;
     border-bottom-width: 1px;
-    border-bottom-color: #212C3B;
+    border-bottom-color: var(--sm-border);
 }
 
 .sm-ico__asset-icon {
     width: 48px;
     height: 48px;
     border-width: 1px;
-    border-color: #2A3547;
-    background-color: #172030;
+    border-color: var(--sm-border-strong);
+    background-color: var(--sm-surface-2);
     border-radius: 1px;
     margin-right: 12px;
     /* C# can set background-image to a silhouette SVG */
@@ -1382,13 +1382,13 @@ TextField > .unity-text-field__input,
 }
 
 .sm-ico__asset-name {
-    color: #E6EDF3;
+    color: var(--sm-text);
     font-size: 15px;
     margin-bottom: 2px;
 }
 
 .sm-ico__asset-position {
-    color: #8B97A6;
+    color: var(--sm-text-secondary);
     font-size: 11px;
     letter-spacing: 1px;
     margin-bottom: 6px;
@@ -1404,22 +1404,22 @@ TextField > .unity-text-field__input,
     letter-spacing: 1.2px;
     padding: 2px 5px;
     border-width: 1px;
-    border-color: #2A3547;
-    background-color: #172030;
-    color: #8B97A6;
+    border-color: var(--sm-border-strong);
+    background-color: var(--sm-surface-2);
+    color: var(--sm-text-secondary);
     margin-right: 8px;
     border-radius: 1px;
 }
 
 .sm-ico__motivation-label {
     font-size: 10px;
-    color: #5A6876;
+    color: var(--sm-text-muted);
     letter-spacing: 0.8px;
 }
 
 .sm-ico__access-level {
     font-size: 18px;
-    color: #4E94B8;
+    color: var(--sm-info);
     margin: 0 1px;
 }
 
@@ -1427,7 +1427,7 @@ TextField > .unity-text-field__input,
 
 .sm-ico__divider {
     height: 1px;
-    background-color: #212C3B;
+    background-color: var(--sm-border);
     margin: 0 16px;
 }
 
@@ -1436,8 +1436,8 @@ TextField > .unity-text-field__input,
 .sm-ico__narrative-panel {
     margin: 12px 16px 0 16px;
     border-width: 1px;
-    border-color: #212C3B;
-    background-color: #172030;
+    border-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
 }
 
 .sm-ico__narrative-body {
@@ -1449,14 +1449,14 @@ TextField > .unity-text-field__input,
     letter-spacing: 1.2px;
     padding: 1px 4px;
     border-width: 1px;
-    border-color: #4E94B8;
-    color: #4E94B8;
+    border-color: var(--sm-info);
+    color: var(--sm-info);
     background-color: rgba(78, 148, 184, 0.10);
     border-radius: 1px;
 }
 
 .sm-ico__narrative-loading {
-    color: #5A6876;
+    color: var(--sm-text-muted);
     font-size: 11px;
     letter-spacing: 1.4px;
     padding: 8px 0;
@@ -1471,17 +1471,17 @@ TextField > .unity-text-field__input,
     border-left-width: 2px;
 }
 .sm-ico__dialogue-label--informant {
-    color: #D9A441;          /* warning — source's voice */
-    border-left-color: #D9A441;
+    color: var(--sm-warning);          /* warning — source's voice */
+    border-left-color: var(--sm-warning);
     font-style: italic;
 }
 .sm-ico__dialogue-label--handler {
-    color: #8B97A6;          /* secondary — handler's reply */
-    border-left-color: #4E94B8;
+    color: var(--sm-text-secondary);          /* secondary — handler's reply */
+    border-left-color: var(--sm-info);
 }
 .sm-ico__dialogue-label--arrangement {
-    color: #6FA37A;          /* success — the deal */
-    border-left-color: #6FA37A;
+    color: var(--sm-success);          /* success — the deal */
+    border-left-color: var(--sm-success);
     margin-bottom: 0;
 }
 
@@ -1492,7 +1492,7 @@ TextField > .unity-text-field__input,
     align-items: center;
     padding: 12px 16px;
     border-top-width: 1px;
-    border-top-color: #212C3B;
+    border-top-color: var(--sm-border);
     margin-top: 12px;
 }
 
@@ -1502,13 +1502,13 @@ TextField > .unity-text-field__input,
 
 .sm-ico__dismiss-btn {
     min-width: 80px;
-    color: #5A6876;
-    border-color: #212C3B;
+    color: var(--sm-text-muted);
+    border-color: var(--sm-border);
     background-color: transparent;
 }
 .sm-ico__dismiss-btn:hover {
-    color: #E6EDF3;
-    border-color: #2A3547;
+    color: var(--sm-text);
+    border-color: var(--sm-border-strong);
 }
 
 /* ── Assets/UI/Theme/theme-present-polish.uss ── */
