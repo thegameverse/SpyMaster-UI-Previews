@@ -62,6 +62,12 @@ body {
     --sm-nav-bg:          #0A0E13; /* nav rail */
     --sm-topbar-bg:       #0D1319;
     --sm-ticker-bg:       #0A0E13;
+    /* Phase 25.60 — canvas surfaces for the investigation graph + tech tree
+       node-canvas backgrounds. Slightly lighter than --sm-bg so node cards
+       (which use --sm-surface = #111821) still pop against the canvas with
+       a visible edge. Pre-fix InvestigationGraph.uss / TechTreeScreen.uss
+       hardcoded #0D1117 in two places, blocking theme reskin. */
+    --sm-canvas-bg:       #0D1117;
 
     /* ── TEXT
      *

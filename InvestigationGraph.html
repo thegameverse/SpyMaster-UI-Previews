@@ -62,6 +62,12 @@ body {
     --sm-nav-bg:          #0A0E13; /* nav rail */
     --sm-topbar-bg:       #0D1319;
     --sm-ticker-bg:       #0A0E13;
+    /* Phase 25.60 — canvas surfaces for the investigation graph + tech tree
+       node-canvas backgrounds. Slightly lighter than --sm-bg so node cards
+       (which use --sm-surface = #111821) still pop against the canvas with
+       a visible edge. Pre-fix InvestigationGraph.uss / TechTreeScreen.uss
+       hardcoded #0D1117 in two places, blocking theme reskin. */
+    --sm-canvas-bg:       #0D1117;
 
     /* ── TEXT
      *
@@ -1044,7 +1050,7 @@ TextField > .unity-text-field__input,
 .sm-ig__canvas {
     position: relative;
     overflow: hidden;
-    background-color: #0D1117;
+    background-color: var(--sm-canvas-bg);
     /* subtle grid via repeating border — applied by JS/C# via generated content */
 }
 
@@ -1461,7 +1467,7 @@ TextField > .unity-text-field__input,
 .sm-ig__tree-canvas {
     flex-direction: column;
     overflow: hidden;
-    background-color: #0D1117;
+    background-color: var(--sm-canvas-bg);
 }
 
 /* Arc selector tabs across top of tree canvas */
@@ -2050,9 +2056,9 @@ TextField > .unity-text-field__input,
         <div class="sm-ig__nations-list" id="nations-list" style="overflow-x:hidden; overflow-y:auto;"></div>
       </div>
       <div class="sm-ig__canvas-controls">
-        <button class="sm-btn sm-ig__ctrl-btn" id="btn-add-node" title="Add node action.">+ ADD NODE</button>
-        <button class="sm-btn sm-ig__ctrl-btn" id="btn-clear-links" title="Clear links action.">CLEAR LINKS</button>
-        <button class="sm-btn sm-ig__ctrl-btn" id="btn-auto-layout" title="Auto layout action.">AUTO LAYOUT</button>
+        <button class="sm-btn sm-ig__ctrl-btn" id="btn-add-node" title="Add a working-theory node to the canvas. Use to scaffold connections that intel hasn&#x27;t directly produced yet — the node lives on the canvas until you discard it or evidence corroborates it.">+ ADD NODE</button>
+        <button class="sm-btn sm-ig__ctrl-btn" id="btn-clear-links" title="Remove every player-drawn link between nodes. Doesn&#x27;t affect intel-driven links published by the conspiracy system. Use to reset a tangled board and re-draw cleanly.">CLEAR LINKS</button>
+        <button class="sm-btn sm-ig__ctrl-btn" id="btn-auto-layout" title="Re-flow node positions using the default layered layout (Layer 0 → Mastermind, top to bottom). Player-positioned nodes lose their custom placement; auto-layout is the canonical reset.">AUTO LAYOUT</button>
       </div>
     </div>
     <div class="sm-fill sm-ig__canvas" id="node-canvas">

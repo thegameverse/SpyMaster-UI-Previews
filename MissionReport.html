@@ -62,6 +62,12 @@ body {
     --sm-nav-bg:          #0A0E13; /* nav rail */
     --sm-topbar-bg:       #0D1319;
     --sm-ticker-bg:       #0A0E13;
+    /* Phase 25.60 — canvas surfaces for the investigation graph + tech tree
+       node-canvas backgrounds. Slightly lighter than --sm-bg so node cards
+       (which use --sm-surface = #111821) still pop against the canvas with
+       a visible edge. Pre-fix InvestigationGraph.uss / TechTreeScreen.uss
+       hardcoded #0D1117 in two places, blocking theme reskin. */
+    --sm-canvas-bg:       #0D1117;
 
     /* ── TEXT
      *
@@ -1691,9 +1697,9 @@ TextField > .unity-text-field__input,
       <div class="sm-row sm-mr__agents-row" id="agents-row"></div>
     </div>
     <div class="sm-row sm-mr__actions">
-      <button class="sm-btn sm-btn--primary sm-mr__action" id="btn-file-report" title="File report action.">FILE REPORT</button>
+      <button class="sm-btn sm-btn--primary sm-mr__action" id="btn-file-report" title="Officially file this mission report with HQ. Locks the outcome stats, records the debrief, and routes any produced intel into the analyst pipeline. One-time per mission.">FILE REPORT</button>
       <button class="sm-btn sm-mr__action" id="btn-debrief" title="Open the post-mission debrief — outcomes, intel produced, casualties.">DEBRIEF TEAM</button>
-      <button class="sm-btn sm-mr__action" id="btn-investigation" title="Investigation action.">OPEN INVESTIGATION</button>
+      <button class="sm-btn sm-mr__action" id="btn-investigation" title="Jump to the Investigation Graph with this mission&#x27;s produced intel preselected. Trace what the op surfaced and commission follow-up ops against the new leads.">OPEN INVESTIGATION</button>
       <div class="sm-fill"></div>
       <div id="stat-intel-val"></div>
       <div id="stat-result"></div>
