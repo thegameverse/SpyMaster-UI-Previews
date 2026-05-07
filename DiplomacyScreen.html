@@ -119,6 +119,14 @@ body {
     --sm-cat-3-soft:      rgba(194, 138, 92, 0.18);
     --sm-cat-4-soft:      rgba(111, 163, 122, 0.18);
     --sm-cat-5-soft:      rgba(154, 165, 179, 0.18);
+    /* Phase 25.79 — chip-strength alpha (0.25). Stronger than -soft
+       so a small chip's tint reads from a glance against dim
+       surfaces. Used by MissionReport intel-type chips. */
+    --sm-cat-1-chip:      rgba(78, 148, 184, 0.25);
+    --sm-cat-2-chip:      rgba(139, 123, 163, 0.25);
+    --sm-cat-3-chip:      rgba(194, 138, 92, 0.25);
+    --sm-cat-4-chip:      rgba(111, 163, 122, 0.25);
+    --sm-warning-chip:    rgba(217, 164, 65, 0.25);
     /* Mastermind highlight — apex-tier alert tint, stronger than
        --sm-alert-soft (0.12) because it has to read as "this is
        the boss" against the dim canvas background. */
@@ -1197,11 +1205,15 @@ TextField > .unity-text-field__input,
     background-color: var(--sm-bg);
 }
 
-/* Crises badge */
+/* Crises badge.
+   Phase 25.80 — background tokenised. Pre-fix: rgba(180,42,42,0.15)
+   was hand-typed; --sm-alert-soft (rgba(209,75,61,0.12)) is the
+   design-system equivalent — slight visual shift toward the
+   project's canonical alert red, deliberate. */
 .sm-dip__crises-badge {
     font-size: var(--sm-text-xs);
     color: var(--sm-alert);
-    background-color: rgba(180,42,42,0.15);
+    background-color: var(--sm-alert-soft);
     border-top-left-radius: var(--sm-r-2);
     border-top-right-radius: var(--sm-r-2);
     border-bottom-left-radius: var(--sm-r-2);

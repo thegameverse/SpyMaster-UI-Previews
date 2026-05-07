@@ -119,6 +119,14 @@ body {
     --sm-cat-3-soft:      rgba(194, 138, 92, 0.18);
     --sm-cat-4-soft:      rgba(111, 163, 122, 0.18);
     --sm-cat-5-soft:      rgba(154, 165, 179, 0.18);
+    /* Phase 25.79 — chip-strength alpha (0.25). Stronger than -soft
+       so a small chip's tint reads from a glance against dim
+       surfaces. Used by MissionReport intel-type chips. */
+    --sm-cat-1-chip:      rgba(78, 148, 184, 0.25);
+    --sm-cat-2-chip:      rgba(139, 123, 163, 0.25);
+    --sm-cat-3-chip:      rgba(194, 138, 92, 0.25);
+    --sm-cat-4-chip:      rgba(111, 163, 122, 0.25);
+    --sm-warning-chip:    rgba(217, 164, 65, 0.25);
     /* Mastermind highlight — apex-tier alert tint, stronger than
        --sm-alert-soft (0.12) because it has to read as "this is
        the boss" against the dim canvas background. */
@@ -1459,10 +1467,14 @@ TextField > .unity-text-field__input,
    ═══════════════════════════════════════════════════════ */
 
 /* Outcome badge — large green check + OUTCOME/RESULT labels */
+/* Phase 25.79 — outcome-badge backgrounds now reference --sm-*-soft
+   tokens. Pre-fix the RGBA values were hand-typed to 0.12 alpha
+   matching each border's accent — same intent as every other "card
+   with severity tint" pattern in the codebase, but inline. */
 .sm-mr__outcome-badge {
     flex-direction: row;
     align-items: center;
-    background-color: rgba(111,163,122,0.12);
+    background-color: var(--sm-success-soft);
     border-left-width: 3px;
     border-left-color: var(--sm-success);
     border-right-width: 0;
@@ -1477,11 +1489,11 @@ TextField > .unity-text-field__input,
     min-width: 120px;
 }
 .sm-mr__outcome-badge--failed {
-    background-color: rgba(209,75,61,0.12);
+    background-color: var(--sm-alert-soft);
     border-left-color: var(--sm-alert);
 }
 .sm-mr__outcome-badge--partial {
-    background-color: rgba(217,164,65,0.12);
+    background-color: var(--sm-warning-soft);
     border-left-color: var(--sm-warning);
 }
 .sm-mr__outcome-check {
@@ -1716,18 +1728,26 @@ TextField > .unity-text-field__input,
     min-width: 40px;
     text-align: center; justify-content: center; align-items: center;
 }
-.sm-mr__intel-chip--doc       { background-color: rgba(78,148,184,0.25); color: var(--sm-info); }
-.sm-mr__intel-chip--photo     { background-color: rgba(111,163,122,0.25); color: var(--sm-success); }
-.sm-mr__intel-chip--intercept { background-color: rgba(139,123,163,0.25); color: var(--sm-cat-2); }
-.sm-mr__intel-chip--person    { background-color: rgba(217,164,65,0.25); color: var(--sm-warning); }
-.sm-mr__intel-chip--sigint    { background-color: rgba(194,138,92,0.25); color: var(--sm-cat-3); }
-.sm-mr__intel-chip--humint    { background-color: rgba(111,163,122,0.25); color: var(--sm-success); }
-.sm-mr__intel-chip--finint    { background-color: rgba(78,148,184,0.25); color: var(--sm-info); }
+/* Phase 25.79 — intel-type chip backgrounds reference the new
+   --sm-cat-*-chip tokens (0.25α — stronger than -soft, designed
+   for chip-density tints). */
+.sm-mr__intel-chip--doc       { background-color: var(--sm-cat-1-chip); color: var(--sm-info); }
+.sm-mr__intel-chip--photo     { background-color: var(--sm-cat-4-chip); color: var(--sm-success); }
+.sm-mr__intel-chip--intercept { background-color: var(--sm-cat-2-chip); color: var(--sm-cat-2); }
+.sm-mr__intel-chip--person    { background-color: var(--sm-warning-chip); color: var(--sm-warning); }
+.sm-mr__intel-chip--sigint    { background-color: var(--sm-cat-3-chip); color: var(--sm-cat-3); }
+.sm-mr__intel-chip--humint    { background-color: var(--sm-cat-4-chip); color: var(--sm-success); }
+.sm-mr__intel-chip--finint    { background-color: var(--sm-cat-1-chip); color: var(--sm-info); }
 
 .sm-mr__intel-panel { margin-bottom: var(--sm-s-3); }
 
 /* Flagged card (amber) */
 .sm-mr__flagged-card {
+    /* Phase 25.79 — slightly faint warning tint (0.10α) kept inline
+       — between --sm-warning-soft (0.12) and timeline's --faint
+       (0.06). This card sits between two emphasis tiers; using
+       either token would shift it visibly. Documented as an
+       intentional one-off rather than a hand-typed drift. */
     background-color: rgba(217,164,65,0.10);
     border-left-width: 3px;
     border-left-color: var(--sm-warning);

@@ -119,6 +119,14 @@ body {
     --sm-cat-3-soft:      rgba(194, 138, 92, 0.18);
     --sm-cat-4-soft:      rgba(111, 163, 122, 0.18);
     --sm-cat-5-soft:      rgba(154, 165, 179, 0.18);
+    /* Phase 25.79 — chip-strength alpha (0.25). Stronger than -soft
+       so a small chip's tint reads from a glance against dim
+       surfaces. Used by MissionReport intel-type chips. */
+    --sm-cat-1-chip:      rgba(78, 148, 184, 0.25);
+    --sm-cat-2-chip:      rgba(139, 123, 163, 0.25);
+    --sm-cat-3-chip:      rgba(194, 138, 92, 0.25);
+    --sm-cat-4-chip:      rgba(111, 163, 122, 0.25);
+    --sm-warning-chip:    rgba(217, 164, 65, 0.25);
     /* Mastermind highlight — apex-tier alert tint, stronger than
        --sm-alert-soft (0.12) because it has to read as "this is
        the boss" against the dim canvas background. */
@@ -2102,8 +2110,12 @@ TextField > .unity-text-field__input,
     transition-duration: var(--sm-dur-fast);
 }
 .sm-ad__transit-btn:hover {
-    background-color: rgba(111, 163, 122, 0.12);
-    border-color: #6FA37A;
+    /* Phase 25.80 — bg uses --sm-success-soft (0.14α, was 0.12 hand-
+       typed). Hover-brighten color #8ED99A kept inline — it's a
+       deliberate brightness-bump on top of --sm-success
+       (#6FA37A) and we don't have an --sm-success-bright token. */
+    background-color: var(--sm-success-soft);
+    border-color: var(--sm-success);
     color: #8ED99A;
 }
 
@@ -2122,9 +2134,9 @@ TextField > .unity-text-field__input,
     transition-duration: var(--sm-dur-fast);
 }
 .sm-ad__ci-suspects-btn:hover {
-    background-color: rgba(78, 148, 184, 0.12);
-    border-color: #4E94B8;
-    color: #7ABBD9;
+    background-color: var(--sm-info-soft);
+    border-color: var(--sm-info);
+    color: #7ABBD9;   /* hover-brighten on top of --sm-info */
 }
 
 /* ── Tip-inbox button (in HEAT & THREAT panel header) ───────────────────── */
@@ -2142,15 +2154,21 @@ TextField > .unity-text-field__input,
     transition-duration: var(--sm-dur-fast);
 }
 .sm-ad__tip-inbox-btn:hover {
-    background-color: rgba(217, 164, 65, 0.12);
-    border-color: #D9A441;
-    color: #E6C86A;
+    background-color: var(--sm-warning-soft);
+    border-color: var(--sm-warning);
+    color: #E6C86A;   /* hover-brighten on top of --sm-warning */
 }
 
-/* ── Blowback meter (in HEAT & THREAT panel body) ───────────────────────── */
+/* ── Blowback meter (in HEAT & THREAT panel body)
+   Phase 25.80 — every hex literal here mapped to a --sm-* token.
+   #172030 → --sm-surface-2; #212C3B → --sm-border; #5A6876 →
+   --sm-text-secondary; #E6EDF3 → --sm-text; #6FA37A → --sm-success;
+   #D9A441 → --sm-warning; #D14B3D → --sm-alert. Pre-fix the
+   blowback meter was the worst offender for theme drift in the
+   dashboard — every single colour was a hex literal. */
 .sm-ad__blowback {
     border-top-width: 1px;
-    border-top-color: #212C3B;
+    border-top-color: var(--sm-border);
     padding-top: 8px;
     margin-top: 6px;
 }
@@ -2161,24 +2179,24 @@ TextField > .unity-text-field__input,
 }
 .sm-ad__blowback-label {
     font-size: 10px;
-    color: #5A6876;
+    color: var(--sm-text-secondary);
     letter-spacing: 1.2px;
     flex: 1;
 }
 .sm-ad__blowback-value {
     font-size: 14px;
-    color: #E6EDF3;
+    color: var(--sm-text);
     margin-right: 3px;
 }
 .sm-ad__blowback-unit {
     font-size: 10px;
-    color: #5A6876;
+    color: var(--sm-text-secondary);
 }
 .sm-ad__blowback-track {
     height: 4px;
-    background-color: #172030;
+    background-color: var(--sm-surface-2);
     border-width: 1px;
-    border-color: #212C3B;
+    border-color: var(--sm-border);
     border-radius: 2px;
     overflow: hidden;
     margin-bottom: 4px;
@@ -2186,20 +2204,20 @@ TextField > .unity-text-field__input,
 .sm-ad__blowback-fill {
     height: 100%;
     width: 0%;
-    background-color: #6FA37A;
+    background-color: var(--sm-success);
     border-radius: 2px;
     transition-property: width, background-color;
     transition-duration: var(--sm-dur-base);
 }
-.sm-ad__blowback-fill--warning  { background-color: #D9A441; }
-.sm-ad__blowback-fill--critical { background-color: #D14B3D; }
+.sm-ad__blowback-fill--warning  { background-color: var(--sm-warning); }
+.sm-ad__blowback-fill--critical { background-color: var(--sm-alert); }
 .sm-ad__blowback-status {
     font-size: 10px;
-    color: #5A6876;
+    color: var(--sm-text-secondary);
     letter-spacing: 1px;
 }
-.sm-ad__blowback-status--warning  { color: #D9A441; }
-.sm-ad__blowback-status--critical { color: #D14B3D; }
+.sm-ad__blowback-status--warning  { color: var(--sm-warning); }
+.sm-ad__blowback-status--critical { color: var(--sm-alert); }
 
 /* ── Walk-ins button (in RECENT ACTIVITY panel header) ──────────────────── */
 .sm-ad__walkins-btn {
@@ -2216,28 +2234,28 @@ TextField > .unity-text-field__input,
     transition-duration: var(--sm-dur-fast);
 }
 .sm-ad__walkins-btn:hover {
-    background-color: rgba(209, 75, 61, 0.12);
-    border-color: #D14B3D;
-    color: #E8705E;
+    background-color: var(--sm-alert-soft);
+    border-color: var(--sm-alert);
+    color: #E8705E;   /* hover-brighten on top of --sm-alert */
 }
 
 /* ── Threat-report button (in HEAT & THREAT panel header) ────────────────── */
 .sm-ad__threat-report-btn {
     font-size: 9px;
     letter-spacing: 1.2px;
-    color: #8B97A6;
+    color: var(--sm-text-secondary);
     background-color: transparent;
     border-width: 1px;
-    border-color: #212C3B;
+    border-color: var(--sm-border);
     padding: 3px 8px;
     cursor: link;
     transition-property: background-color, border-color, color;
     transition-duration: var(--sm-dur-fast);
 }
 .sm-ad__threat-report-btn:hover {
-    background-color: rgba(78, 148, 184, 0.10);
-    border-color: #4E94B8;
-    color: #4E94B8;
+    background-color: var(--sm-info-soft);
+    border-color: var(--sm-info);
+    color: var(--sm-info);
 }
 
 
