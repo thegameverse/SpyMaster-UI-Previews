@@ -168,6 +168,21 @@ body {
     /* ── TYPOGRAPHY */
     --sm-font-sans:   "Inter", "Segoe UI", sans-serif;
     --sm-font-mono:   "JetBrains Mono", "Consolas", monospace;
+    /* Phase v2-polish (May 2026) — slab serif for screen titles + display
+       headlines. Inter at 28-48pt reads SaaS; a slab serif at the same sizes
+       reads as institutional report typography (Bloomberg, FT, declassified
+       CIA cables). One slab title per screen is enough to break the dark-
+       mode-SaaS read. Ship-with-fallback chain so missing fonts degrade to
+       sans-serif without breaking layouts. Drop-in font when art commissions
+       a final pick: Roboto Slab Bold or Zilla Slab. */
+    --sm-font-slab:   "Roboto Slab", "Zilla Slab", "Rockwell", "Inter", serif;
+    /* Phase v2-polish — characterful mono for hero data values. The default
+       --sm-font-mono uses JetBrains Mono which is the SaaS-default mono in
+       2025. For BIG numerals (BLACK BUDGET, GLOBAL HEAT, DOOMSDAY, mission
+       SCORE) and signature monospace moments (Director's Desk header, the
+       ticker), prefer this characterful mono. Fallback to JetBrains Mono so
+       nothing breaks. Drop-in when licensed: Berkeley Mono. */
+    --sm-font-mono-display: "Berkeley Mono", "Departure Mono", "IBM Plex Mono", "JetBrains Mono", monospace;
 
     --sm-text-xs:   10px;
     --sm-text-sm:   11px;
@@ -177,8 +192,16 @@ body {
     --sm-text-2xl:  28px;
     --sm-text-3xl:  36px;
     --sm-text-display: 48px;
+    /* Phase v2-polish — micro size for stationery/terminal-status chrome.
+       Used by .sm-stationery-header (DOC.ID · CLASS · DIST tags) and
+       .sm-terminal-status (BUILD · SESSION · CHANNEL · LATENCY footer). */
+    --sm-text-micro: 9px;
 
     --sm-letter-label: 1.4px;
+    /* Phase v2-polish — extra letter-spacing for caps-mono labels.
+       The institutional-document feel comes from breathing letter-spacing
+       on small caps rather than from larger sizes. */
+    --sm-letter-mono-caps: 0.6px;
 
     /* ── SPACING (4 / 8 scale) */
     --sm-s-1: 4px;
@@ -209,7 +232,60 @@ body {
     /* ── BORDERS (stroke width) */
     --sm-stroke: 1px;
     --sm-stroke-2: 2px;
+
+    /* =========================================================
+     * Phase v2-polish (May 2026) — DIFFERENTIATION TOKENS
+     * Reference: Assets/../Claude Design/PRESENT_VISUAL_DIFFERENTIATION.md
+     *
+     * These tokens implement the v2 polish moves that distinguish
+     * SpyMaster from generic dark-mode SaaS. They reuse existing
+     * palette tokens above (--sm-alert is already classified-red
+     * #D14B3D — we just commit to it as the AGENCY IDENTITY color
+     * rather than reserving it strictly for critical state).
+     * ========================================================= */
+
+    /* Agency identity — classified-red is THE agency mark color.
+       Reuse --sm-alert for crests / primary identity moments. The
+       existing --sm-info (steel blue) remains the data-active /
+       focus highlight, NOT the brand. */
+    --sm-identity:        var(--sm-alert);          /* #D14B3D */
+    --sm-identity-soft:   var(--sm-alert-soft);     /* tinted bg */
+    --sm-identity-strong: var(--sm-alert-strong);   /* mastermind tier */
+
+    /* Paper-grain texture — already authored in MainMenu/paper-grain.svg.
+       Use as a subliminal overlay on panel backgrounds. 2-4% opacity.
+       Apply via the .sm-paper-grain utility class (theme-present-polish.uss). */
+    --sm-paper-grain-url: url("project://database/Assets/UI/MainMenu/paper-grain.svg");
+    --sm-paper-grain-opacity: 0.03;
+
+    /* Stationery chrome opacity — the DOC.ID · CLASS · DIST headers
+       on every panel should be present but quiet. Mono 9pt at this
+       opacity reads as "official document chrome" without competing
+       with content. */
+    --sm-stationery-opacity: 0.55;
+
+    /* Terminal-status footer — the BUILD · SESSION · CHANNEL strip
+       at the bottom of every screen. Same opacity register as
+       stationery so they read as one chrome layer. */
+    --sm-terminal-status-h: 24px;
+
+    /* Era-theme scaffolding — applied to .sm-root via EraThemeController.
+       For v1 ship we apply .era-present at runtime. .era-coldwar and
+       .era-futuristic exist as empty hooks for future DLC. The actual
+       per-era token overrides live in tokens.<era>.uss files (only
+       tokens.present.uss is authored for v1 — and it's a no-op against
+       these defaults, since these defaults ARE the Present-era values). */
 }
+
+/* =========================================================
+ * Phase v2-polish — ERA HOOKS
+ * Empty selectors so per-era stylesheets can override targeted
+ * tokens without restructuring the :root. Future DLC ships per-era
+ * tokens.<era>.uss that scope under these selectors.
+ * ========================================================= */
+.era-present { }
+.era-coldwar { }
+.era-futuristic { }
 
 /* ── Assets/UI/Theme/theme.uss ── */
 /*
@@ -1228,13 +1304,20 @@ TextField > .unity-text-field__input,
     background-color: rgba(0, 0, 0, 0.72);
 }
 
-/* Modal card — paper-style: cream surface, deep border, subtle inset frame. */
+/* Modal card — paper-style: cream surface, deep border, subtle inset frame.
+ * v2-polish: width bumped 540 to 640 for breathing room around the longer
+ * polished prose, paper-grain SVG layered as background image (Unity USS
+ * does not support var() inside url(), so the path is hardcoded here).
+ * padding removed so the header strip can render edge-to-edge in classified-
+ * red; each child below sets its own padding. */
 .sm-dd__modal {
-    width: 540px;
-    max-width: 90%;
-    max-height: 88%;
+    width: 720px;
+    max-width: 92%;
+    max-height: 92%;
     flex-direction: column;
     background-color: var(--sm-surface);
+    background-image: url("project://database/Assets/UI/MainMenu/paper-grain.svg");
+    
     border-left-width: 2px;
     border-right-width: 2px;
     border-top-width: 2px;
@@ -1247,20 +1330,32 @@ TextField > .unity-text-field__input,
     border-top-right-radius: var(--sm-r-2);
     border-bottom-left-radius: var(--sm-r-2);
     border-bottom-right-radius: var(--sm-r-2);
-    padding: var(--sm-s-4);
+    padding: 0;
+    overflow: hidden;
 }
 
-/* ── Header ── */
+/* ── Header ──
+ * v2-polish: DARK header strip with classified-red ACCENTS only — the
+ * badge and live-dot use the agency identity color, but the strip
+ * background is the modal's dark surface so the polish reads as
+ * professional UI chrome rather than overwhelming red. The reference
+ * mockup has this exact treatment: dark strip, red title-chip, red dot,
+ * white "OPENING BRIEF" label, light close button. */
 .sm-dd__header {
     align-items: center;
-    margin-bottom: var(--sm-s-3);
+    background-color: var(--sm-surface-2);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
     border-bottom-width: 1px;
     border-bottom-color: var(--sm-border);
-    padding-bottom: var(--sm-s-2);
 }
 
 .sm-dd__header-badge {
     margin-right: var(--sm-s-3);
+    /* The .sm-badge .sm-badge--alert classes from theme.uss already give
+     * this a classified-red treatment as a small chip. No override needed. */
 }
 
 .sm-dd__header-title {
@@ -1283,79 +1378,115 @@ TextField > .unity-text-field__input,
 }
 .sm-dd__close-btn:hover { color: var(--sm-text); }
 
-/* ── Letterhead seal ── */
+/* ── Letterhead seal ──
+ * v2-polish: replaced by the new .sm-dd__sub-header strip (motto +
+ * stationery) below. Original .sm-dd__seal-row is hidden via display: none
+ * to preserve the controller's element queries while removing the visual
+ * artifact. Restore by removing the display:none if you want both. */
 .sm-dd__seal-row {
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: var(--sm-s-3);
+    display: none;
 }
 
 .sm-dd__seal {
-    width: 28px;
-    height: 28px;
-    margin-right: var(--sm-s-3);
-    background-color: var(--sm-alert);
-    border-top-left-radius: 14px;
-    border-top-right-radius: 14px;
-    border-bottom-left-radius: 14px;
-    border-bottom-right-radius: 14px;
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    border-left-color: var(--sm-border-strong);
-    border-right-color: var(--sm-border-strong);
-    border-top-color: var(--sm-border-strong);
-    border-bottom-color: var(--sm-border-strong);
+    display: none;
 }
 
 .sm-dd__seal-text {
-    font-size: 10px;
-    letter-spacing: var(--sm-letter-label);
-    color: var(--sm-text-muted);
+    display: none;
 }
 
-/* ── Letter body ── */
+/* v2-polish — Sub-header strip directly below the red header.
+ * Two columns: motto (VIGILO TACEO · OFFICE OF NATIONAL INTELLIGENCE) on
+ * the left, stationery (DOC.ID · CLASS · DIST) on the right. Both in mono
+ * caps micro size. Reads as the institutional letterhead between the
+ * agency banner and the letter body. */
+.sm-dd__sub-header {
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--sm-surface-2);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--sm-border);
+}
+
+.sm-dd__motto {
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-secondary);
+    letter-spacing: var(--sm-letter-mono-caps);
+    font-weight: 400; font-style: normal;
+}
+
+/* v2-polish — Content wrapper inside the modal. The header + sub-header
+ * are full-width edge-to-edge; everything else (letter, signoff, actions)
+ * lives inside this wrapper which restores the standard inset padding.
+ * min-height guarantees the modal stays rectangular even when the LLM
+ * generates short prose — the polished mockup feels rectangular because
+ * the brief is 6 paragraphs; on shorter outputs the content area still
+ * reserves enough vertical space to keep the modal proportions correct. */
+.sm-dd__content {
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 460px;
+    padding-left: var(--sm-s-6);
+    padding-right: var(--sm-s-6);
+    padding-top: var(--sm-s-5);
+    padding-bottom: var(--sm-s-4);
+}
+
+/* ── Letter body ──
+ * v2-polish: removed the bordered card wrapper. Reference shows the
+ * letter sitting directly on the modal's paper-grain background, no
+ * inner border/card. Just generous padding inside the .sm-dd__content
+ * wrapper and a flex column for salutation → body → signoff → date. */
 .sm-dd__letter {
     flex-direction: column;
     flex-grow: 1;
     flex-shrink: 1;
-    padding: var(--sm-s-3) var(--sm-s-4);
-    background-color: var(--sm-surface-2);
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-left-color: var(--sm-border);
-    border-right-color: var(--sm-border);
-    border-top-color: var(--sm-border);
-    border-bottom-color: var(--sm-border);
-    border-top-left-radius: var(--sm-r-1);
-    border-top-right-radius: var(--sm-r-1);
-    border-bottom-left-radius: var(--sm-r-1);
-    border-bottom-right-radius: var(--sm-r-1);
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .sm-dd__salutation {
-    font-size: var(--sm-text-md);
-    font-style: italic;
+    /* Slab-serif salutation — bold, larger size, NOT italic. The italic
+     * voice belongs to the body prose; the salutation is the addressee
+     * line and reads as a header, not a quote. */
+    font-size: var(--sm-text-2xl);
+    font-weight: 700;
     color: var(--sm-text);
-    margin-bottom: var(--sm-s-3);
+    margin-bottom: var(--sm-s-4);
     white-space: normal;
+    
 }
 
 .sm-dd__body-scroll {
     flex-grow: 1;
     flex-shrink: 1;
-    max-height: 320px;
+    /* v2-polish: removed max-height: 320px hard cap. The cap clamped the
+     * body to a fixed height regardless of content, which made the modal
+     * feel square because the visible body section was always short. Now
+     * the body grows with content up to the modal's max-height (92% of
+     * viewport, set on .sm-dd__modal). Internal scroll still kicks in for
+     * exceptionally long briefs. */
     margin-bottom: var(--sm-s-3);
 }
 
 .sm-dd__body-text {
-    font-size: var(--sm-text-sm);
-    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    /* v2-polish: muted secondary color matches the reference mockup's
+     * body prose — lighter than primary text so the slab-serif salutation
+     * remains the visual anchor. */
+    color: var(--sm-text-secondary);
     white-space: normal;
-    font-weight: 400; font-style: normal;
+    /* v2-polish: paragraph-spacing gives the prose breathing room between
+     * paragraphs. 12px matches the rhythm visible in the reference mockup. */
+    
+    /* v2-polish: do NOT set -unity-font-style here. The .sm-analyst-prose
+     * polish utility class sets it to italic for analyst-authored body
+     * prose. If we set normal here, this rule wins the cascade and the
+     * italic never lands. Letting it inherit lets the polish class paint. */
 }
 
 .sm-dd__signoff {
@@ -1383,6 +1514,453 @@ TextField > .unity-text-field__input,
 .sm-dd__dismiss-btn {
     min-width: 160px;
 }
+
+/* v2-polish — Background watermark "VIGILO TACEO" giant text behind the
+ * letter content. Positioned absolute, very low opacity, mono caps. Reads
+ * subliminally as "this is a watermarked classified document" without
+ * competing with the body prose for attention. */
+.sm-dd__watermark {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    text-align: center; justify-content: center; align-items: center;
+    font-size: 96px;
+    font-weight: 700;
+    color: rgba(209, 75, 61, 0.04);
+    letter-spacing: 24px;
+    
+}
+
+/* v2-polish — MARK FOR REREAD ghost button. Mirror visual weight to the
+ * primary ACKNOWLEDGE button but as outline-only in classified-red. The
+ * button is purely visual for now — its name attribute (dd-reread) lets
+ * a future controller pass wire it to the deferred-brief queue logic. */
+.sm-dd__reread-btn {
+    min-width: 160px;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: var(--sm-alert);
+    border-right-color: var(--sm-alert);
+    border-top-color: var(--sm-alert);
+    border-bottom-color: var(--sm-alert);
+    color: var(--sm-alert);
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+}
+.sm-dd__reread-btn:hover {
+    background-color: rgba(209, 75, 61, 0.10);
+}
+
+/* v2-polish — signoff date below the existing signoff line.
+ * The controller can populate dd-signoff-date with e.g.
+ * "14:32 LOCAL · 14 OCT 2025" to give the brief a real-feeling timestamp. */
+.sm-dd__signoff-date {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-muted);
+    text-align: right; justify-content: right; align-items: center;
+    letter-spacing: var(--sm-letter-mono-caps);
+    margin-top: var(--sm-s-1);
+    white-space: normal;
+}
+
+/* v2-polish — stationery DOC.ID/CLASS/DIST chrome row at the top of the
+ * modal. A separate row from the existing header (which has the badge +
+ * title + close button) so we never overflow the header layout horizontally.
+ * align-self: flex-end inside a flex-column container puts it on the right.
+ * The .sm-stationery-header polish class supplies font + size + opacity. */
+.sm-dd__stationery-row {
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-bottom: var(--sm-s-1);
+}
+
+/* v2-polish — wrapper for the small ESC keyboard hint that pairs with the
+ * close button. Caps mono micro size, muted color. */
+.sm-dd__esc-hint {
+    margin-right: var(--sm-s-2);
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-muted);
+    text-align: right; justify-content: right; align-items: center;
+    letter-spacing: var(--sm-letter-mono-caps);
+}
+
+/* ── Assets/UI/Theme/theme-present-polish.uss ── */
+/*
+ * SpyMaster · Present-Era Polish Layer (v2)
+ * ------------------------------------------------------------
+ * Reference: Assets/../Claude Design/PRESENT_VISUAL_DIFFERENTIATION.md
+ *
+ * Loaded AFTER tokens.uss + theme.uss to layer the v2 polish moves on
+ * top of the existing design system. Add this stylesheet to the same
+ * PanelSettings as theme.uss.
+ *
+ * Goal: stop looking like generic dark-mode SaaS, start looking like an
+ * actual intelligence agency tool. Implements the 10 differentiation
+ * moves from PRESENT_VISUAL_DIFFERENTIATION.md as opt-in utility classes.
+ *
+ * USAGE:
+ *   - Add `sm-stationery-header` to any small DOC.ID·CLASS·DIST header
+ *     element on a panel (typically aligned top-right, 9pt mono).
+ *   - Add `sm-terminal-status` to a horizontal strip at the bottom of
+ *     each screen showing BUILD·SESSION·CHANNEL chrome.
+ *   - Add `sm-paper-grain` to any panel that should carry the
+ *     subliminal paper-grain texture (most panels — make it the
+ *     default on .sm-panel by extending it later if you want).
+ *   - Add `sm-analyst-prose` to any text Visual that contains LLM-
+ *     generated narrative (Director's Desk letter, Mission Report
+ *     debrief, threat assessment summary, mole-hunt CI report).
+ *   - Add `sm-numeral-display` to big numerals (BLACK BUDGET, GLOBAL
+ *     HEAT, DOOMSDAY, mission SCORE).
+ *   - Add `sm-title-slab` to screen titles 18pt+.
+ *   - Add `sm-named-empty` to empty-state Labels (italicized, with a
+ *     trailing em-dash + role attribution).
+ *
+ * Every class below is an additive opt-in. No existing element changes
+ * appearance unless the class is added.
+ * ------------------------------------------------------------
+ */
+
+/* =========================================================
+ * STATIONERY HEADER (move 3)
+ *
+ * Top-right of every panel: DOC.ID · CLASS · DIST in monospace 9pt at
+ * --sm-stationery-opacity. Reads as "official document chrome" rather
+ * than as content.
+ *
+ * Recommended placement: position absolute top-right of .sm-panel.
+ * Recommended copy: e.g. `DOC.ID: 14F-37-A · CLASS: TS//SCI · DIST: DIRECTOR ONLY`
+ * ========================================================= */
+.sm-stationery-header {
+    
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-muted);
+    font-weight: 400; font-style: normal;
+    letter-spacing: var(--sm-letter-mono-caps);
+    text-align: right; justify-content: right; align-items: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    opacity: var(--sm-stationery-opacity);
+    /* Position top-right inside the panel; consumer can override
+       with align-self/position absolute as needed. */
+    align-self: flex-end;
+}
+
+.sm-stationery-header--left {
+    text-align: left; justify-content: left; align-items: center;
+    align-self: flex-start;
+}
+
+/* =========================================================
+ * TERMINAL STATUS STRIP (move 4)
+ *
+ * 24px horizontal strip at the very bottom of every screen showing:
+ *   BUILD 0.4.7-RC · SESSION 14F37ED7 · CHANNEL SECURE · LATENCY 18MS
+ *   · UPLINK NORMAL · CONSOLE LIVE
+ *
+ * Sits below the Ticker. Same opacity register as stationery header.
+ * Reads as a real terminal status bar, not a SaaS product footer.
+ * ========================================================= */
+.sm-terminal-status {
+    height: var(--sm-terminal-status-h);
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    background-color: var(--sm-nav-bg);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+    
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-muted);
+    letter-spacing: var(--sm-letter-mono-caps);
+    opacity: var(--sm-stationery-opacity);
+}
+
+.sm-terminal-status__cell {
+    flex-direction: row;
+    align-items: center;
+    margin-right: var(--sm-s-2);
+}
+
+.sm-terminal-status__live-dot {
+    width: 6px;
+    height: 6px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    background-color: var(--sm-identity);
+    margin-right: var(--sm-s-1);
+}
+
+/* =========================================================
+ * PAPER-GRAIN TEXTURE OVERLAY (move 7)
+ *
+ * Adds a faint paper-grain texture to a panel background. Subliminal
+ * — registers as "this is a printed report" rather than as decoration.
+ *
+ * Implementation: applies the existing paper-grain.svg as a tiled
+ * background image at very low opacity. The SVG is at
+ * Assets/UI/MainMenu/paper-grain.svg.
+ *
+ * Apply to .sm-panel directly: <VisualElement class="sm-panel sm-paper-grain">
+ * ========================================================= */
+.sm-paper-grain {
+    background-image: var(--sm-paper-grain-url);
+    
+    /* Tiling effect by sizing the SVG to repeat across the panel; the SVG
+       itself defines the noise tile. Opacity is layered onto the panel via
+       the SVG's source alpha rather than via CSS opacity to avoid washing
+       out child content. */
+}
+
+/* =========================================================
+ * ANALYST-PROSE STYLE (move 8)
+ *
+ * Italicized body text for any LLM-generated analyst narrative —
+ * Director's Desk letter body, Mission Report debrief, threat
+ * assessment summary, mole-hunt CI reports, walk-in briefings.
+ *
+ * Italics signal "human voice" vs. "system output" — players read
+ * italic text as someone-wrote-this, roman text as the-game-says-this.
+ *
+ * Apply to the body Label of any analyst-authored content. The
+ * sender/signoff line below it can be roman secondary mono.
+ * ========================================================= */
+.sm-analyst-prose {
+    font-style: italic;
+    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    /* Generous line-height for legibility on long-form prose. */
+    
+}
+
+/* For LLM-generated [REDACTED] inline tokens — black bar with
+   block-character placeholders. Pair with: <Label>The previous
+   Director — <Label class="sm-redacted">████████</Label> — was last
+   seen at...</Label>. */
+.sm-redacted {
+    background-color: #000000;
+    color: #000000;
+    
+    /* The text is opaque black; the chars exist so the bar has the
+       right width but they're invisible. Don't use this as a button. */
+    padding-left: 4px;
+    padding-right: 4px;
+    letter-spacing: -1px;
+}
+
+/* =========================================================
+ * BIG-NUMERAL DISPLAY (move 9)
+ *
+ * For BLACK BUDGET, GLOBAL HEAT, DOOMSDAY, mission SCORE, anywhere
+ * a big number is the visual hero of a panel.
+ *
+ * Counter-intuitive: Inter Light (200) at 28-88pt reads as
+ * institutional report typography (Bloomberg, FT, declassified
+ * reports). Inter Bold at the same sizes reads as SaaS dashboard
+ * metric. Use Light for big numerals.
+ *
+ * If your Inter font asset only includes Regular weight, the
+ * synthesized "lighter" weight from Unity is acceptable — but
+ * commission/license Inter Light .ttf for the AAA polish.
+ * ========================================================= */
+.sm-numeral-display {
+    
+    font-weight: 400; font-style: normal;
+    /* Visual weight comes from size, not from boldness. */
+    font-size: var(--sm-text-3xl);
+    color: var(--sm-text);
+    /* Tabular old-style numerals if the font supports them; the
+       OpenType "tnum" feature can be enabled in the font asset
+       importer (Tabular Numbers checkbox). */
+    text-align: left; justify-content: left; align-items: center;
+}
+
+.sm-numeral-display--xl {
+    font-size: var(--sm-text-display);
+}
+
+.sm-numeral-display--mono {
+    
+}
+
+/* =========================================================
+ * SLAB-SERIF TITLE (move 10)
+ *
+ * Screen titles 18pt+ use the slab-serif font. Inter sans is for
+ * UI labels and body. The slab-serif title is the typographic
+ * differentiator — it makes the screen feel like a printed report
+ * rather than a software panel.
+ *
+ * Recommended use: SPYMASTER wordmark, screen title bars, dossier
+ * subject names (JANE DOE), mission codenames (OP. NIGHTHAWK).
+ *
+ * Drop-in font when art commissions: Roboto Slab Bold or Zilla
+ * Slab. Until the asset lands, falls back to sans-serif which is
+ * acceptable but not the polish target.
+ * ========================================================= */
+.sm-title-slab {
+    
+    font-weight: 700;
+    font-size: var(--sm-text-xl);
+    color: var(--sm-text);
+    letter-spacing: 0;
+}
+
+.sm-title-slab--xl {
+    font-size: var(--sm-text-2xl);
+}
+
+.sm-title-slab--display {
+    font-size: var(--sm-text-3xl);
+}
+
+/* =========================================================
+ * NAMED-ANALYST EMPTY STATES (move 5)
+ *
+ * Empty-state Labels are NOT "You don't have any X yet!" SaaS-style
+ * copy. They're italicized one-liners attributed to a named role at
+ * the agency:
+ *
+ *   "Operations stands ready to receive standing orders. — Ops Chief, R."
+ *   "The watch floor is quiet. — Watch Officer, K."
+ *   "Inbox clear. Listening posts active. — D. Kim, Cyber Branch."
+ *
+ * Style: italic body, secondary color, with a smaller roman attribution
+ * after the em-dash. Players gradually build a mental model of the staff.
+ * ========================================================= */
+.sm-named-empty {
+    font-style: italic;
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-md);
+    text-align: center; justify-content: center; align-items: center;
+    padding: var(--sm-s-6);
+    /* Prose generously line-broken — ~32-40em max. */
+    max-width: 460px;
+    align-self: center;
+    white-space: normal;
+}
+
+/* For the attribution portion (after the em-dash). Wrap in a
+   <Label class="sm-named-empty__attribution">— Ops Chief, R.</Label>
+   inside the parent .sm-named-empty container, OR style as a
+   second line via paragraph break. */
+.sm-named-empty__attribution {
+    font-weight: 400; font-style: normal;
+    color: var(--sm-text-muted);
+    font-size: var(--sm-text-sm);
+    margin-top: var(--sm-s-1);
+}
+
+/* =========================================================
+ * AGENCY IDENTITY UTILITIES (move 1, 6)
+ *
+ * Wherever the agency mark / primary identity color appears.
+ * Pulls from --sm-identity (which currently aliases --sm-alert =
+ * classified-red #D14B3D).
+ *
+ * .sm-identity-mark — color the agency crest / wordmark stroke.
+ * .sm-identity-bar  — 3-4px left bar showing identity (used on
+ *                     focused menu items, primary action buttons).
+ * .sm-identity-stamp — diagonal CLASSIFIED rubber-stamp affect.
+ * ========================================================= */
+.sm-identity-mark {
+    color: var(--sm-identity);
+    
+}
+
+.sm-identity-bar {
+    border-left-width: 3px;
+    border-left-color: var(--sm-identity);
+}
+
+.sm-identity-stamp {
+    color: var(--sm-identity);
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: var(--sm-text-xl);
+    rotate: -8deg;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-left-color: var(--sm-identity);
+    border-right-color: var(--sm-identity);
+    border-top-color: var(--sm-identity);
+    border-bottom-color: var(--sm-identity);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    padding-top: var(--sm-s-1);
+    padding-bottom: var(--sm-s-1);
+    background-color: var(--sm-identity-soft);
+}
+
+/* =========================================================
+ * BREATHING ALERT DOT (move 1)
+ *
+ * The LIVE indicator dot — 8px circle in identity-red, very slow
+ * pulse. Already implemented elsewhere as a one-off; standardized
+ * here so every screen uses the same component.
+ *
+ * Note: USS animations on opacity are limited in UI Toolkit. For
+ * actual pulsing, pair with C# code using schedule.Execute()
+ * cycling opacity 1.0 → 0.4 over 2400ms.
+ * ========================================================= */
+.sm-live-dot {
+    width: 8px;
+    height: 8px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    background-color: var(--sm-identity);
+    /* C# controller sets opacity in a 2.4s loop */
+}
+
+/* =========================================================
+ * MONO-CAPS LABEL (used everywhere)
+ *
+ * The institutional-document feel comes from breathing letter-spacing
+ * on small caps. This is the standard treatment for any micro-label
+ * that says "this is a category" — DEPARTMENTS, ACTIVE OPERATIONS,
+ * GOVERNMENT CONFIDENCE, etc.
+ *
+ * Pair with --sm-text-xs or --sm-text-sm for the actual size.
+ * ========================================================= */
+.sm-mono-caps {
+    
+    font-weight: 400; font-style: normal;
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-secondary);
+    letter-spacing: var(--sm-letter-mono-caps);
+    /* Unity USS does not support text-transform; consumer must
+       provide UPPERCASE text. */
+}
+
+/* =========================================================
+ * VOICE-RIBBON (Futuristic-era, scaffolded for future DLC)
+ *
+ * The AI co-analyst's voice ribbon — a thin teal line with the
+ * AI's spoken text trailing it. Used in the Director's Desk
+ * overlay (Futuristic era), the Mission Report cinematic, etc.
+ *
+ * Empty rule for v1 — Present era doesn't use voice ribbons.
+ * Defined here so .era-futuristic stylesheet can populate.
+ * ========================================================= */
+.sm-voice-ribbon { }
 
 
 /* Preview-only chrome — fixed banner identifying this is a
@@ -1412,28 +1990,39 @@ TextField > .unity-text-field__input,
 <div class="uxml-root">
   <div class="sm-l3-overlays sm-dd" id="directors-desk-overlay">
     <div class="sm-dd__backdrop" id="dd-backdrop"></div>
-    <div class="sm-col sm-dd__modal" id="dd-modal">
+    <div class="sm-col sm-dd__modal sm-paper-grain" id="dd-modal">
       <div class="sm-row sm-dd__header">
         <div class="sm-badge sm-badge--alert sm-dd__header-badge">DIRECTOR'S DESK</div>
         <div class="sm-dd__header-title">OPENING BRIEF</div>
+        <div class="sm-live-dot" id="dd-live-dot" title="Just delivered."></div>
         <div class="sm-fill"></div>
+        <div class="sm-dd__esc-hint">ESC</div>
         <button class="sm-dd__close-btn sm-close-btn" id="dd-close" title="Close (Esc)."></button>
       </div>
-      <div class="sm-dd__seal-row">
-        <div class="sm-dd__seal"></div>
-        <div class="sm-dd__seal-text sm-mono">MINISTRY OF INTELLIGENCE OVERSIGHT — CONFIDENTIAL</div>
-      </div>
-      <div class="sm-dd__letter">
-        <div class="sm-dd__salutation" id="dd-salutation">To the Incoming Director,</div>
-        <div class="sm-dd__body-scroll" style="overflow-x:hidden; overflow-y:auto;">
-          <div class="sm-dd__body-text" id="dd-body">Awaiting brief…</div>
-        </div>
-        <div class="sm-dd__signoff sm-mono" id="dd-signoff"></div>
-      </div>
-      <div class="sm-row sm-dd__actions">
+      <div class="sm-row sm-dd__sub-header" id="dd-sub-header">
+        <div class="sm-dd__motto">VIGILO TACEO · OFFICE OF NATIONAL INTELLIGENCE</div>
         <div class="sm-fill"></div>
-        <div class="sm-dd__autodismiss-label sm-mono" id="dd-autodismiss-label"></div>
-        <button class="sm-btn sm-btn--primary sm-dd__dismiss-btn" id="dd-dismiss" title="Acknowledge — dismiss this beat and continue.">ACKNOWLEDGE</button>
+        <div class="sm-stationery-header" id="dd-stationery">DOC.ID: OB-001-A · CLASS: TS//SCI//ECHELON · DIST: DIRECTOR ONLY</div>
+      </div>
+      <div class="sm-dd__seal-row">
+        <div class="sm-dd__seal sm-identity-mark"></div>
+        <div class="sm-dd__seal-text sm-mono"></div>
+      </div>
+      <div class="sm-col sm-dd__content">
+        <div class="sm-dd__letter">
+          <div class="sm-dd__salutation sm-title-slab sm-title-slab--xl" id="dd-salutation">To the Incoming Director,</div>
+          <div class="sm-dd__body-scroll" style="overflow-x:hidden; overflow-y:auto;">
+            <div class="sm-dd__body-text sm-analyst-prose" id="dd-body">Awaiting brief…</div>
+          </div>
+          <div class="sm-dd__signoff sm-mono" id="dd-signoff"></div>
+          <div class="sm-dd__signoff-date" id="dd-signoff-date">14:32 LOCAL · 14 OCT 2025</div>
+        </div>
+        <div class="sm-row sm-dd__actions">
+          <button class="sm-btn sm-dd__reread-btn" id="dd-reread" title="Coming soon — defer this brief for later.">MARK FOR REREAD</button>
+          <div class="sm-fill"></div>
+          <div class="sm-dd__autodismiss-label sm-mono" id="dd-autodismiss-label"></div>
+          <button class="sm-btn sm-btn--primary sm-dd__dismiss-btn" id="dd-dismiss" title="Acknowledge — dismiss this beat and continue.">ACKNOWLEDGE →</button>
+        </div>
       </div>
     </div>
   </div>

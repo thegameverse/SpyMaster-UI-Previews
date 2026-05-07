@@ -168,6 +168,21 @@ body {
     /* ── TYPOGRAPHY */
     --sm-font-sans:   "Inter", "Segoe UI", sans-serif;
     --sm-font-mono:   "JetBrains Mono", "Consolas", monospace;
+    /* Phase v2-polish (May 2026) — slab serif for screen titles + display
+       headlines. Inter at 28-48pt reads SaaS; a slab serif at the same sizes
+       reads as institutional report typography (Bloomberg, FT, declassified
+       CIA cables). One slab title per screen is enough to break the dark-
+       mode-SaaS read. Ship-with-fallback chain so missing fonts degrade to
+       sans-serif without breaking layouts. Drop-in font when art commissions
+       a final pick: Roboto Slab Bold or Zilla Slab. */
+    --sm-font-slab:   "Roboto Slab", "Zilla Slab", "Rockwell", "Inter", serif;
+    /* Phase v2-polish — characterful mono for hero data values. The default
+       --sm-font-mono uses JetBrains Mono which is the SaaS-default mono in
+       2025. For BIG numerals (BLACK BUDGET, GLOBAL HEAT, DOOMSDAY, mission
+       SCORE) and signature monospace moments (Director's Desk header, the
+       ticker), prefer this characterful mono. Fallback to JetBrains Mono so
+       nothing breaks. Drop-in when licensed: Berkeley Mono. */
+    --sm-font-mono-display: "Berkeley Mono", "Departure Mono", "IBM Plex Mono", "JetBrains Mono", monospace;
 
     --sm-text-xs:   10px;
     --sm-text-sm:   11px;
@@ -177,8 +192,16 @@ body {
     --sm-text-2xl:  28px;
     --sm-text-3xl:  36px;
     --sm-text-display: 48px;
+    /* Phase v2-polish — micro size for stationery/terminal-status chrome.
+       Used by .sm-stationery-header (DOC.ID · CLASS · DIST tags) and
+       .sm-terminal-status (BUILD · SESSION · CHANNEL · LATENCY footer). */
+    --sm-text-micro: 9px;
 
     --sm-letter-label: 1.4px;
+    /* Phase v2-polish — extra letter-spacing for caps-mono labels.
+       The institutional-document feel comes from breathing letter-spacing
+       on small caps rather than from larger sizes. */
+    --sm-letter-mono-caps: 0.6px;
 
     /* ── SPACING (4 / 8 scale) */
     --sm-s-1: 4px;
@@ -209,7 +232,60 @@ body {
     /* ── BORDERS (stroke width) */
     --sm-stroke: 1px;
     --sm-stroke-2: 2px;
+
+    /* =========================================================
+     * Phase v2-polish (May 2026) — DIFFERENTIATION TOKENS
+     * Reference: Assets/../Claude Design/PRESENT_VISUAL_DIFFERENTIATION.md
+     *
+     * These tokens implement the v2 polish moves that distinguish
+     * SpyMaster from generic dark-mode SaaS. They reuse existing
+     * palette tokens above (--sm-alert is already classified-red
+     * #D14B3D — we just commit to it as the AGENCY IDENTITY color
+     * rather than reserving it strictly for critical state).
+     * ========================================================= */
+
+    /* Agency identity — classified-red is THE agency mark color.
+       Reuse --sm-alert for crests / primary identity moments. The
+       existing --sm-info (steel blue) remains the data-active /
+       focus highlight, NOT the brand. */
+    --sm-identity:        var(--sm-alert);          /* #D14B3D */
+    --sm-identity-soft:   var(--sm-alert-soft);     /* tinted bg */
+    --sm-identity-strong: var(--sm-alert-strong);   /* mastermind tier */
+
+    /* Paper-grain texture — already authored in MainMenu/paper-grain.svg.
+       Use as a subliminal overlay on panel backgrounds. 2-4% opacity.
+       Apply via the .sm-paper-grain utility class (theme-present-polish.uss). */
+    --sm-paper-grain-url: url("project://database/Assets/UI/MainMenu/paper-grain.svg");
+    --sm-paper-grain-opacity: 0.03;
+
+    /* Stationery chrome opacity — the DOC.ID · CLASS · DIST headers
+       on every panel should be present but quiet. Mono 9pt at this
+       opacity reads as "official document chrome" without competing
+       with content. */
+    --sm-stationery-opacity: 0.55;
+
+    /* Terminal-status footer — the BUILD · SESSION · CHANNEL strip
+       at the bottom of every screen. Same opacity register as
+       stationery so they read as one chrome layer. */
+    --sm-terminal-status-h: 24px;
+
+    /* Era-theme scaffolding — applied to .sm-root via EraThemeController.
+       For v1 ship we apply .era-present at runtime. .era-coldwar and
+       .era-futuristic exist as empty hooks for future DLC. The actual
+       per-era token overrides live in tokens.<era>.uss files (only
+       tokens.present.uss is authored for v1 — and it's a no-op against
+       these defaults, since these defaults ARE the Present-era values). */
 }
+
+/* =========================================================
+ * Phase v2-polish — ERA HOOKS
+ * Empty selectors so per-era stylesheets can override targeted
+ * tokens without restructuring the :root. Future DLC ships per-era
+ * tokens.<era>.uss that scope under these selectors.
+ * ========================================================= */
+.era-present { }
+.era-coldwar { }
+.era-futuristic { }
 
 /* ── Assets/UI/Theme/theme.uss ── */
 /*
@@ -1658,6 +1734,375 @@ TextField > .unity-text-field__input,
     border-bottom-color: rgb(220, 200, 90);
 }
 
+/* ── Assets/UI/Theme/theme-present-polish.uss ── */
+/*
+ * SpyMaster · Present-Era Polish Layer (v2)
+ * ------------------------------------------------------------
+ * Reference: Assets/../Claude Design/PRESENT_VISUAL_DIFFERENTIATION.md
+ *
+ * Loaded AFTER tokens.uss + theme.uss to layer the v2 polish moves on
+ * top of the existing design system. Add this stylesheet to the same
+ * PanelSettings as theme.uss.
+ *
+ * Goal: stop looking like generic dark-mode SaaS, start looking like an
+ * actual intelligence agency tool. Implements the 10 differentiation
+ * moves from PRESENT_VISUAL_DIFFERENTIATION.md as opt-in utility classes.
+ *
+ * USAGE:
+ *   - Add `sm-stationery-header` to any small DOC.ID·CLASS·DIST header
+ *     element on a panel (typically aligned top-right, 9pt mono).
+ *   - Add `sm-terminal-status` to a horizontal strip at the bottom of
+ *     each screen showing BUILD·SESSION·CHANNEL chrome.
+ *   - Add `sm-paper-grain` to any panel that should carry the
+ *     subliminal paper-grain texture (most panels — make it the
+ *     default on .sm-panel by extending it later if you want).
+ *   - Add `sm-analyst-prose` to any text Visual that contains LLM-
+ *     generated narrative (Director's Desk letter, Mission Report
+ *     debrief, threat assessment summary, mole-hunt CI report).
+ *   - Add `sm-numeral-display` to big numerals (BLACK BUDGET, GLOBAL
+ *     HEAT, DOOMSDAY, mission SCORE).
+ *   - Add `sm-title-slab` to screen titles 18pt+.
+ *   - Add `sm-named-empty` to empty-state Labels (italicized, with a
+ *     trailing em-dash + role attribution).
+ *
+ * Every class below is an additive opt-in. No existing element changes
+ * appearance unless the class is added.
+ * ------------------------------------------------------------
+ */
+
+/* =========================================================
+ * STATIONERY HEADER (move 3)
+ *
+ * Top-right of every panel: DOC.ID · CLASS · DIST in monospace 9pt at
+ * --sm-stationery-opacity. Reads as "official document chrome" rather
+ * than as content.
+ *
+ * Recommended placement: position absolute top-right of .sm-panel.
+ * Recommended copy: e.g. `DOC.ID: 14F-37-A · CLASS: TS//SCI · DIST: DIRECTOR ONLY`
+ * ========================================================= */
+.sm-stationery-header {
+    
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-muted);
+    font-weight: 400; font-style: normal;
+    letter-spacing: var(--sm-letter-mono-caps);
+    text-align: right; justify-content: right; align-items: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    opacity: var(--sm-stationery-opacity);
+    /* Position top-right inside the panel; consumer can override
+       with align-self/position absolute as needed. */
+    align-self: flex-end;
+}
+
+.sm-stationery-header--left {
+    text-align: left; justify-content: left; align-items: center;
+    align-self: flex-start;
+}
+
+/* =========================================================
+ * TERMINAL STATUS STRIP (move 4)
+ *
+ * 24px horizontal strip at the very bottom of every screen showing:
+ *   BUILD 0.4.7-RC · SESSION 14F37ED7 · CHANNEL SECURE · LATENCY 18MS
+ *   · UPLINK NORMAL · CONSOLE LIVE
+ *
+ * Sits below the Ticker. Same opacity register as stationery header.
+ * Reads as a real terminal status bar, not a SaaS product footer.
+ * ========================================================= */
+.sm-terminal-status {
+    height: var(--sm-terminal-status-h);
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    background-color: var(--sm-nav-bg);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+    
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-muted);
+    letter-spacing: var(--sm-letter-mono-caps);
+    opacity: var(--sm-stationery-opacity);
+}
+
+.sm-terminal-status__cell {
+    flex-direction: row;
+    align-items: center;
+    margin-right: var(--sm-s-2);
+}
+
+.sm-terminal-status__live-dot {
+    width: 6px;
+    height: 6px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    background-color: var(--sm-identity);
+    margin-right: var(--sm-s-1);
+}
+
+/* =========================================================
+ * PAPER-GRAIN TEXTURE OVERLAY (move 7)
+ *
+ * Adds a faint paper-grain texture to a panel background. Subliminal
+ * — registers as "this is a printed report" rather than as decoration.
+ *
+ * Implementation: applies the existing paper-grain.svg as a tiled
+ * background image at very low opacity. The SVG is at
+ * Assets/UI/MainMenu/paper-grain.svg.
+ *
+ * Apply to .sm-panel directly: <VisualElement class="sm-panel sm-paper-grain">
+ * ========================================================= */
+.sm-paper-grain {
+    background-image: var(--sm-paper-grain-url);
+    
+    /* Tiling effect by sizing the SVG to repeat across the panel; the SVG
+       itself defines the noise tile. Opacity is layered onto the panel via
+       the SVG's source alpha rather than via CSS opacity to avoid washing
+       out child content. */
+}
+
+/* =========================================================
+ * ANALYST-PROSE STYLE (move 8)
+ *
+ * Italicized body text for any LLM-generated analyst narrative —
+ * Director's Desk letter body, Mission Report debrief, threat
+ * assessment summary, mole-hunt CI reports, walk-in briefings.
+ *
+ * Italics signal "human voice" vs. "system output" — players read
+ * italic text as someone-wrote-this, roman text as the-game-says-this.
+ *
+ * Apply to the body Label of any analyst-authored content. The
+ * sender/signoff line below it can be roman secondary mono.
+ * ========================================================= */
+.sm-analyst-prose {
+    font-style: italic;
+    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    /* Generous line-height for legibility on long-form prose. */
+    
+}
+
+/* For LLM-generated [REDACTED] inline tokens — black bar with
+   block-character placeholders. Pair with: <Label>The previous
+   Director — <Label class="sm-redacted">████████</Label> — was last
+   seen at...</Label>. */
+.sm-redacted {
+    background-color: #000000;
+    color: #000000;
+    
+    /* The text is opaque black; the chars exist so the bar has the
+       right width but they're invisible. Don't use this as a button. */
+    padding-left: 4px;
+    padding-right: 4px;
+    letter-spacing: -1px;
+}
+
+/* =========================================================
+ * BIG-NUMERAL DISPLAY (move 9)
+ *
+ * For BLACK BUDGET, GLOBAL HEAT, DOOMSDAY, mission SCORE, anywhere
+ * a big number is the visual hero of a panel.
+ *
+ * Counter-intuitive: Inter Light (200) at 28-88pt reads as
+ * institutional report typography (Bloomberg, FT, declassified
+ * reports). Inter Bold at the same sizes reads as SaaS dashboard
+ * metric. Use Light for big numerals.
+ *
+ * If your Inter font asset only includes Regular weight, the
+ * synthesized "lighter" weight from Unity is acceptable — but
+ * commission/license Inter Light .ttf for the AAA polish.
+ * ========================================================= */
+.sm-numeral-display {
+    
+    font-weight: 400; font-style: normal;
+    /* Visual weight comes from size, not from boldness. */
+    font-size: var(--sm-text-3xl);
+    color: var(--sm-text);
+    /* Tabular old-style numerals if the font supports them; the
+       OpenType "tnum" feature can be enabled in the font asset
+       importer (Tabular Numbers checkbox). */
+    text-align: left; justify-content: left; align-items: center;
+}
+
+.sm-numeral-display--xl {
+    font-size: var(--sm-text-display);
+}
+
+.sm-numeral-display--mono {
+    
+}
+
+/* =========================================================
+ * SLAB-SERIF TITLE (move 10)
+ *
+ * Screen titles 18pt+ use the slab-serif font. Inter sans is for
+ * UI labels and body. The slab-serif title is the typographic
+ * differentiator — it makes the screen feel like a printed report
+ * rather than a software panel.
+ *
+ * Recommended use: SPYMASTER wordmark, screen title bars, dossier
+ * subject names (JANE DOE), mission codenames (OP. NIGHTHAWK).
+ *
+ * Drop-in font when art commissions: Roboto Slab Bold or Zilla
+ * Slab. Until the asset lands, falls back to sans-serif which is
+ * acceptable but not the polish target.
+ * ========================================================= */
+.sm-title-slab {
+    
+    font-weight: 700;
+    font-size: var(--sm-text-xl);
+    color: var(--sm-text);
+    letter-spacing: 0;
+}
+
+.sm-title-slab--xl {
+    font-size: var(--sm-text-2xl);
+}
+
+.sm-title-slab--display {
+    font-size: var(--sm-text-3xl);
+}
+
+/* =========================================================
+ * NAMED-ANALYST EMPTY STATES (move 5)
+ *
+ * Empty-state Labels are NOT "You don't have any X yet!" SaaS-style
+ * copy. They're italicized one-liners attributed to a named role at
+ * the agency:
+ *
+ *   "Operations stands ready to receive standing orders. — Ops Chief, R."
+ *   "The watch floor is quiet. — Watch Officer, K."
+ *   "Inbox clear. Listening posts active. — D. Kim, Cyber Branch."
+ *
+ * Style: italic body, secondary color, with a smaller roman attribution
+ * after the em-dash. Players gradually build a mental model of the staff.
+ * ========================================================= */
+.sm-named-empty {
+    font-style: italic;
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-md);
+    text-align: center; justify-content: center; align-items: center;
+    padding: var(--sm-s-6);
+    /* Prose generously line-broken — ~32-40em max. */
+    max-width: 460px;
+    align-self: center;
+    white-space: normal;
+}
+
+/* For the attribution portion (after the em-dash). Wrap in a
+   <Label class="sm-named-empty__attribution">— Ops Chief, R.</Label>
+   inside the parent .sm-named-empty container, OR style as a
+   second line via paragraph break. */
+.sm-named-empty__attribution {
+    font-weight: 400; font-style: normal;
+    color: var(--sm-text-muted);
+    font-size: var(--sm-text-sm);
+    margin-top: var(--sm-s-1);
+}
+
+/* =========================================================
+ * AGENCY IDENTITY UTILITIES (move 1, 6)
+ *
+ * Wherever the agency mark / primary identity color appears.
+ * Pulls from --sm-identity (which currently aliases --sm-alert =
+ * classified-red #D14B3D).
+ *
+ * .sm-identity-mark — color the agency crest / wordmark stroke.
+ * .sm-identity-bar  — 3-4px left bar showing identity (used on
+ *                     focused menu items, primary action buttons).
+ * .sm-identity-stamp — diagonal CLASSIFIED rubber-stamp affect.
+ * ========================================================= */
+.sm-identity-mark {
+    color: var(--sm-identity);
+    
+}
+
+.sm-identity-bar {
+    border-left-width: 3px;
+    border-left-color: var(--sm-identity);
+}
+
+.sm-identity-stamp {
+    color: var(--sm-identity);
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: var(--sm-text-xl);
+    rotate: -8deg;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-left-color: var(--sm-identity);
+    border-right-color: var(--sm-identity);
+    border-top-color: var(--sm-identity);
+    border-bottom-color: var(--sm-identity);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    padding-top: var(--sm-s-1);
+    padding-bottom: var(--sm-s-1);
+    background-color: var(--sm-identity-soft);
+}
+
+/* =========================================================
+ * BREATHING ALERT DOT (move 1)
+ *
+ * The LIVE indicator dot — 8px circle in identity-red, very slow
+ * pulse. Already implemented elsewhere as a one-off; standardized
+ * here so every screen uses the same component.
+ *
+ * Note: USS animations on opacity are limited in UI Toolkit. For
+ * actual pulsing, pair with C# code using schedule.Execute()
+ * cycling opacity 1.0 → 0.4 over 2400ms.
+ * ========================================================= */
+.sm-live-dot {
+    width: 8px;
+    height: 8px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    background-color: var(--sm-identity);
+    /* C# controller sets opacity in a 2.4s loop */
+}
+
+/* =========================================================
+ * MONO-CAPS LABEL (used everywhere)
+ *
+ * The institutional-document feel comes from breathing letter-spacing
+ * on small caps. This is the standard treatment for any micro-label
+ * that says "this is a category" — DEPARTMENTS, ACTIVE OPERATIONS,
+ * GOVERNMENT CONFIDENCE, etc.
+ *
+ * Pair with --sm-text-xs or --sm-text-sm for the actual size.
+ * ========================================================= */
+.sm-mono-caps {
+    
+    font-weight: 400; font-style: normal;
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-secondary);
+    letter-spacing: var(--sm-letter-mono-caps);
+    /* Unity USS does not support text-transform; consumer must
+       provide UPPERCASE text. */
+}
+
+/* =========================================================
+ * VOICE-RIBBON (Futuristic-era, scaffolded for future DLC)
+ *
+ * The AI co-analyst's voice ribbon — a thin teal line with the
+ * AI's spoken text trailing it. Used in the Director's Desk
+ * overlay (Futuristic era), the Mission Report cinematic, etc.
+ *
+ * Empty rule for v1 — Present era doesn't use voice ribbons.
+ * Defined here so .era-futuristic stylesheet can populate.
+ * ========================================================= */
+.sm-voice-ribbon { }
+
 
 /* Preview-only chrome — fixed banner identifying this is a
    generated approximation, not the live game render. */
@@ -1705,7 +2150,7 @@ TextField > .unity-text-field__input,
         <div class="sm-din__scroll" id="message-scroll" style="overflow-x:hidden; overflow-y:auto;">
           <div class="sm-din__message-list" id="message-list"></div>
         </div>
-        <div class="sm-din__empty" id="empty-state">Inbox empty. Field reports + office briefs land here as they come in.</div>
+        <div class="sm-din__empty sm-named-empty" id="empty-state">Inbox is clear. Field reports and office briefs route here as they come in — the slot is open the moment we have anything for you.</div>
       </div>
       <div class="sm-din__detail" id="detail-pane">
         <div class="sm-din__detail-empty" id="detail-empty">Select a message to read.</div>
