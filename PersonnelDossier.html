@@ -509,6 +509,186 @@ body {
 }
 
 /* =========================================================
+ * STAT TILE — Phase 25.72
+ * ---------------------------------------------------------
+ * "Label / big value / subtitle" stack used by TopBar tiles,
+ * AgencyDashboard hero chips, BudgetScreen overview, etc.
+ * Three size tiers map to a coherent type scale; severity
+ * variants tint the value.
+ * ========================================================= */
+.sm-stat-tile {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: var(--sm-s-1);
+    padding-bottom: var(--sm-s-1);
+    padding-left: var(--sm-s-2);
+    padding-right: var(--sm-s-2);
+}
+.sm-stat-tile__label {
+    color: var(--sm-text-secondary);
+    margin-bottom: 2px;
+}
+.sm-stat-tile__value {
+    color: var(--sm-text);
+    font-size: var(--sm-text-md);
+    font-weight: 700;
+}
+.sm-stat-tile__subtitle {
+    color: var(--sm-text-tertiary);
+    margin-top: 2px;
+}
+/* Hero size — dashboard hero chips. */
+.sm-stat-tile--hero .sm-stat-tile__value {
+    font-size: var(--sm-text-xl);
+}
+/* Display size — budget screen / landing-page big numbers. */
+.sm-stat-tile--display .sm-stat-tile__value {
+    font-size: var(--sm-text-3xl);
+}
+/* Severity tinting on the value only — label + subtitle stay
+   secondary so the colour-coded value reads as the signal. */
+.sm-stat-tile__value--info    { color: var(--sm-info); }
+.sm-stat-tile__value--success { color: var(--sm-success); }
+.sm-stat-tile__value--warning { color: var(--sm-warning); }
+.sm-stat-tile__value--alert   { color: var(--sm-alert); }
+
+/* =========================================================
+ * EMPTY STATE PANEL — Phase 25.73
+ * ---------------------------------------------------------
+ * Used by EmptyStatePanel.Build(...) for "this list is empty
+ * because X, here's what to do" surfaces. Hero style centres
+ * content + adds a glyph; Card style is the default.
+ * ========================================================= */
+.sm-empty-inline {
+    color: var(--sm-text-secondary);
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left: 6px;
+    margin-right: 6px;
+}
+.sm-empty--card {
+    /* sm-card already provides chrome; nothing extra needed. */
+}
+.sm-empty--hero {
+    align-items: center;
+    margin-top: var(--sm-s-4);
+    margin-bottom: var(--sm-s-4);
+}
+.sm-empty__glyph {
+    color: var(--sm-text-tertiary);
+    text-align: center; justify-content: center; align-items: center;
+    margin-bottom: var(--sm-s-2);
+}
+.sm-empty__title {
+    margin-bottom: var(--sm-s-1);
+}
+.sm-empty__body {
+    color: var(--sm-text-secondary);
+    margin-top: 2px;
+    margin-bottom: var(--sm-s-2);
+    white-space: normal;
+}
+.sm-empty__cta {
+    align-self: flex-start;
+}
+
+/* =========================================================
+ * GAUGE BAR — Phase 25.74
+ * ---------------------------------------------------------
+ * Horizontal track + fill with severity-tinted fill colour.
+ * Used by BudgetScreen confidence gauge, audit-risk indicator,
+ * AgencyDashboard heat track, blowback meter.
+ * ========================================================= */
+.sm-gauge {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+.sm-gauge__track {
+    flex-grow: 1;
+    height: 100%;
+    background-color: var(--sm-surface-3);
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+    border-bottom-left-radius: 1px;
+    border-bottom-right-radius: 1px;
+}
+.sm-gauge__fill {
+    height: 100%;
+    width: 0;
+    background-color: var(--sm-text-tertiary);
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+    border-bottom-left-radius: 1px;
+    border-bottom-right-radius: 1px;
+}
+.sm-gauge__fill--info    { background-color: var(--sm-info); }
+.sm-gauge__fill--success { background-color: var(--sm-success); }
+.sm-gauge__fill--warning { background-color: var(--sm-warning); }
+.sm-gauge__fill--alert   { background-color: var(--sm-alert); }
+
+/* =========================================================
+ * TOGGLE CHIP — Phase 25.74
+ * ---------------------------------------------------------
+ * Filter / on-off chip used in canvas-header layer toggles
+ * + inbox filter chips. The on/off state classes drive the
+ * fill and text colour; the underlying chrome is the same
+ * sm-btn--ghost + sm-btn--xs + sm-btn--mono mix.
+ * ========================================================= */
+.sm-toggle-chip--on {
+    background-color: var(--sm-surface-3);
+    color: var(--sm-text);
+}
+.sm-toggle-chip--off {
+    background-color: rgba(0,0,0,0);
+    color: var(--sm-text-muted);
+}
+
+/* =========================================================
+ * DETAIL PANEL CHROME — Phase 25.75
+ * ---------------------------------------------------------
+ * Three-region (header / body / footer) layout used by every
+ * right-side detail pane. Body subsections stay free-form
+ * per design intent ("subsections can be reusable or inline,
+ * that's fine"), but the chrome shape is unified.
+ * ========================================================= */
+.sm-detail {
+    flex-direction: column;
+    flex-grow: 1;
+    background-color: var(--sm-surface);
+}
+.sm-detail__header {
+    flex-direction: column;
+    flex-shrink: 0;
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    border-bottom-width: var(--sm-stroke);
+    border-bottom-color: var(--sm-border);
+}
+.sm-detail__body {
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+}
+.sm-detail__footer {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+    background-color: var(--sm-surface-2);
+}
+
+/* =========================================================
  * INPUTS (TextField)
  * ========================================================= */
 
@@ -584,6 +764,11 @@ TextField > .unity-text-field__input,
 .sm-badge--success { background-color: var(--sm-success-soft); color: var(--sm-success); border-left-color: rgba(111,163,122,0.3); border-right-color: rgba(111,163,122,0.3); border-top-color: rgba(111,163,122,0.3); border-bottom-color: rgba(111,163,122,0.3); }
 .sm-badge--warning { background-color: var(--sm-warning-soft); color: var(--sm-warning); border-left-color: rgba(217,164,65,0.3); border-right-color: rgba(217,164,65,0.3); border-top-color: rgba(217,164,65,0.3); border-bottom-color: rgba(217,164,65,0.3); }
 .sm-badge--info    { background-color: var(--sm-info-soft);    color: var(--sm-info);    border-left-color: rgba(78,148,184,0.3); border-right-color: rgba(78,148,184,0.3); border-top-color: rgba(78,148,184,0.3); border-bottom-color: rgba(78,148,184,0.3); }
+/* Phase 25.71 — story badge variant for narrative-significance
+   surfaces (cinematic beat callouts, story-chain reveals, etc).
+   Tinted toward --sm-cat-2 (muted violet) which is reserved as the
+   story palette across the rest of the codebase. */
+.sm-badge--story   { background-color: rgba(139,123,163,0.14);  color: var(--sm-cat-2);   border-left-color: rgba(139,123,163,0.3); border-right-color: rgba(139,123,163,0.3); border-top-color: rgba(139,123,163,0.3); border-bottom-color: rgba(139,123,163,0.3); }
 
 /* =========================================================
  * STAT BLOCK (label / big number / sub)
