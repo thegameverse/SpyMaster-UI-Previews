@@ -551,6 +551,19 @@ body {
     padding-right: var(--sm-s-4);
 }
 
+/* Phase 25.82 — interactive variant. Pre-fix the BRIEF-tab IntelCardRow
+   and EdgeLine builders registered PointerEnter/Leave callbacks that
+   manually swapped backgroundColor between two hand-typed RGBA literals
+   on hover. Now: a single USS hover rule lifts the surface one notch so
+   every clickable card in the codebase reads with the same hover affordance
+   without any C# event wiring. Compose with `sm-card sm-card--clickable`. */
+.sm-card--clickable {
+    /* No baseline visual change — hover rule below provides the read. */
+}
+.sm-card--clickable:hover {
+    background-color: var(--sm-surface-2);
+}
+
 /* =========================================================
  * STAT TILE — Phase 25.72
  * ---------------------------------------------------------
