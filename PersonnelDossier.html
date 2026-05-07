@@ -1714,6 +1714,21 @@ TextField > .unity-text-field__input,
     letter-spacing: 0.5px;
 }
 
+/* Phase 25.83 — agent name line above the day-count value on the
+   LONGEST TENURE tile. Caption-weight, ellipsis on overflow so a
+   compound surname doesn't fight with the hero number below. The
+   tooltip on the parent tile carries the full readout. */
+.sm-pd__empty-stat-name {
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text-secondary);
+    letter-spacing: 0.4px;
+    font-weight: 700;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .sm-pd__empty-hint {
     font-size: var(--sm-text-xs);
     color: var(--sm-text-muted);
