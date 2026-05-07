@@ -1342,12 +1342,15 @@ TextField > .unity-text-field__input,
  * mockup has this exact treatment: dark strip, red title-chip, red dot,
  * white "OPENING BRIEF" label, light close button. */
 .sm-dd__header {
+    /* Pixel-measured against Director's Desk.pdf: header strip ~52px tall
+     * with 16-18px horizontal padding. Token --sm-s-3 (12px) reads as too
+     * tight against the reference's breathing room. */
     align-items: center;
     background-color: var(--sm-surface-2);
-    padding-left: var(--sm-s-3);
-    padding-right: var(--sm-s-3);
-    padding-top: var(--sm-s-2);
-    padding-bottom: var(--sm-s-2);
+    padding-left: 18px;
+    padding-right: 14px;
+    padding-top: 12px;
+    padding-bottom: 12px;
     border-bottom-width: 1px;
     border-bottom-color: var(--sm-border);
 }
@@ -1401,11 +1404,13 @@ TextField > .unity-text-field__input,
  * caps micro size. Reads as the institutional letterhead between the
  * agency banner and the letter body. */
 .sm-dd__sub-header {
+    /* Pixel-measured: sub-header ~28px tall, same horizontal alignment
+     * as the header strip above. */
     flex-direction: row;
     align-items: center;
     background-color: var(--sm-surface-2);
-    padding-left: var(--sm-s-3);
-    padding-right: var(--sm-s-3);
+    padding-left: 18px;
+    padding-right: 18px;
     padding-top: 6px;
     padding-bottom: 6px;
     border-bottom-width: 1px;
@@ -1427,13 +1432,17 @@ TextField > .unity-text-field__input,
  * the brief is 6 paragraphs; on shorter outputs the content area still
  * reserves enough vertical space to keep the modal proportions correct. */
 .sm-dd__content {
+    /* Pixel-measured: content area in the reference has ~36px horizontal
+     * padding (well inset from the modal edge so the prose has the right
+     * margin-feel of a real letter), ~28px top, ~24px bottom. The token
+     * --sm-s-6 = 24px reads as too tight on the 720px-wide modal. */
     flex-direction: column;
     flex-grow: 1;
     min-height: 460px;
-    padding-left: var(--sm-s-6);
-    padding-right: var(--sm-s-6);
-    padding-top: var(--sm-s-5);
-    padding-bottom: var(--sm-s-4);
+    padding-left: 36px;
+    padding-right: 36px;
+    padding-top: 28px;
+    padding-bottom: 24px;
 }
 
 /* ── Letter body ──

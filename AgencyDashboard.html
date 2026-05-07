@@ -1307,15 +1307,16 @@ TextField > .unity-text-field__input,
     margin-bottom: var(--sm-s-3);
 }
 .sm-ad__hero-body {
-    /* Trimmed hero pad from 16/20 → 10/14 so the greeting + chips
-       stack closer to the topbar and the panels below get more
-       vertical real estate. */
+    /* v2-polish reset to pattern values. The prior "10/14 trimmed for
+     * density" treatment made the hero feel cramped against the slab
+     * greeting; reference shows ~14/20 with the chips breathing on the
+     * right. */
     flex-direction: row;
     align-items: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: var(--sm-s-3);
-    padding-right: var(--sm-s-3);
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 .sm-ad__hero-left {
     flex-direction: row;
@@ -1403,17 +1404,21 @@ TextField > .unity-text-field__input,
    theme defaults (16 px) read as luxurious on a 1080p resolution; on
    the dashboard's 4-column row 2 + 3-column row 3 the inner content
    ends up cramped against generous chrome. */
+/* v2-polish — relaxed back toward pattern values. The prior 8/12 (--sm-s-2/3)
+ * paddings were a "tighten for Bloomberg density" override that contradicted
+ * the reference's more generous breathing room. Reference Agency Dashboard
+ * panels read at ~12/16 header and ~16/16 body. */
 .sm-ad .sm-panel__header {
-    padding-top: var(--sm-s-2);
-    padding-bottom: var(--sm-s-2);
-    padding-left: var(--sm-s-3);
-    padding-right: var(--sm-s-3);
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 16px;
+    padding-right: 16px;
 }
 .sm-ad .sm-panel__body {
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    padding-left: var(--sm-s-3);
-    padding-right: var(--sm-s-3);
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
 }
 
 /* ===== Headline stats (Row 1) — hidden; hs-* kept for test compatibility (AD-03) ===== */
@@ -1476,11 +1481,10 @@ TextField > .unity-text-field__input,
 
 /* ===== Row 2 ===== */
 .sm-ad__row2 {
-    /* Was 320 px tall + 24 px below. Tightened: 290 px tall + 12 px
-       gap so Row 3 (safe-houses / heat / activity) gets more screen,
-       and the inter-panel gutter drops 24 → 12 to match the screen
-       padding rhythm. */
-    height: 290px;
+    /* v2-polish — bumped to 320px to match the reference's panel height
+     * proportions (4-column row with breathing room around the gauge,
+     * sparkline, personnel grid). 12px inter-row gap kept tight. */
+    height: 320px;
     flex-direction: row;
     margin-bottom: var(--sm-s-3);
 }
@@ -1880,9 +1884,11 @@ TextField > .unity-text-field__input,
     flex-direction: row;
     flex-grow: 1;
 }
-/* 3-panel Row 3: Safe(5) · HeatThreat(3) · Feed(4) — AD-28 adds HeatThreat */
-.sm-ad__safe { flex-grow: 5; flex-basis: 0; margin-right: var(--sm-s-3); }
-.sm-ad__ht   { flex-grow: 3; flex-basis: 0; margin-right: var(--sm-s-3); }
+/* 3-panel Row 3: Safe(5) · HeatThreat(3) · Feed(4) — AD-28 adds HeatThreat
+ * v2-polish: inter-panel gap bumped to var(--sm-s-4) = 16px to match the
+ * reference's column rhythm. */
+.sm-ad__safe { flex-grow: 5; flex-basis: 0; margin-right: var(--sm-s-4); }
+.sm-ad__ht   { flex-grow: 3; flex-basis: 0; margin-right: var(--sm-s-4); }
 .sm-ad__feed { flex-grow: 4; flex-basis: 0; }
 
 /* Safe-houses table */
