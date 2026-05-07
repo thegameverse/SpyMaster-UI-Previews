@@ -117,6 +117,27 @@ body {
     --sm-approach-technical: #4E94B8; /* blue */
     --sm-approach-kinetic:   #D14B3D; /* red */
 
+    /* ── PERSONNEL ROLE COLORS — Phase 25.77
+       Per-role accent colours used by the PersonnelDossier card
+       avatars + ID portraits + role chips. Pre-fix the codebase
+       had four duplicate sets of `rgba(80,124,152,...)` /
+       `rgba(94,156,110,...)` / `rgba(190,144,64,...)` literals
+       across card-avatar and id-portrait CSS — same intent,
+       hand-typed RGBA. These tokens unify them so a future
+       palette tweak lands in one place.
+       Field   = steel blue (operational, action)
+       Analyst = field green (intelligence, analytical)
+       Researcher = warm tan (R&D, slow-burn) */
+    --sm-role-field:           #507C98;
+    --sm-role-field-soft:      rgba(80, 124, 152, 0.22);
+    --sm-role-field-border:    rgba(80, 124, 152, 0.62);
+    --sm-role-analyst:         #5E9C6E;
+    --sm-role-analyst-soft:    rgba(94, 156, 110, 0.22);
+    --sm-role-analyst-border:  rgba(94, 156, 110, 0.62);
+    --sm-role-researcher:      #BE9040;
+    --sm-role-researcher-soft: rgba(190, 144, 64, 0.22);
+    --sm-role-researcher-border: rgba(190, 144, 64, 0.62);
+
     /* ── BORDERS */
     --sm-border:          #212C3B;
     --sm-border-strong:   #2A3547;
