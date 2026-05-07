@@ -1560,6 +1560,10 @@ TextField > .unity-text-field__input,
    tokens. Pre-fix the RGBA values were hand-typed to 0.12 alpha
    matching each border's accent — same intent as every other "card
    with severity tint" pattern in the codebase, but inline. */
+/* Pixel-pattern: outcome badge gets 14/18 padding + min-width 140 so the
+ * SUCCESS / FAILURE / PARTIAL state reads as the cinematic header of the
+ * report (first thing the player sees). The slab-serif outcome-result
+ * below makes it land as a real stamp, not a SaaS badge. */
 .sm-mr__outcome-badge {
     flex-direction: row;
     align-items: center;
@@ -1569,13 +1573,13 @@ TextField > .unity-text-field__input,
     border-right-width: 0;
     border-top-width: 0;
     border-bottom-width: 0;
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 18px;
+    padding-right: 18px;
     margin-right: var(--sm-s-6);
     flex-shrink: 0;
-    min-width: 120px;
+    min-width: 140px;
 }
 .sm-mr__outcome-badge--failed {
     background-color: var(--sm-alert-soft);
@@ -1597,11 +1601,15 @@ TextField > .unity-text-field__input,
     color: var(--sm-text-muted);
     letter-spacing: var(--sm-letter-label);
 }
+/* Pattern: outcome result is the dramatic stamp word — slab serif at
+ * --sm-text-2xl so SUCCESS / FAILURE / PARTIAL lands as a proper
+ * cinematic stamp, not a generic SaaS badge label. */
 .sm-mr__outcome-result {
-    font-size: var(--sm-text-lg);
+    font-size: var(--sm-text-2xl);
     color: var(--sm-success);
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     font-weight: 700;
+    
 }
 
 /* Header stat blocks row */
@@ -2342,7 +2350,19 @@ TextField > .unity-text-field__input,
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     background-color: var(--sm-identity);
-    /* C# controller sets opacity in a 2.4s loop */
+    opacity: 1.0;
+    /* The breathing pulse comes from LiveDotAnimator.cs toggling the
+     * --dim modifier class every 1200ms; the transition below smooths
+     * the opacity flip into a continuous breath. */
+    transition-property: opacity;
+    transition-duration: 1200ms;
+    transition-timing-function: ease-in-out;
+}
+
+/* Modifier flipped on a 1200ms cadence by LiveDotAnimator. Combined with
+ * the transition above it produces a continuous 0.4 ↔ 1.0 breath. */
+.sm-live-dot--dim {
+    opacity: 0.4;
 }
 
 /* =========================================================

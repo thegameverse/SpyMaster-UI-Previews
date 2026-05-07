@@ -1362,13 +1362,16 @@ TextField > .unity-text-field__input,
 
 /* ── Stat strip ────────────────────────────────────────────────────────────── */
 
+/* Pixel-measured against Counter-Intel Suspects.pdf: chip values render in
+ * Inter Light at ~24px (institutional report numerals, not bold SaaS digits).
+ * Strip padding ~12/16. */
 .sm-mh__stat-strip {
     flex-direction: row;
-    margin: 0 16px 12px 16px;
+    margin: 0 16px 14px 16px;
     border-width: 1px;
     border-color: #212C3B;
     background-color: #172030;
-    padding: 8px 12px;
+    padding: 12px 16px;
     flex-shrink: 0;
 }
 
@@ -1377,14 +1380,15 @@ TextField > .unity-text-field__input,
     align-items: center;
     border-left-width: 1px;
     border-left-color: #212C3B;
-    padding: 0 8px;
+    padding: 0 12px;
 }
 .sm-mh__stat-chip--first { border-left-width: 0; }
 
 .sm-mh__chip-value {
-    font-size: 18px;
+    font-size: 24px;
+    font-weight: 400; font-style: normal;
     color: #E6EDF3;
-    margin-top: 2px;
+    margin-top: 4px;
     text-align: center; justify-content: center; align-items: center;
 }
 .sm-mh__chip-value--muted { color: #3E4A58; }
@@ -1426,12 +1430,18 @@ TextField > .unity-text-field__input,
 /*  MOLE SUSPECT CARD (built dynamically in C#)                               */
 /* ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ── Suspect card ────────────────────────────────────────────────────────────
+ * Pixel-measured against Counter-Intel Suspects.pdf: cards have ~16px gap
+ * between them, hairline border, amber left edge for caution semantic
+ * (not the alert-red of the drawer rim — separate concerns).
+ * Body padding ~12-16px on all sides; reference suspects card breathes. */
+
 .sm-mh__card {
     background-color: #172030;
     border-width: 1px;
     border-color: #212C3B;
     border-radius: 2px;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     border-left-width: 3px;
     border-left-color: #D9A441;   /* amber — CI caution, not emergency */
     overflow: hidden;
@@ -1442,16 +1452,19 @@ TextField > .unity-text-field__input,
 .sm-mh__card-header {
     flex-direction: row;
     align-items: center;
-    padding: 8px 12px 5px 12px;
+    padding: 12px 14px 10px 14px;
     border-bottom-width: 1px;
     border-bottom-color: #212C3B;
     background-color: rgba(217, 164, 65, 0.05);
 }
 
 .sm-mh__card-name {
-    font-size: 12px;
+    /* Pixel-measured: identity name reads ~13px Inter SemiBold in the
+     * reference, with gentler tracking than the prior 1.2px. */
+    font-size: 13px;
+    font-weight: 700;
     color: #E6EDF3;
-    letter-spacing: 1.2px;
+    letter-spacing: 0.8px;
     flex: 1;
 }
 
@@ -1487,9 +1500,14 @@ TextField > .unity-text-field__input,
 /* ── Card report text ────────────────────────────────────────────────────── */
 
 .sm-mh__card-report {
-    padding: 7px 12px 8px 12px;
-    font-size: 11px;
+    /* Pixel-measured: italic analyst prose at ~12-13px with breathing
+     * line-height. Pattern: this is the "human voice" register —
+     * italics signal "the analyst wrote this." */
+    padding: 12px 14px;
+    font-size: 12px;
+    font-style: italic;
     color: #8B97A6;
+    
     white-space: normal;
     text-align: left; justify-content: left; align-items: flex-start;
     border-bottom-width: 1px;
@@ -1501,13 +1519,17 @@ TextField > .unity-text-field__input,
 /* ── Card action buttons ─────────────────────────────────────────────────── */
 
 .sm-mh__card-actions {
+    /* Pixel-measured: ~12px vertical, 14px horizontal padding on the
+     * action row; two equal-width buttons each ~32px tall. */
     flex-direction: row;
-    padding: 6px 12px 8px 12px;
+    padding: 12px 14px;
 }
 
 .sm-mh__card-btn {
+    /* Pixel-measured: action buttons are ~32px tall, mono-caps label
+     * ~10px with 1.4px tracking — institutional decision-row feel. */
     flex: 1;
-    height: 26px;
+    height: 32px;
     font-size: 10px;
     letter-spacing: 1.4px;
     border-width: 1px;
@@ -1984,7 +2006,19 @@ TextField > .unity-text-field__input,
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     background-color: var(--sm-identity);
-    /* C# controller sets opacity in a 2.4s loop */
+    opacity: 1.0;
+    /* The breathing pulse comes from LiveDotAnimator.cs toggling the
+     * --dim modifier class every 1200ms; the transition below smooths
+     * the opacity flip into a continuous breath. */
+    transition-property: opacity;
+    transition-duration: 1200ms;
+    transition-timing-function: ease-in-out;
+}
+
+/* Modifier flipped on a 1200ms cadence by LiveDotAnimator. Combined with
+ * the transition above it produces a continuous 0.4 ↔ 1.0 breath. */
+.sm-live-dot--dim {
+    opacity: 0.4;
 }
 
 /* =========================================================

@@ -1429,12 +1429,15 @@ TextField > .unity-text-field__input,
 /*  DEFECTOR CONTACT CARD (built dynamically in C#)                           */
 /* ═══════════════════════════════════════════════════════════════════════════ */
 
+/* Pattern-spaced: defector cards get 16px gap between cards + breathing
+ * room inside (12/14 padding). Reads as a real personnel-file row, not
+ * a tight SaaS list item. */
 .sm-wi__card {
     background-color: #172030;
     border-width: 1px;
     border-color: #212C3B;
     border-radius: 2px;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     border-left-width: 3px;
     border-left-color: #D14B3D;   /* alert red — these are potentially hostile contacts */
     overflow: hidden;
@@ -1445,7 +1448,7 @@ TextField > .unity-text-field__input,
 .sm-wi__card-header {
     flex-direction: row;
     align-items: center;
-    padding: 8px 12px 5px 12px;
+    padding: 12px 14px 10px 14px;
     border-bottom-width: 1px;
     border-bottom-color: #212C3B;
     background-color: rgba(209, 75, 61, 0.05);
@@ -1490,7 +1493,7 @@ TextField > .unity-text-field__input,
 .sm-wi__card-meta {
     flex-direction: row;
     align-items: center;
-    padding: 5px 12px;
+    padding: 8px 14px;
     border-bottom-width: 1px;
     border-bottom-color: #212C3B;
 }
@@ -1513,10 +1516,15 @@ TextField > .unity-text-field__input,
 
 /* ── Card briefing text ──────────────────────────────────────────────────── */
 
+/* Pattern: italic analyst prose at 12px with breathing line-height. The
+ * defector briefing is "human voice" register — italics signal "this is
+ * what the analyst writes about this contact." */
 .sm-wi__card-briefing {
-    padding: 7px 12px 8px 12px;
-    font-size: 11px;
+    padding: 12px 14px;
+    font-size: 12px;
+    font-style: italic;
     color: #8B97A6;
+    
     white-space: normal;
     text-align: left; justify-content: left; align-items: flex-start;
     border-bottom-width: 1px;
@@ -1529,12 +1537,12 @@ TextField > .unity-text-field__input,
 
 .sm-wi__card-actions {
     flex-direction: row;
-    padding: 6px 12px 8px 12px;
+    padding: 12px 14px;
 }
 
 .sm-wi__card-btn {
     flex: 1;
-    height: 26px;
+    height: 32px;
     font-size: 10px;
     letter-spacing: 1.4px;
     
@@ -1913,7 +1921,19 @@ TextField > .unity-text-field__input,
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     background-color: var(--sm-identity);
-    /* C# controller sets opacity in a 2.4s loop */
+    opacity: 1.0;
+    /* The breathing pulse comes from LiveDotAnimator.cs toggling the
+     * --dim modifier class every 1200ms; the transition below smooths
+     * the opacity flip into a continuous breath. */
+    transition-property: opacity;
+    transition-duration: 1200ms;
+    transition-timing-function: ease-in-out;
+}
+
+/* Modifier flipped on a 1200ms cadence by LiveDotAnimator. Combined with
+ * the transition above it produces a continuous 0.4 ↔ 1.0 breath. */
+.sm-live-dot--dim {
+    opacity: 0.4;
 }
 
 /* =========================================================
