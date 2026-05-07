@@ -2043,10 +2043,10 @@ TextField > .unity-text-field__input,
       </div>
       <div class="sm-row sm-ig__type-filters">
         <button class="sm-ig__type-btn sm-ig__type-btn--active" id="type-all" title="Show every type of investigation arc.">ALL</button>
-        <button class="sm-ig__type-btn" id="type-person" title="Pers.">PERS</button>
-        <button class="sm-ig__type-btn" id="type-location" title="Loc.">LOC</button>
-        <button class="sm-ig__type-btn" id="type-document" title="Doc.">DOC</button>
-        <button class="sm-ig__type-btn" id="type-event" title="Evt.">EVT</button>
+        <button class="sm-ig__type-btn" id="type-person" title="Show only person nodes — targets, assets, suspects, conspirators, witnesses.">PERS</button>
+        <button class="sm-ig__type-btn" id="type-location" title="Show only location nodes — safe houses, meeting points, operational bases, dead drops.">LOC</button>
+        <button class="sm-ig__type-btn" id="type-document" title="Show only document nodes — recovered files, intercepts, dossiers, transcripts.">DOC</button>
+        <button class="sm-ig__type-btn" id="type-event" title="Show only event nodes — meetings, drops, transactions, observed activities.">EVT</button>
       </div>
       <div class="sm-ig__fragment-scroll" id="fragment-list" style="overflow-x:hidden; overflow-y:auto;"></div>
       <div class="sm-ig__nations-section">
@@ -2072,8 +2072,8 @@ TextField > .unity-text-field__input,
     </div>
     <div class="sm-col sm-ig__detail" id="detail-panel">
       <div class="sm-ig__detail-tabs">
-        <button class="sm-ig__detail-tab sm-ig__detail-tab--active" id="tab-detail" title="Switch to the detail tab.">NODE DETAIL</button>
-        <button class="sm-ig__detail-tab" id="tab-intel" title="Switch to the intel tab.">INTEL</button>
+        <button class="sm-ig__detail-tab sm-ig__detail-tab--active" id="tab-detail" title="View the selected node&#x27;s identity, confidence, summary, hypothesis, and connections.">NODE DETAIL</button>
+        <button class="sm-ig__detail-tab" id="tab-intel" title="View every raw + analyzed intel fragment that touches this node, organised by source and confidence.">INTEL</button>
       </div>
       <div class="sm-panel__header sm-ig__detail-hdr" id="detail-hdr-section">
         <div class="sm-panel__title">ECHELON FRAGMENT</div>
@@ -2115,8 +2115,8 @@ TextField > .unity-text-field__input,
             <input placeholder="Enter working theory…" />
           </div>
           <div class="sm-row sm-ig__hypothesis-actions">
-            <button class="sm-btn sm-ig__hyp-btn" id="btn-support" title="Support action.">+ SUPPORT</button>
-            <button class="sm-btn sm-ig__hyp-btn" id="btn-contradict" title="Contradict action.">– CONTRADICT</button>
+            <button class="sm-btn sm-ig__hyp-btn" id="btn-support" title="Mark this node as supporting your working theory. Increases the hypothesis confidence count and tints the node green on the canvas.">+ SUPPORT</button>
+            <button class="sm-btn sm-ig__hyp-btn" id="btn-contradict" title="Mark this node as contradicting your working theory. Decreases the hypothesis confidence count and tints the node red on the canvas.">– CONTRADICT</button>
           </div>
           <div class="sm-ig__hyp-summary sm-mono" id="hyp-summary"></div>
         </div>
@@ -2128,12 +2128,12 @@ TextField > .unity-text-field__input,
         </div>
         <div class="sm-ig__link-scroll" id="link-list" style="overflow-x:hidden; overflow-y:auto;"></div>
       </div>
-      <button class="sm-btn sm-btn--primary sm-ig__promote-btn" id="btn-promote" title="Promote action.">PROMOTES TO LEAD</button>
+      <button class="sm-btn sm-btn--primary sm-ig__promote-btn" id="btn-promote" title="Promote this fragment to an active lead. The fragment moves up the priority queue, surfaces RUN OP affordances against its open questions, and the analyst pipeline routes higher-skill operatives to it.">PROMOTES TO LEAD</button>
       <div class="sm-row sm-ig__detail-actions">
-        <button class="sm-btn sm-ig__action" id="btn-connect" title="Connect action.">CONNECT</button>
-        <button class="sm-btn sm-ig__action" id="btn-flag" title="Flag action.">FLAG</button>
-        <button class="sm-btn sm-ig__action" id="btn-assign-analyst" title="Assign analyst action.">ANALYSE</button>
-        <button class="sm-btn sm-btn--danger sm-ig__action" id="btn-remove" title="Remove action.">REMOVE</button>
+        <button class="sm-btn sm-ig__action" id="btn-connect" title="Enter link-drawing mode. Click another node on the canvas to draw a player-authored connection between the two — a working hypothesis the analyst pipeline doesn&#x27;t know about yet.">CONNECT</button>
+        <button class="sm-btn sm-ig__action" id="btn-flag" title="Mark this node as critical. Flagged nodes pulse on the canvas + sort to the top of the fragment list, making them quick to revisit during long investigations.">FLAG</button>
+        <button class="sm-btn sm-ig__action" id="btn-assign-analyst" title="Open the analyst roster to assign an officer to extract questions from this fragment. Skill + matching traits drive how many of the LLM&#x27;s proposed questions surface to the player.">ANALYSE</button>
+        <button class="sm-btn sm-btn--danger sm-ig__action" id="btn-remove" title="Discard this player-authored node from the canvas. Intel-driven nodes (those produced by the conspiracy system) cannot be removed — only working-theory nodes you added via + ADD NODE.">REMOVE</button>
       </div>
       <div class="sm-ig__intel-inventory" id="intel-inventory">
         <div class="sm-ig__intel-inv-header">
