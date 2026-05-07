@@ -400,6 +400,57 @@ body {
 }
 
 /* =========================================================
+ * BUTTON SIZES — Phase 25.67
+ * ---------------------------------------------------------
+ * Default .sm-btn = MD (32 px height). Variants below let
+ * callers shrink to SM / XS for dense UIs (canvas-header
+ * controls, chip-style filter buttons) or grow to LG for
+ * landing-page CTAs. NEVER set font-size / padding inline
+ * on a button — pick the right size variant. If an existing
+ * inline value doesn't match any variant, add the missing
+ * size HERE rather than override inline.
+ * ========================================================= */
+.sm-btn--xs {
+    height: 22px;
+    padding-left: var(--sm-s-2);
+    padding-right: var(--sm-s-2);
+    font-size: var(--sm-text-xs);
+}
+.sm-btn--sm {
+    height: 26px;
+    padding-left: var(--sm-s-2);
+    padding-right: var(--sm-s-2);
+    font-size: var(--sm-text-xs);
+}
+.sm-btn--lg {
+    height: 40px;
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    font-size: var(--sm-text-md);
+}
+
+/* Phase 25.67 — mono modifier for chip-style filter buttons
+   that read as labels. Combine with --xs / --sm. */
+.sm-btn--mono {
+    letter-spacing: 1px;
+}
+
+/* Phase 25.67 — IconButton: square button, no text. Default
+   32×32 (MD); --xs/--sm/--lg variants apply via .sm-btn-icon--xs
+   etc. The inner icon element should be sized to match. */
+.sm-btn-icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+}
+.sm-btn-icon--xs { width: 22px; height: 22px; }
+.sm-btn-icon--sm { width: 26px; height: 26px; }
+.sm-btn-icon--lg { width: 40px; height: 40px; }
+
+/* =========================================================
  * INPUTS (TextField)
  * ========================================================= */
 
