@@ -307,6 +307,11 @@ body {
 .sm-h2 { font-size: var(--sm-text-2xl); color: var(--sm-text); }
 .sm-h3 { font-size: var(--sm-text-xl);  color: var(--sm-text); }
 .sm-body { font-size: var(--sm-text-md); color: var(--sm-text); }
+/* Phase 25.69 — caption variant for the design-system TextLabel
+   factory. Smaller + secondary colour for legend / hint / metadata
+   text. Pre-fix dozens of inline `style.fontSize = 10` +
+   `style.color = secondary-grey` patterns reinvented this. */
+.sm-caption { font-size: var(--sm-text-xs); color: var(--sm-text-secondary); }
 .sm-secondary { color: var(--sm-text-secondary); }
 .sm-tertiary  { color: var(--sm-text-tertiary); }
 .sm-muted     { color: var(--sm-text-muted); }
@@ -449,6 +454,59 @@ body {
 .sm-btn-icon--xs { width: 22px; height: 22px; }
 .sm-btn-icon--sm { width: 26px; height: 26px; }
 .sm-btn-icon--lg { width: 40px; height: 40px; }
+
+/* =========================================================
+ * BORDERED CARD PANEL — Phase 25.70
+ * ---------------------------------------------------------
+ * Used by BorderedCardPanel.Build(...) to wrap content in
+ * the design-system card chrome: 1 px outer border + 3 px
+ * left-edge accent + radius + standardised padding.
+ * Severity variants (--info / --success / --warning / --alert
+ * / --story) tint the left edge; padding variants (compact /
+ * standard / loose) drive the inside breathing room.
+ * ========================================================= */
+.sm-card {
+    margin-left: 6px;
+    margin-right: 6px;
+    padding-top: var(--sm-s-2);
+    padding-bottom: var(--sm-s-2);
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    background-color: var(--sm-surface);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-left-width: 3px;
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-left-color: var(--sm-surface-3);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+}
+/* Severity accents — drive the left-edge tint. Token refs so
+   theme reskin updates every card. */
+.sm-card--info    { border-left-color: var(--sm-info); }
+.sm-card--success { border-left-color: var(--sm-success); }
+.sm-card--warning { border-left-color: var(--sm-warning); }
+.sm-card--alert   { border-left-color: var(--sm-alert); }
+.sm-card--story   { border-left-color: var(--sm-cat-2); }
+
+/* Padding tiers. */
+.sm-card--pad-compact {
+    padding-top: var(--sm-s-1);
+    padding-bottom: var(--sm-s-1);
+    padding-left: var(--sm-s-2);
+    padding-right: var(--sm-s-2);
+}
+.sm-card--pad-loose {
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+}
 
 /* =========================================================
  * INPUTS (TextField)
