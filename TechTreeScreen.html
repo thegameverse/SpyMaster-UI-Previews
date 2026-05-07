@@ -1381,6 +1381,18 @@ TextField > .unity-text-field__input,
 /* Locked rows dim slightly so unlocked / available pop visually. */
 .sm-tt__node-row--state-locked { opacity: 0.62; }
 
+/* Phase 25.85 — researching nodes get an info-blue inner border so
+   the player can spot in-progress work on the tree itself, not just
+   in the right-pane in-progress list. The branch's left-edge accent
+   stays as the discipline tell; the top/right/bottom frame swaps to
+   --sm-info to read as "the lab is working on this right now." */
+.sm-tt__node-row--state-researching {
+    background-color: var(--sm-surface-2);
+    border-top-color: var(--sm-info);
+    border-bottom-color: var(--sm-info);
+    border-right-color: var(--sm-info);
+}
+
 .sm-tt__node-icon {
     width: 28px;
     height: 28px;
