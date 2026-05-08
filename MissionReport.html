@@ -1675,15 +1675,18 @@ TextField > .unity-text-field__input,
 .sm-modal-body--cols-3 > .sm-dossier-section { width: 31.5%; margin-right: 0; }
 .sm-modal-body--cols-4 > .sm-dossier-section { width: 23%; margin-right: 0; }
 
-.sm-modal-body--cols-2 > .sm-dossier-section:nth-child(odd),
-.sm-modal-body--cols-3 > .sm-dossier-section:nth-child(3n-1),
-.sm-modal-body--cols-4 > .sm-dossier-section:nth-child(4n-2),
-.sm-modal-body--cols-4 > .sm-dossier-section:nth-child(4n-1),
-.sm-modal-body--cols-4 > .sm-dossier-section:nth-child(4n-3) {
-    /* nth-child gap utility — UI Toolkit supports limited :nth-child;
-       fallback uses left-margin per column to space items. If a
-       specific layout doesn't need this, override with margin: 0. */
-}
+/* Phase 41d — note: removed an empty `:nth-child(...)` selector
+   block that was here. UI Toolkit's USS parser rejected the
+   "(3n-1)" / "(4n-2)" formulas as "Recursive pseudo classes are
+   not supported", which made the ENTIRE theme.uss fail to load —
+   blanking out .sm-fill, .sm-row, .sm-col, .sm-screen, every
+   button class, every panel class. The visible symptom was
+   sm-fill spacers collapsing to 0 px (main-menu bottom row went
+   from spread "[CLASSIFIED] - quote - [WATCH BOARD]" to bunched
+   "[CLASSIFIED][quote][WATCH BOARD]") and screens losing their
+   paper-grain backdrops. The block was empty anyway — the
+   comment "fallback uses left-margin per column" never had a
+   real fallback. Removed. */
 
 /* Dossier section title — mono caps, 2.5 px tracking, bottom rule
    in alert-red. Reads as a document section header inside a
@@ -1747,35 +1750,48 @@ TextField > .unity-text-field__input,
 /* ── Assets/UI/Screens/MissionReport.uss ── */
 /* 06 · Mission Report — screen-specific styles */
 
+/* Phase 41d — root has paper-grain inset (matches the .sm-screen
+   foundation but the root carries `sm-mr` not `sm-screen` so we
+   apply it directly) and slightly more generous padding to match
+   the dossier register. */
 .sm-mr {
     flex-direction: column;
     background-color: var(--sm-bg);
-    padding-top: var(--sm-s-4);
-    padding-bottom: var(--sm-s-4);
-    padding-left: var(--sm-s-6);
-    padding-right: var(--sm-s-6);
+    background-image: url("project://database/Assets/UI/MainMenu/paper-grain.svg");
+    
+    
+    padding-top: var(--sm-s-5);
+    padding-bottom: var(--sm-s-5);
+    padding-left: var(--sm-s-8);
+    padding-right: var(--sm-s-8);
 }
 
-/* ===== HEADER ===== */
+/* ===== HEADER =====
+   Phase 41d — alert-red bottom rule (matches Director's Desk +
+   modal headers) instead of generic border. Op name uplifted to
+   slab register tracking. */
 .sm-mr__header {
     align-items: center;
-    margin-bottom: var(--sm-s-4);
+    margin-bottom: var(--sm-s-5);
     padding-bottom: var(--sm-s-4);
-    border-bottom-width: var(--sm-stroke);
-    border-bottom-color: var(--sm-border);
-    height: 64px;
+    border-bottom-width: 2px;
+    border-bottom-color: var(--sm-alert);
+    height: 72px;
 }
 
 .sm-mr__header-names { flex-grow: 1; justify-content: center; }
 .sm-mr__op-name {
     font-size: var(--sm-text-2xl);
     color: var(--sm-text);
-    letter-spacing: 1.5px;
+    font-weight: 700;
+    letter-spacing: 4px;
 }
 .sm-mr__op-meta {
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-tertiary);
-    letter-spacing: 0.5px;
+    
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-secondary);
+    letter-spacing: 2px;
+    font-weight: 700;
     margin-top: var(--sm-s-1);
 }
 
@@ -1788,18 +1804,24 @@ TextField > .unity-text-field__input,
 /* ===== BODY ===== */
 .sm-mr__body { margin-bottom: var(--sm-s-4); overflow: hidden; }
 
-/* Left timeline column */
+/* Left timeline column — paper-grain inset like the dossier
+   modals so it reads as a card on top of the screen, not a flat
+   SaaS panel. Info-blue 4 px left bar (this is operational
+   readout). Generous 16/22 padding on the inner header. */
 .sm-mr__timeline-col {
     width: 360px;
     flex-direction: column;
     overflow: hidden;
     margin-right: var(--sm-s-4);
     background-color: var(--sm-surface);
-    border-left-width: var(--sm-stroke);
+    background-image: url("project://database/Assets/UI/MainMenu/paper-grain.svg");
+    
+    
+    border-left-width: 4px;
     border-right-width: var(--sm-stroke);
     border-top-width: var(--sm-stroke);
     border-bottom-width: var(--sm-stroke);
-    border-left-color: var(--sm-border);
+    border-left-color: var(--sm-info);
     border-right-color: var(--sm-border);
     border-top-color: var(--sm-border);
     border-bottom-color: var(--sm-border);
@@ -1812,13 +1834,13 @@ TextField > .unity-text-field__input,
 .sm-mr__tl-header {
     flex-direction: row;
     align-items: center;
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 18px;
+    padding-right: 18px;
     border-bottom-width: var(--sm-stroke);
     border-bottom-color: var(--sm-border);
-    background-color: var(--sm-surface-2);
+    background-color: var(--sm-bg);
 }
 
 .sm-mr__tl-duration {
@@ -2047,11 +2069,32 @@ TextField > .unity-text-field__input,
     background-color: var(--sm-warning-soft);
     border-left-color: var(--sm-warning);
 }
+/* Phase 41h — outcome-check now renders as an SVG via background-
+   image instead of a Unicode "✓" / "✗" glyph in the Label's text.
+   The Label element is preserved (controller still SetText's to it
+   for test compatibility) but the text colour is forced fully
+   transparent so only the SVG shows. Sized 26×26 to match the
+   visual weight the prior 28-px Unicode glyph carried. */
 .sm-mr__outcome-check {
-    font-size: 28px;
-    color: var(--sm-success);
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
     margin-right: var(--sm-s-3);
-    font-weight: 700;
+    background-image: url("project://database/Assets/UI/Icons/check.svg");
+    
+    
+    color: rgba(0, 0, 0, 0);   /* hide any "✓" / "✗" text the controller writes */
+    font-size: 1px;
+}
+/* Tint + image flip with the outcome-badge state. Image stays
+   check.svg for success/partial (semantic), swaps to outcome-failed
+   for the failure path. */
+.sm-mr__outcome-badge--failed .sm-mr__outcome-check {
+    background-image: url("project://database/Assets/UI/Icons/outcome-failed.svg");
+    
+}
+.sm-mr__outcome-badge--partial .sm-mr__outcome-check {
+    
 }
 .sm-mr__outcome-labels { flex-direction: column; }
 .sm-mr__outcome-word {
@@ -2895,7 +2938,7 @@ TextField > .unity-text-field__input,
   <div class="sm-l1-base sm-screen sm-mr" id="mission-report">
     <div class="sm-row sm-mr__header">
       <div class="sm-mr__outcome-badge" id="outcome-badge">
-        <div class="sm-mr__outcome-check" id="outcome-check">✓</div>
+        <div class="sm-mr__outcome-check" id="outcome-check"></div>
         <div class="sm-mr__outcome-labels">
           <div class="sm-mr__outcome-word sm-label">OUTCOME</div>
           <div class="sm-mr__outcome-result sm-mono" id="outcome-result">SUCCESS</div>

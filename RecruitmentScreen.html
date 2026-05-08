@@ -1675,15 +1675,18 @@ TextField > .unity-text-field__input,
 .sm-modal-body--cols-3 > .sm-dossier-section { width: 31.5%; margin-right: 0; }
 .sm-modal-body--cols-4 > .sm-dossier-section { width: 23%; margin-right: 0; }
 
-.sm-modal-body--cols-2 > .sm-dossier-section:nth-child(odd),
-.sm-modal-body--cols-3 > .sm-dossier-section:nth-child(3n-1),
-.sm-modal-body--cols-4 > .sm-dossier-section:nth-child(4n-2),
-.sm-modal-body--cols-4 > .sm-dossier-section:nth-child(4n-1),
-.sm-modal-body--cols-4 > .sm-dossier-section:nth-child(4n-3) {
-    /* nth-child gap utility — UI Toolkit supports limited :nth-child;
-       fallback uses left-margin per column to space items. If a
-       specific layout doesn't need this, override with margin: 0. */
-}
+/* Phase 41d — note: removed an empty `:nth-child(...)` selector
+   block that was here. UI Toolkit's USS parser rejected the
+   "(3n-1)" / "(4n-2)" formulas as "Recursive pseudo classes are
+   not supported", which made the ENTIRE theme.uss fail to load —
+   blanking out .sm-fill, .sm-row, .sm-col, .sm-screen, every
+   button class, every panel class. The visible symptom was
+   sm-fill spacers collapsing to 0 px (main-menu bottom row went
+   from spread "[CLASSIFIED] - quote - [WATCH BOARD]" to bunched
+   "[CLASSIFIED][quote][WATCH BOARD]") and screens losing their
+   paper-grain backdrops. The block was empty anyway — the
+   comment "fallback uses left-margin per column" never had a
+   real fallback. Removed. */
 
 /* Dossier section title — mono caps, 2.5 px tracking, bottom rule
    in alert-red. Reads as a document section header inside a
@@ -1913,35 +1916,139 @@ TextField > .unity-text-field__input,
     letter-spacing: 1.6px;
 }
 
-/* Applicant card header — avatar + name + meta. Align-items flex-start
-   so the verification chip lands at the top of the row, not at the
-   vertical centre where it would overlap the meta line. */
+/* Phase 41d — applicant header is a THREE-COLUMN row that fills
+   the previously-empty space above BACKSTORY:
+     LEFT   identity card (avatar + name + role/age line)
+     MID    backstory prose (was below the head as its own section;
+            moves up into the head's empty middle to claim the space
+            and eliminate ~150 px of scroll)
+     RIGHT  document chrome stack (verification chip + FILE NO /
+            APPLIED / POSTED / STAGE stationery rows)
+   Same data, denser layout. */
 .sm-rc__applicant-head {
+    flex-direction: row;
+    align-items: stretch;
+    flex-shrink: 0;
+    padding: var(--sm-s-6);
+    background-color: var(--sm-surface-2);
+    border-bottom-width: 2px;
+    border-bottom-color: var(--sm-alert);
+}
+
+.sm-rc__head-col {
+    flex-direction: column;
+}
+
+/* LEFT — identity card (avatar + info). Fixed-ish width so the
+   middle backstory column gets the lion's share of horizontal
+   space for prose readability. */
+.sm-rc__head-col--identity {
     flex-direction: row;
     align-items: flex-start;
     flex-shrink: 0;
-    padding: var(--sm-s-5);
-    background-color: var(--sm-surface-2);
-    border-bottom-width: var(--sm-stroke);
-    border-bottom-color: var(--sm-border);
+    width: 360px;
+    margin-right: var(--sm-s-6);
 }
 
-/* Passport-photo-style avatar — tall rectangle with a heavy frame so
-   it reads as a paperclipped photo, not a generic avatar circle.
-   flex-shrink: 0 keeps the photo at its full size when the card is
-   tight on vertical or horizontal space. */
-.sm-rc__avatar {
-    width: 88px;
-    height: 108px;
+/* MID — backstory prose. flex-grow:1 so it claims remaining
+   horizontal space between identity (left) and meta (right). */
+.sm-rc__head-col--backstory {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    margin-right: var(--sm-s-6);
+}
+
+/* RIGHT — verification chip + stationery rows (FILE NO etc.).
+   Fixed width to match identity column rhythm. */
+.sm-rc__head-col--meta {
     flex-shrink: 0;
-    text-align: center; justify-content: center; align-items: center;
-    font-size: 36px;
-    color: var(--sm-text);
+    width: 240px;
+    align-items: stretch;
+}
+
+/* Backstory eyebrow + body inside the head's mid column. */
+.sm-rc__head-eyebrow {
+    font-size: var(--sm-text-micro);
+    color: var(--sm-alert);
+    letter-spacing: 2.5px;
     font-weight: 700;
+    padding-bottom: 4px;
+    margin-bottom: var(--sm-s-2);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--sm-alert);
+}
+.sm-rc__head-backstory {
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text-secondary);
+    white-space: normal;
+    font-style: italic;
+    
+}
+
+/* Stationery rows in the right column — mono caps key + value
+   pair. Compact rhythm so 4 rows fit cleanly under the chip. */
+.sm-rc__head-stat-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 6px;
+}
+.sm-rc__head-stat-key {
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-muted);
+    letter-spacing: 1.8px;
+    font-weight: 700;
+    width: 70px;
+    flex-shrink: 0;
+}
+.sm-rc__head-stat-val {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text);
+    flex-grow: 1;
+    flex-shrink: 1;
+    white-space: normal;
+    letter-spacing: 0.5px;
+}
+
+/* Passport-photo portrait frame — wraps either a PortraitComposer.Compose
+   result OR (fallback) an initials avatar. Gives the photo a heavy
+   stationery frame and pins it to its passport size so the identity
+   column never shifts horizontally between fallback and rendered states.
+   Phase 41e — added to expose the real composed face on the dossier
+   header (was initials-only before). */
+.sm-rc__head-portrait {
+    width: 100px;
+    height: 120px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
     background-color: var(--sm-surface-3);
     border-width: 1px;
     border-color: var(--sm-text-tertiary);
     margin-right: var(--sm-s-5);
+    overflow: hidden;
+}
+
+/* Force the composed portrait child (PortraitElement at PortraitSize.Full,
+   native 100x120) to fill the frame even if the rasterizer ever changes
+   its native dimensions. Mirrors the queue-portrait > VisualElement rule
+   so head + queue render the same face at the same fit. */
+.sm-rc__head-portrait > VisualElement {
+    width: 100%;
+    height: 100%;
+}
+
+/* Fallback initials when the composer returns null or throws. Sits inside
+   .sm-rc__head-portrait so we don't double-frame; it just paints letters
+   at full size of the parent. */
+.sm-rc__avatar {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    text-align: center; justify-content: center; align-items: center;
+    font-size: 36px;
+    color: var(--sm-text);
+    font-weight: 700;
 }
 
 .sm-rc__applicant-info {
@@ -2025,9 +2132,13 @@ TextField > .unity-text-field__input,
     flex-direction: column;
 }
 
-/* UI Toolkit doesn't support :first-child — the C# builder tags
-   the left column with --first to apply this gutter. */
-.sm-rc__dossier-col--first {
+/* Phase 41d — 3-column dossier layout. UI Toolkit doesn't support
+   :first-child / :nth-child, so the C# builder tags the left and
+   middle columns explicitly to apply the inter-column gutter. The
+   third (rightmost) column has no right margin so the row sits
+   flush to the modal body's right padding. */
+.sm-rc__dossier-col--first,
+.sm-rc__dossier-col--mid {
     margin-right: var(--sm-s-5);
 }
 
@@ -2981,7 +3092,7 @@ TextField > .unity-text-field__input,
           </div>
           <div>
             <div class="sm-modal-header__esc-hint">ESC</div>
-            <button class="sm-modal-header__close" id="resume-close" title="Close (Esc)">✕</button>
+            <button class="sm-close-btn" id="resume-close" title="Close (Esc)"></button>
           </div>
         </div>
         <div class="sm-modal-body" id="resume-body">

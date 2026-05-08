@@ -1675,15 +1675,18 @@ TextField > .unity-text-field__input,
 .sm-modal-body--cols-3 > .sm-dossier-section { width: 31.5%; margin-right: 0; }
 .sm-modal-body--cols-4 > .sm-dossier-section { width: 23%; margin-right: 0; }
 
-.sm-modal-body--cols-2 > .sm-dossier-section:nth-child(odd),
-.sm-modal-body--cols-3 > .sm-dossier-section:nth-child(3n-1),
-.sm-modal-body--cols-4 > .sm-dossier-section:nth-child(4n-2),
-.sm-modal-body--cols-4 > .sm-dossier-section:nth-child(4n-1),
-.sm-modal-body--cols-4 > .sm-dossier-section:nth-child(4n-3) {
-    /* nth-child gap utility — UI Toolkit supports limited :nth-child;
-       fallback uses left-margin per column to space items. If a
-       specific layout doesn't need this, override with margin: 0. */
-}
+/* Phase 41d — note: removed an empty `:nth-child(...)` selector
+   block that was here. UI Toolkit's USS parser rejected the
+   "(3n-1)" / "(4n-2)" formulas as "Recursive pseudo classes are
+   not supported", which made the ENTIRE theme.uss fail to load —
+   blanking out .sm-fill, .sm-row, .sm-col, .sm-screen, every
+   button class, every panel class. The visible symptom was
+   sm-fill spacers collapsing to 0 px (main-menu bottom row went
+   from spread "[CLASSIFIED] - quote - [WATCH BOARD]" to bunched
+   "[CLASSIFIED][quote][WATCH BOARD]") and screens losing their
+   paper-grain backdrops. The block was empty anyway — the
+   comment "fallback uses left-margin per column" never had a
+   real fallback. Removed. */
 
 /* Dossier section title — mono caps, 2.5 px tracking, bottom rule
    in alert-red. Reads as a document section header inside a
@@ -1834,7 +1837,13 @@ TextField > .unity-text-field__input,
     background-color: var(--sm-surface-2);
     border-radius: 1px;
     margin-right: 12px;
-    /* C# can set background-image to a silhouette SVG */
+    /* Phase 41h — fallback silhouette SVG so the box doesn't render
+       blank if the controller's dynamic icon assignment is skipped
+       or fails. C# can still override via inline style.backgroundImage;
+       this rule is the safety net. */
+    background-image: url("project://database/Assets/UI/Icons/suspect-silhouette.svg");
+    
+    
 }
 
 .sm-ico__identity-details {
