@@ -1290,21 +1290,26 @@ TextField > .unity-text-field__input,
 /* 02 · Agency Dashboard — screen-specific styles */
 
 .sm-ad {
-    /* Tightened from 24 px gutter → 14 px so the dashboard reads as
-       dense as the Recruitment / Mission Graph screens. The 24 px was
-       leaving the panels visually disconnected from the topbar. */
+    /* v2-polish Session 6 breathing-room pass — outer padding lifted
+       12 → 16 (s-3 → s-4) per AgencyDashboard reference PDF. Earlier
+       Bloomberg-density pass tightened to 12 to disconnect-prevent
+       against the topbar; the topbar visual chrome (border + 64px
+       height) now provides enough separation that 16 reads cleanly
+       without the disconnected feel. */
     flex-direction: column;
     background-color: var(--sm-bg);
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    padding-left: var(--sm-s-3);
-    padding-right: var(--sm-s-3);
+    padding-top: var(--sm-s-4);
+    padding-bottom: var(--sm-s-4);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
 }
 
 /* ===== Hero banner (AD-01 / AD-02) ===== */
 .sm-ad__hero {
+    /* v2-polish Session 6 — inter-row gap lifted s-3 → s-4 so hero
+       breathes against row2 per reference PDF. */
     flex-shrink: 0;
-    margin-bottom: var(--sm-s-3);
+    margin-bottom: var(--sm-s-4);
 }
 .sm-ad__hero-body {
     /* v2-polish reset to pattern values. The prior "10/14 trimmed for
@@ -1481,12 +1486,13 @@ TextField > .unity-text-field__input,
 
 /* ===== Row 2 ===== */
 .sm-ad__row2 {
-    /* v2-polish — bumped to 320px to match the reference's panel height
-     * proportions (4-column row with breathing room around the gauge,
-     * sparkline, personnel grid). 12px inter-row gap kept tight. */
+    /* v2-polish Session 6 — height 320px matches the reference's
+     * panel height proportions (4-column row with breathing room
+     * around the gauge, sparkline, personnel grid). Inter-row gap
+     * relaxed s-3 → s-4 in this session to fully match reference. */
     height: 320px;
     flex-direction: row;
-    margin-bottom: var(--sm-s-3);
+    margin-bottom: var(--sm-s-4);
 }
 
 /* ========== Phase 25.48 — Investigation Arc ribbon ==========
@@ -1495,7 +1501,8 @@ TextField > .unity-text-field__input,
    so it doesn't crowd Row 3, but big enough to render the stage rail
    legibly. */
 .sm-ad__arc {
-    margin-bottom: var(--sm-s-3);
+    /* v2-polish Session 6 — inter-row gap relaxed s-3 → s-4. */
+    margin-bottom: var(--sm-s-4);
 }
 .sm-ad__arc-body {
     flex-direction: column;

@@ -1402,7 +1402,7 @@ TextField > .unity-text-field__input,
     text-align: center; justify-content: center; align-items: center;
 }
 .sm-ti__chip-value--resolved {
-    color: #6FA37A;
+    color: var(--sm-success);
 }
 .sm-ti__chip-value--alert {
     color: var(--sm-identity);
@@ -1435,7 +1435,7 @@ TextField > .unity-text-field__input,
 }
 .sm-ti__empty-title {
     font-size: 13px;
-    color: #6FA37A;
+    color: var(--sm-success);
     letter-spacing: 2px;
     
     margin-bottom: 8px;
@@ -1453,11 +1453,15 @@ TextField > .unity-text-field__input,
 /* ═══════════════════════════════════════════════════════════════════════════ */
 
 .sm-ti__card {
+    /* v2-polish Session 7 — inter-card gap 10 → 16px to match the
+       Mole Hunt / Walk-In drawer anchors (WalkIn was raised in
+       Session 2 per V2_POLISH_COMPLETE). The TipInbox cards were
+       still on the older Bloomberg-density spacing. */
     background-color: var(--sm-surface-2);
     border-width: 1px;
     border-color: var(--sm-border);
     border-radius: 2px;
-    margin-bottom: 10px;
+    margin-bottom: 16px;
     overflow: hidden;
 }
 .sm-ti__card:hover {
@@ -1481,9 +1485,11 @@ TextField > .unity-text-field__input,
 /* ── Card header row ────────────────────────────────────────────────────────── */
 
 .sm-ti__card-header {
+    /* v2-polish Session 7 — header padding 8/12/6/12 → 12/14/10/14
+       to match the Mole Hunt / Walk-In drawer anchors. */
     flex-direction: row;
     align-items: center;
-    padding: 8px 12px 6px 12px;
+    padding: 12px 14px 10px 14px;
     border-bottom-width: 1px;
     border-bottom-color: var(--sm-border);
 }
@@ -2054,7 +2060,7 @@ TextField > .unity-text-field__input,
 <div class="uxml-root">
   <div class="sm-l3-overlays sm-ti" id="tip-inbox-overlay">
     <div class="sm-ti__backdrop" id="ti-backdrop"></div>
-    <div class="sm-col sm-ti__drawer" id="ti-drawer">
+    <div class="sm-col sm-ti__drawer sm-paper-grain" id="ti-drawer">
       <div class="sm-panel__header sm-ti__drawer-header">
         <div class="sm-panel__title">TIP INBOX</div>
         <div class="sm-badge sm-ti__count-badge" id="ti-count-badge"></div>

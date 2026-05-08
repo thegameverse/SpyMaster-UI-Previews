@@ -1388,7 +1388,7 @@ TextField > .unity-text-field__input,
     margin-top: 2px;
     text-align: center; justify-content: center; align-items: center;
 }
-.sm-wi__chip-value--success { color: #6FA37A; }
+.sm-wi__chip-value--success { color: var(--sm-success); }
 .sm-wi__chip-value--muted   { color: var(--sm-text-muted); }
 
 /* ── Scroll / empty ────────────────────────────────────────────────────────── */
@@ -1557,8 +1557,8 @@ TextField > .unity-text-field__input,
 
 /* RECRUIT — success green */
 .sm-wi__card-btn--recruit {
-    color: #6FA37A;
-    border-color: #6FA37A;
+    color: var(--sm-success);
+    border-color: var(--sm-success);
     background-color: transparent;
 }
 .sm-wi__card-btn--recruit:hover {
@@ -1996,7 +1996,7 @@ TextField > .unity-text-field__input,
 <div class="uxml-root">
   <div class="sm-l3-overlays sm-wi" id="walkin-inbox-overlay">
     <div class="sm-wi__backdrop" id="wi-backdrop"></div>
-    <div class="sm-col sm-wi__drawer" id="wi-drawer">
+    <div class="sm-col sm-wi__drawer sm-paper-grain" id="wi-drawer">
       <div class="sm-panel__header sm-wi__drawer-header">
         <div class="sm-panel__title">DEFECTOR CONTACTS</div>
         <div class="sm-badge sm-wi__count-badge" id="wi-count-badge"></div>
