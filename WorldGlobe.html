@@ -264,20 +264,31 @@ body {
  * Slab. Until the asset lands, falls back to sans-serif which is
  * acceptable but not the polish target.
  * ========================================================= */
+/* Phase 41d — base .sm-title-slab leaves letter-spacing UNSET so
+   screen-specific classes (e.g. .sm-mm__wordmark which sets 14 px)
+   continue to win. Pre-Phase-41d I added letter-spacing: 4px on
+   the base, which loaded AFTER MainMenu.uss (theme-present-polish
+   is the last <Style src="…"/> in MainMenu.uxml) and overrode the
+   wordmark's 14 px tracking. The user noticed: "main menu is one
+   screen we don't want to change anything." Reverting the base
+   here restores the wordmark exactly as it was. Tracking
+   variations now live ONLY on the size variants (--xl, --display)
+   so any screen opting into those gets the tracked treatment. */
 .sm-title-slab {
     
     font-weight: 700;
     font-size: var(--sm-text-xl);
     color: var(--sm-text);
-    letter-spacing: 0;
 }
 
 .sm-title-slab--xl {
     font-size: var(--sm-text-2xl);
+    letter-spacing: 6px;
 }
 
 .sm-title-slab--display {
     font-size: var(--sm-text-3xl);
+    letter-spacing: 8px;
 }
 
 /* =========================================================

@@ -233,6 +233,31 @@ body {
     --sm-stroke: 1px;
     --sm-stroke-2: 2px;
 
+    /* ── SCROLLBAR — Phase 41 consolidation
+       Pre-fix Scrollbars.uss hand-typed `rgba(255,255,255,0.10)` /
+       `rgba(78,148,184,0.80)` directly. Tokenized so a future
+       palette tweak (e.g. era reskin: brassy thumb in coldwar
+       theme) lands in one place.
+         track  : 1 px rule along scroller cross-axis edge
+         idle   : barely-visible thumb when not interacting
+         hover  : confirms interactivity
+         active : full info-blue while dragging */
+    --sm-scrollbar-track:        rgba(33, 44, 59, 0.55);
+    --sm-scrollbar-thumb-idle:   rgba(255, 255, 255, 0.10);
+    --sm-scrollbar-thumb-hover:  rgba(255, 255, 255, 0.24);
+    --sm-scrollbar-thumb-active: rgba(78, 148, 184, 0.80);
+
+    /* ── PANEL OVERLAYS — Phase 41 consolidation
+       Translucent surfaces used by floating overlays (cinematic
+       chrome, popup panels, scrim layers) where the player should
+       still feel the layer below. Pre-fix WorldGlobe.uss left-rail
+       used `rgba(10,14,19,0.85)` directly — a tinted variant of
+       --sm-bg with explicit transparency. Now: derived once. */
+    --sm-panel-dim:        rgba(10, 14, 19, 0.85);     /* nav-bg with transparency */
+    --sm-panel-floating:   rgba(8, 12, 18, 0.96);      /* deeper, for full popups */
+    --sm-scrim:            rgba(8, 15, 20, 0.85);      /* modal scrim — matches MainMenu modal-scrim */
+    --sm-scrim-strong:     rgba(8, 15, 20, 0.96);      /* heavier scrim for full takeovers (cinematic) */
+
     /* =========================================================
      * Phase v2-polish (May 2026) — DIFFERENTIATION TOKENS
      * Reference: Assets/../Claude Design/PRESENT_VISUAL_DIFFERENTIATION.md
@@ -317,6 +342,33 @@ body {
 .sm-col { flex-direction: column; }
 .sm-fill { flex-grow: 1; }
 
+/* =========================================================
+ * SCREEN ROOT — Phase 41 visual signature propagation
+ *
+ * Pre-Phase-41 .sm-screen had no base styling; each screen
+ * declared its own background-color + padding. Result: the
+ * project felt like 12 different SaaS screens with shared
+ * tokens, not one institutional report system.
+ *
+ * Now .sm-screen (applied on every screen's root in UXML)
+ * carries the agency-document signature automatically:
+ *   - Deep navy bg (var(--sm-bg))
+ *   - Subliminal paper-grain texture overlay (3-4% opacity
+ *     SVG matching the main menu's printed-report feel)
+ *   - Single source of "this is a SpyMaster screen" — change
+ *     one rule here and every screen lifts together.
+ * The paper-grain SVG itself is sized via stretch-to-fill;
+ * its noise pattern is dense enough that screens of any size
+ * read as "printed paper" without visible tiling seams.
+ * ========================================================= */
+.sm-screen {
+    flex-grow: 1;
+    background-color: var(--sm-bg);
+    background-image: url("project://database/Assets/UI/MainMenu/paper-grain.svg");
+    
+    
+}
+
 /* Phase 37-transitions — screen fade-in.
  * SpyMasterShellUI.ShowScreen() adds this class on the cloned screen
  * tree, sets opacity:0 immediately, then schedules opacity:1 one frame
@@ -357,6 +409,13 @@ body {
  * ========================================================= */
 .sm-panel {
     background-color: var(--sm-surface);
+    /* Phase 41 — paper-grain texture on every panel surface. The
+       same subliminal noise the screen carries, layered onto
+       cards/panels so they read as inset paper rather than as
+       glossy SaaS tiles. -unity-background-image-tint-color sets
+       the alpha; the SVG provides the noise. */
+    background-image: url("project://database/Assets/UI/MainMenu/paper-grain.svg");
+    
     border-left-width: var(--sm-stroke);
     border-right-width: var(--sm-stroke);
     border-top-width: var(--sm-stroke);
@@ -378,21 +437,27 @@ body {
     border-bottom-right-radius: 0;
 }
 
+/* Phase 41 — panel header bumped from 12/16 to 14/18 for breathing
+   room matching main-menu chrome strips (statusbar 32 px, etc.).
+   Tighter values read as cramped against the new screen-level
+   paper-grain backdrop. Title font upgraded to mono for the
+   institutional-document feel. */
 .sm-panel__header {
     flex-direction: row;
     align-items: center;
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 18px;
+    padding-right: 18px;
     border-bottom-width: var(--sm-stroke);
     border-bottom-color: var(--sm-border);
     background-color: var(--sm-surface-2);
 }
 
 .sm-panel__title {
+    
     font-size: var(--sm-text-sm);
-    letter-spacing: var(--sm-letter-label);
+    letter-spacing: 2.5px;
     font-weight: 700;
     color: var(--sm-text);
     text-align: left; justify-content: left; align-items: flex-start;
@@ -400,10 +465,10 @@ body {
 }
 
 .sm-panel__body {
-    padding-top: var(--sm-s-4);
-    padding-bottom: var(--sm-s-4);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
+    padding-top: 18px;
+    padding-bottom: 18px;
+    padding-left: 18px;
+    padding-right: 18px;
 }
 
 /* =========================================================
@@ -418,13 +483,42 @@ body {
 }
 
 .sm-label {
+    /* Phase 41 — labels use mono caps with proper letter-spacing.
+       Pre-Phase-41 a label was sans + tiny letter-spacing; reads as
+       generic. Mono caps + 2px spacing reads as institutional
+       document chrome (the main-menu signature). */
+    
     font-size: var(--sm-text-xs);
-    letter-spacing: var(--sm-letter-label);
+    letter-spacing: 2px;
     color: var(--sm-text-secondary);
+    font-weight: 700;
 }
-.sm-h1 { font-size: var(--sm-text-3xl); font-weight: 400; font-style: normal; color: var(--sm-text); }
-.sm-h2 { font-size: var(--sm-text-2xl); color: var(--sm-text); }
-.sm-h3 { font-size: var(--sm-text-xl);  color: var(--sm-text); }
+/* Phase 41 — h1/h2/h3 lifted to match the SPYMASTER wordmark
+   register: Inter Bold + heavy letter-spacing. Pre-Phase-41 these
+   were sans at default spacing, indistinguishable from body text
+   sized up. The wordmark uses 14px tracking on a 80pt cap — the
+   smaller-step titles below use proportional tracking so the
+   typographic family is consistent. The slab fallback chain
+   (--sm-font-slab) didn't help because the slab .ttf isn't
+   shipped; Inter Bold + heavy letter-spacing IS the look. */
+.sm-h1 {
+    font-size: var(--sm-text-3xl);
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--sm-text);
+}
+.sm-h2 {
+    font-size: var(--sm-text-2xl);
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--sm-text);
+}
+.sm-h3 {
+    font-size: var(--sm-text-xl);
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--sm-text);
+}
 .sm-body { font-size: var(--sm-text-md); color: var(--sm-text); }
 /* Phase 25.69 — caption variant for the design-system TextLabel
    factory. Smaller + secondary colour for legend / hint / metadata
@@ -444,14 +538,21 @@ body {
  * BUTTONS
  *   Usage: <Button class="sm-btn sm-btn--primary" text="SIGN OFF" />
  * ========================================================= */
+/* Phase 41 — button height + tracking lifted to match the main
+   menu (60 px tall buttons with generous padding). The 32 px
+   default was reading as a SaaS form control; bumping to 36 px +
+   wider letter-spacing matches the institutional-document register
+   the rest of the project is now in. .sm-btn--xs / --sm / --lg
+   variants below provide overrides for table cells / dialogs that
+   need compact controls. */
 .sm-btn {
-    height: 32px;
-    padding-left: var(--sm-s-3);
-    padding-right: var(--sm-s-3);
+    height: 36px;
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
     padding-top: 0;
     padding-bottom: 0;
     margin: 0;
-    background-color: rgba(0,0,0,0);
+    background-color: rgba(255, 255, 255, 0.02);
     border-left-width: var(--sm-stroke);
     border-right-width: var(--sm-stroke);
     border-top-width: var(--sm-stroke);
@@ -466,7 +567,7 @@ body {
     border-bottom-right-radius: var(--sm-r-2);
     color: var(--sm-text);
     font-size: var(--sm-text-sm);
-    letter-spacing: var(--sm-letter-label);
+    letter-spacing: 1.5px;
     font-weight: 700;
     transition-property: background-color, border-color, color;
     transition-duration: var(--sm-dur-fast);
@@ -1286,6 +1387,363 @@ TextField > .unity-text-field__input,
 .sm-l4-modals   { /* modal layer */ }
 .sm-l5-tooltips { /* tooltip layer */ }
 
+/* =========================================================
+ * MODAL FRAMEWORK — Phase 41
+ *
+ * Reusable full-screen-takeover pattern matching the Director's
+ * Desk visual register. Use for any "full concentration"
+ * inspection surface where the player should NOT be looking at
+ * background context (mission detail, applicant dossier,
+ * personnel record, intel fragment). Floating side panels are
+ * out — modals are in.
+ *
+ * Structure:
+ *   .sm-modal-overlay    — full-screen scrim, picks click events
+ *   ├── .sm-modal-card   — centered card, 720px width by default
+ *   │   ├── .sm-modal-header   — top strip: badge + title + close
+ *   │   ├── .sm-modal-sub      — optional metadata sub-strip
+ *   │   ├── .sm-modal-body     — scrollable content area
+ *   │   └── .sm-modal-footer   — action row (CTAs, dismiss hint)
+ *
+ * Variants:
+ *   .sm-modal-card--narrow  — 520px (compact dossiers)
+ *   .sm-modal-card--wide    — 880px (intel + connections)
+ *   .sm-modal-card--xl      — 1080px (planner-style mission detail)
+ *
+ * The C# controller toggles `.sm-modal-overlay` display:none/flex
+ * to show/hide. Esc closes; clicking the scrim (not the card)
+ * also closes. Card click events are stopped at the card level
+ * so player drags inside content don't bubble to scrim.
+ * ========================================================= */
+
+.sm-modal-overlay {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--sm-scrim);
+    /* Fade in the scrim when display flips None→Flex. The C# show
+       path sets opacity to 0 first, schedules opacity=1 next frame
+       so this transition fires. Same pattern as toast slide-in. */
+    transition-property: opacity;
+    transition-duration: var(--sm-dur-base);
+    transition-timing-function: ease-out;
+}
+
+.sm-modal-card {
+    /* Default sizing — generous, content-led. Pre-Phase-41 the
+       Director's Desk modal capped at 720 px because it held a single
+       letter; rich-content modals (mission dossier, applicant resume,
+       personnel record) were forced into the same narrow column and
+       wasted ~50% of the viewport on the scrim. Default is now 1100 px
+       with 92% max so the modal genuinely USES the screen, with the
+       visual hierarchy carried by spacing + typography rather than
+       cramped layout. Smaller variants stay available for compact
+       confirmation modals. */
+    width: 1100px;
+    max-width: 92%;
+    max-height: 92%;
+    flex-direction: column;
+    background-color: var(--sm-surface);
+    background-image: url("project://database/Assets/UI/MainMenu/paper-grain.svg");
+    
+    border-left-width: var(--sm-stroke-2);
+    border-right-width: var(--sm-stroke-2);
+    border-top-width: var(--sm-stroke-2);
+    border-bottom-width: var(--sm-stroke-2);
+    border-left-color: var(--sm-border-strong);
+    border-right-color: var(--sm-border-strong);
+    border-top-color: var(--sm-border-strong);
+    border-bottom-color: var(--sm-border-strong);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    overflow: hidden;
+}
+/* Compact — quick confirmations + small dossiers (3-5 fields). */
+.sm-modal-card--narrow  { width: 520px; }
+/* Standard letter — Director's Desk size for prose-heavy single-column. */
+.sm-modal-card--letter  { width: 720px; }
+/* Default rich content — mission dossier, mid-density inspection. */
+.sm-modal-card--wide    { width: 1100px; }
+/* Spread — applicant resume, mission planner detail, anything that
+   benefits from genuine multi-column layout. Uses 92% of the viewport
+   so the player feels they're looking at the whole record. */
+.sm-modal-card--spread  {
+    width: 92%;
+    max-width: 1600px;
+}
+
+/* Card entrance animation. Pairs with the scrim's fade-in: the card
+   scales from 0.97 → 1.0 while opacity goes 0 → 1, giving a "the
+   document just landed on the desk" feel rather than an abrupt
+   pop. Same easing curve / duration as the scrim so they feel like
+   one motion. */
+.sm-modal-card {
+    transition-property: opacity, scale;
+    transition-duration: var(--sm-dur-base);
+    transition-timing-function: ease-out;
+}
+
+/* ── Header strip ─────────────────────────────────────────────
+   Dark background with classified-red accent BADGE only — same
+   register as Director's Desk so multiple modal types feel like
+   the same UI family. The header is sticky (not part of the
+   scrollable body) so the close button is always reachable. */
+.sm-modal-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 18px;
+    padding-right: var(--sm-s-3);
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    background-color: var(--sm-surface-2);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--sm-border);
+    flex-shrink: 0;
+}
+
+.sm-modal-header__lead {
+    flex-direction: row;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.sm-modal-header__badge {
+    
+    font-size: var(--sm-text-micro);
+    font-weight: 700;
+    letter-spacing: var(--sm-letter-mono-caps);
+    color: var(--sm-alert);
+    background-color: var(--sm-alert-soft);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: var(--sm-alert);
+    border-right-color: var(--sm-alert);
+    border-top-color: var(--sm-alert);
+    border-bottom-color: var(--sm-alert);
+    padding-left: var(--sm-s-2);
+    padding-right: var(--sm-s-2);
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-right: var(--sm-s-3);
+}
+
+.sm-modal-header__title {
+    font-size: var(--sm-text-lg);
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--sm-text);
+}
+
+.sm-modal-header__sub {
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-muted);
+    letter-spacing: var(--sm-letter-mono-caps);
+    
+    margin-top: 2px;
+}
+
+.sm-modal-header__esc-hint {
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-muted);
+    letter-spacing: var(--sm-letter-mono-caps);
+    
+    margin-right: var(--sm-s-2);
+}
+
+.sm-modal-header__close {
+    width: 28px;
+    height: 28px;
+    padding-left: 0; padding-right: 0;
+    padding-top: 0; padding-bottom: 0;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0; border-right-width: 0;
+    border-top-width: 0; border-bottom-width: 0;
+    color: var(--sm-text-tertiary);
+    font-size: var(--sm-text-md);
+    font-weight: 700;
+}
+.sm-modal-header__close:hover {
+    color: var(--sm-alert);
+}
+
+/* ── Sub-header strip (optional) ──────────────────────────────
+   Stationery-style metadata between header + body. Used for
+   "FILE 2025-001 · ACTIVE · 5 LEADS" stat strips. */
+.sm-modal-sub {
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--sm-surface-2);
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-top: var(--sm-s-1);
+    padding-bottom: var(--sm-s-1);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--sm-border);
+    flex-shrink: 0;
+}
+
+.sm-modal-sub__cell {
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-secondary);
+    letter-spacing: var(--sm-letter-mono-caps);
+    
+    margin-right: var(--sm-s-3);
+}
+
+/* ── Body ─────────────────────────────────────────────────────
+   Generous inset padding. Director's Desk uses 36 / 28 / 24 for
+   prose-heavy letters; rich-content modals use even more breathing
+   room (40 / 32 / 28) so multi-section dossiers don't crowd the
+   card edges. flex-grow=1 so the body fills available card height;
+   min-height keeps the modal from collapsing on short content. */
+.sm-modal-body {
+    flex-direction: column;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 32px;
+    padding-bottom: 28px;
+    overflow: hidden;
+}
+.sm-modal-card--narrow .sm-modal-body {
+    padding-left: var(--sm-s-6);
+    padding-right: var(--sm-s-6);
+    padding-top: var(--sm-s-5);
+    padding-bottom: var(--sm-s-5);
+}
+.sm-modal-card--letter .sm-modal-body {
+    /* Director's-Desk-equivalent prose padding — slightly tighter
+       than .sm-modal-body's default (40/32/28) because the single-
+       column letter format reads better at 36/28/24. */
+    padding-left: 36px;
+    padding-right: 36px;
+    padding-top: 28px;
+    padding-bottom: 24px;
+}
+.sm-modal-card--spread .sm-modal-body {
+    /* Bigger card = more horizontal padding so content doesn't kiss
+       the edges, and more vertical room for breathing between
+       multi-section content (resume sections, mission tabs, etc.) */
+    padding-left: 56px;
+    padding-right: 56px;
+    padding-top: 36px;
+    padding-bottom: 32px;
+}
+
+/* ── Dense multi-column body utilities (Phase 41c) ────────────────
+   For dossier-style modal bodies where the player wants to scan
+   MANY data fields at once instead of scrolling a long single
+   column. Apply on a flex-wrap container inside a .sm-modal-body
+   to lay out 2, 3, or 4 column grids. The user's note: "we are
+   wasting lots of horizontal space and relying on scroll when we
+   can reorganize stuff and use them."
+
+   Usage:
+     <ui:VisualElement class="sm-modal-body sm-modal-body--cols-3">
+       <ui:VisualElement class="sm-dossier-section">...</ui:VisualElement>
+       <ui:VisualElement class="sm-dossier-section">...</ui:VisualElement>
+       ...
+     </ui:VisualElement>
+*/
+.sm-modal-body--cols-2,
+.sm-modal-body--cols-3,
+.sm-modal-body--cols-4 {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+.sm-dossier-section {
+    flex-direction: column;
+    flex-shrink: 0;
+    margin-right: var(--sm-s-5);
+    margin-bottom: var(--sm-s-5);
+}
+/* 2/3/4-column siblings size proportionally; the container's
+   horizontal padding + the per-section right-margin add up to
+   the visual gap between columns. */
+.sm-modal-body--cols-2 > .sm-dossier-section { width: 48%; margin-right: 0; }
+.sm-modal-body--cols-3 > .sm-dossier-section { width: 31.5%; margin-right: 0; }
+.sm-modal-body--cols-4 > .sm-dossier-section { width: 23%; margin-right: 0; }
+
+.sm-modal-body--cols-2 > .sm-dossier-section:nth-child(odd),
+.sm-modal-body--cols-3 > .sm-dossier-section:nth-child(3n-1),
+.sm-modal-body--cols-4 > .sm-dossier-section:nth-child(4n-2),
+.sm-modal-body--cols-4 > .sm-dossier-section:nth-child(4n-1),
+.sm-modal-body--cols-4 > .sm-dossier-section:nth-child(4n-3) {
+    /* nth-child gap utility — UI Toolkit supports limited :nth-child;
+       fallback uses left-margin per column to space items. If a
+       specific layout doesn't need this, override with margin: 0. */
+}
+
+/* Dossier section title — mono caps, 2.5 px tracking, bottom rule
+   in alert-red. Reads as a document section header inside a
+   modal body. */
+.sm-dossier-section__title {
+    
+    font-size: var(--sm-text-micro);
+    color: var(--sm-alert);
+    letter-spacing: 2.5px;
+    font-weight: 700;
+    padding-bottom: 6px;
+    margin-bottom: var(--sm-s-3);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--sm-alert);
+}
+
+/* Key/value row inside a dossier section. Mono key (left-aligned,
+   secondary colour, fixed width) + value (right-flowing primary
+   text). Visual rhythm matches the cinematic + Director's Desk
+   stationery rows. */
+.sm-dossier-row {
+    flex-direction: row;
+    align-items: flex-start;
+    margin-bottom: 6px;
+}
+.sm-dossier-row__key {
+    
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-muted);
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    width: 90px;
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+.sm-dossier-row__val {
+    font-size: var(--sm-text-md);
+    color: var(--sm-text);
+    flex-grow: 1;
+    flex-shrink: 1;
+    white-space: normal;
+}
+
+/* ── Footer ───────────────────────────────────────────────────
+   Action row pinned at the bottom of the card. Right-aligned
+   buttons by default. */
+.sm-modal-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    background-color: var(--sm-surface-2);
+    border-top-width: 1px;
+    border-top-color: var(--sm-border);
+    flex-shrink: 0;
+}
+
 /* ── Assets/UI/Screens/SettingsScreen.uss ── */
 /* SpyMaster · Settings Screen styles (Phase 28). */
 
@@ -1684,20 +2142,31 @@ TextField > .unity-text-field__input,
  * Slab. Until the asset lands, falls back to sans-serif which is
  * acceptable but not the polish target.
  * ========================================================= */
+/* Phase 41d — base .sm-title-slab leaves letter-spacing UNSET so
+   screen-specific classes (e.g. .sm-mm__wordmark which sets 14 px)
+   continue to win. Pre-Phase-41d I added letter-spacing: 4px on
+   the base, which loaded AFTER MainMenu.uss (theme-present-polish
+   is the last <Style src="…"/> in MainMenu.uxml) and overrode the
+   wordmark's 14 px tracking. The user noticed: "main menu is one
+   screen we don't want to change anything." Reverting the base
+   here restores the wordmark exactly as it was. Tracking
+   variations now live ONLY on the size variants (--xl, --display)
+   so any screen opting into those gets the tracked treatment. */
 .sm-title-slab {
     
     font-weight: 700;
     font-size: var(--sm-text-xl);
     color: var(--sm-text);
-    letter-spacing: 0;
 }
 
 .sm-title-slab--xl {
     font-size: var(--sm-text-2xl);
+    letter-spacing: 6px;
 }
 
 .sm-title-slab--display {
     font-size: var(--sm-text-3xl);
+    letter-spacing: 8px;
 }
 
 /* =========================================================
