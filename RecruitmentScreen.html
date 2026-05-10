@@ -1088,6 +1088,63 @@ TextField > .unity-text-field__input,
 .sm-icon--alert {  }
 .sm-icon--success {  }
 
+/* ─────────────────────────────────────────────────────────
+   Phase 41h — small inline glyph icons used to replace
+   Unicode glyphs (✓/✗/▲/▼/⏳/●) inside procedurally-built
+   surfaces (mission graph, intel chips, status pills).
+   The base .sm-icon-glyph class is 10×10 + scale-to-fit;
+   each per-glyph modifier just sets the SVG via
+   background-image. C# code AddToClassList's both the base
+   and the modifier, then sets a tint via inline style.
+   ───────────────────────────────────────────────────────── */
+.sm-icon-glyph {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    
+}
+.sm-icon-glyph--xs { width: 8px;  height: 8px; }
+.sm-icon-glyph--sm { width: 12px; height: 12px; }
+.sm-icon-glyph--md { width: 14px; height: 14px; }
+
+.sm-icon-glyph--check {
+    background-image: url("project://database/Assets/UI/Icons/check.svg");
+}
+.sm-icon-glyph--x {
+    background-image: url("project://database/Assets/UI/Icons/x.svg");
+}
+.sm-icon-glyph--caret-down {
+    background-image: url("project://database/Assets/UI/Icons/caret-down.svg");
+}
+.sm-icon-glyph--caret-up {
+    background-image: url("project://database/Assets/UI/Icons/caret-down.svg");
+    rotate: 180deg;
+}
+.sm-icon-glyph--clock {
+    background-image: url("project://database/Assets/UI/Icons/clock.svg");
+}
+.sm-icon-glyph--lock {
+    background-image: url("project://database/Assets/UI/Icons/lock.svg");
+}
+.sm-icon-glyph--mission-active {
+    background-image: url("project://database/Assets/UI/Icons/mission-active.svg");
+}
+.sm-icon-glyph--mission-available {
+    background-image: url("project://database/Assets/UI/Icons/mission-available.svg");
+}
+.sm-icon-glyph--mission-locked {
+    background-image: url("project://database/Assets/UI/Icons/mission-locked.svg");
+}
+.sm-icon-glyph--outcome-success {
+    background-image: url("project://database/Assets/UI/Icons/outcome-success.svg");
+}
+.sm-icon-glyph--outcome-failed {
+    background-image: url("project://database/Assets/UI/Icons/outcome-failed.svg");
+}
+.sm-icon-glyph--star {
+    background-image: url("project://database/Assets/UI/Icons/star-prestige.svg");
+}
+
 /* =========================================================
  * EMPTY STATE label (used when lists have no data)
  * ========================================================= */
@@ -1761,6 +1818,168 @@ TextField > .unity-text-field__input,
     flex-direction: column;
     background-color: var(--sm-bg);
     flex-grow: 1;
+}
+
+/* ───────────────────────────────────────────────────────────────────
+   Phase 41h — Recruitment gate panel. Three rows (Field Officer /
+   Analyst / Researcher), each carrying a title + blurb on the left,
+   economics (salary / upkeep / queue counter) in the middle, and an
+   ON/OFF toggle on the right. Replaces the previous per-position
+   posting modal.
+   ─────────────────────────────────────────────────────────────────── */
+.sm-rc__gate-panel {
+    flex-direction: column;
+    flex-shrink: 0;
+    margin: var(--sm-s-3) var(--sm-s-5);
+    padding: var(--sm-s-2);
+    background-color: var(--sm-surface);
+    border-left-width: 4px;          /* alert-red identity bar — matches dossier register */
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: var(--sm-alert);
+    border-right-color: var(--sm-border-strong);
+    border-top-color: var(--sm-border-strong);
+    border-bottom-color: var(--sm-border-strong);
+}
+
+.sm-rc__gate-row {
+    flex-direction: row;
+    align-items: center;
+    padding: var(--sm-s-3) var(--sm-s-4);
+    margin-bottom: var(--sm-s-1);
+    background-color: rgba(0, 0, 0, 0.18);
+    border-left-width: 2px;
+    border-left-color: var(--sm-border);
+}
+
+/* Phase 41h — :last-child rule removed (USS doesn't support
+   :last-child / :first-child / :nth-child; it logs an
+   "Unknown pseudo class" warning at every load). The gate-row
+   class itself is now dead since the gate panel was merged into
+   the queue section headers — kept for back-compat but no
+   sibling-position rule. */
+
+.sm-rc__gate-row--open {
+    border-left-color: var(--sm-success);
+    background-color: rgba(78, 184, 132, 0.06);
+}
+
+.sm-rc__gate-row--filtered {
+    background-color: rgba(78, 148, 184, 0.10);
+    border-left-color: var(--sm-info);
+}
+
+.sm-rc__gate-left {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    flex-direction: column;
+    margin-right: var(--sm-s-4);
+}
+
+.sm-rc__gate-title {
+    font-size: var(--sm-text-md);
+    color: var(--sm-text);
+    font-weight: 700;
+    letter-spacing: 2.5px;
+}
+
+.sm-rc__gate-blurb {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-tertiary);
+    margin-top: var(--sm-s-1);
+    font-style: italic;
+    white-space: normal;
+}
+
+.sm-rc__gate-center {
+    flex-direction: column;
+    flex-shrink: 0;
+    width: 220px;
+    margin-right: var(--sm-s-5);
+}
+
+.sm-rc__gate-stat-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.sm-rc__gate-stat-key {
+    width: 80px;
+    color: var(--sm-text-muted);
+    font-size: 9px;
+    letter-spacing: 1.8px;
+    font-weight: 700;
+}
+
+.sm-rc__gate-stat-val {
+    color: var(--sm-text);
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+/* Phase 41h — toggle compressed so the single-line header fits
+   inside a 1/3-width column. No min-width (let it size to the
+   text), shorter band height, tighter padding. */
+.sm-rc__gate-toggle {
+    flex-shrink: 0;
+    height: 26px;
+    padding-left: 8px;
+    padding-right: 8px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+}
+
+.sm-rc__gate-toggle--closed {
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--sm-text-secondary);
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-color: var(--sm-border-strong);
+    border-bottom-color: var(--sm-border-strong);
+    border-left-color: var(--sm-border-strong);
+    border-right-color: var(--sm-border-strong);
+}
+
+.sm-rc__gate-toggle--closed:hover {
+    background-color: var(--sm-surface-2);
+    color: var(--sm-text);
+    border-top-color: var(--sm-success);
+    border-bottom-color: var(--sm-success);
+    border-left-color: var(--sm-success);
+    border-right-color: var(--sm-success);
+}
+
+.sm-rc__gate-toggle--open {
+    background-color: var(--sm-success);
+    color: var(--sm-bg);
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-color: var(--sm-success);
+    border-bottom-color: var(--sm-success);
+    border-left-color: var(--sm-success);
+    border-right-color: var(--sm-success);
+}
+
+.sm-rc__gate-toggle--open:hover {
+    background-color: var(--sm-alert-soft);
+    color: var(--sm-alert);
+    border-top-color: var(--sm-alert);
+    border-bottom-color: var(--sm-alert);
+    border-left-color: var(--sm-alert);
+    border-right-color: var(--sm-alert);
 }
 
 /* ── Header strip ────────────────────────────────────────────────── */
@@ -2460,20 +2679,95 @@ TextField > .unity-text-field__input,
 /* Per-position group header inside the queue scroll — wrapper around
    a title line and a job-no. line so each posted job announces itself
    on the rail with title, count, and a stable file/serial id. */
+/* Phase 41h — role section header. 3-col layout: title+blurb left,
+   stats middle, START/STOP HIRING toggle right. Replaces the old
+   single-column header (which was just a title line) with a full
+   gate-row absorbed into the section header. Compact padding +
+   tight margin between sections so all 3 role sections fit a
+   typical viewport without scrolling. */
 .sm-rc__queue-group-header {
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     margin-top: var(--sm-s-2);
     margin-bottom: var(--sm-s-2);
-    padding-bottom: 2px;
+    padding: var(--sm-s-1) var(--sm-s-2);
+    background-color: rgba(0, 0, 0, 0.18);
+    border-left-width: 2px;
+    border-right-width: 1px;
+    border-top-width: 1px;
     border-bottom-width: 1px;
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
     border-bottom-color: var(--sm-border);
+    overflow: hidden;
+}
+
+.sm-rc__queue-group-header--open {
+    border-left-color: var(--sm-success);
+    background-color: rgba(78, 184, 132, 0.06);
+}
+
+.sm-rc__queue-group-header--filtered {
+    background-color: rgba(78, 148, 184, 0.10);
+    border-left-color: var(--sm-info);
 }
 
 .sm-rc__queue-group-title {
-    color: var(--sm-info);
-    font-size: 9px;
+    color: var(--sm-text);
+    font-size: var(--sm-text-sm);
     font-weight: 700;
-    letter-spacing: 1.6px;
+    letter-spacing: 1.5px;
+    flex-shrink: 0;
+}
+
+/* Phase 41h — inline horizontal stat strip in the single-line
+   role header. Each stat is a "KEY value" pair, separated by a
+   middle-dot from its neighbour. Sits between the title (left
+   group) and the START/STOP HIRING button (right group). */
+.sm-rc__queue-group-stats {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: var(--sm-s-1);
+}
+
+.sm-rc__queue-group-stat-inline {
+    flex-direction: row;
+    align-items: center;
+}
+
+.sm-rc__queue-group-stat-key {
+    color: var(--sm-text-muted);
+    font-size: 9px;
+    letter-spacing: 1.8px;
+    font-weight: 700;
+    margin-right: 6px;
+}
+
+.sm-rc__queue-group-stat-val {
+    color: var(--sm-text);
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.sm-rc__queue-group-stat-sep {
+    color: var(--sm-text-tertiary);
+    font-size: 10px;
+    margin-left: var(--sm-s-1);
+    margin-right: var(--sm-s-1);
+}
+
+.sm-rc__queue-empty-hint {
+    color: var(--sm-text-tertiary);
+    font-size: var(--sm-text-xs);
+    font-style: italic;
+    padding: var(--sm-s-3) var(--sm-s-4);
+    margin-top: var(--sm-s-2);
+    background-color: rgba(0, 0, 0, 0.10);
+    border-left-width: 2px;
+    border-left-color: var(--sm-border);
 }
 
 .sm-rc__queue-group-serial {
@@ -2503,27 +2797,34 @@ TextField > .unity-text-field__input,
     flex-grow: 1;
 }
 
-/* Phase 41b — proper sectioning. The scroll content is a vertical
-   stack; each posted job gets its own .sm-rc__queue-section (header
-   + grid). Inside the section, .sm-rc__queue-grid is the actual
-   flex-wrap row for candidate cards. This gives the player a clear
-   "JOB A: candidates → JOB B: candidates" visual hierarchy instead
-   of one giant flat grid where headers float between cards. */
+/* Phase 41h — three role sections laid out as COLUMNS side-by-side
+   (was vertical stack) so all gates + candidates fit in one
+   viewport without scrolling. Each section is a flex column with
+   its single-line header on top and its candidate cards stacked
+   vertically below as compact horizontal rows. */
 .sm-rc__queue-scroll > .unity-scroll-view__content-container {
-    flex-direction: column;
+    flex-direction: row;
+    align-items: flex-start;
 }
 
 .sm-rc__queue-section {
     flex-direction: column;
-    margin-bottom: var(--sm-s-6);
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    min-width: 0;
+    margin-right: var(--sm-s-3);
+    margin-bottom: var(--sm-s-3);
+    overflow: hidden;
 }
 
+/* Inside each section, candidate cards stack vertically (1 per row)
+   as compact horizontal cards. This gives the page a clean 3-column
+   read with no horizontal overflow inside any column. */
 .sm-rc__queue-grid {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    align-content: flex-start;
-    margin-top: var(--sm-s-3);
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: var(--sm-s-2);
 }
 
 /* Phase 41b — candidate card redesigned for portrait-led grid.
@@ -2532,14 +2833,18 @@ TextField > .unity-text-field__input,
    220 so the grid fits 3-4 cards comfortably per row in a
    per-job section. Top accent (3 px info-blue) brightens to
    alert-red on hover — matches the dossier-modal identity. */
+/* Phase 41h — candidate card is a horizontal row that fills its
+   column's width: portrait left (80×80), name + role caption
+   stacked right of it. Stacked vertically inside each role
+   section so all 3 candidates per role fit in ~280 px column
+   height. */
 .sm-rc__queue-card {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
     flex-shrink: 0;
-    width: 220px;
+    height: 88px;
     padding: 0;
-    margin-right: var(--sm-s-3);
-    margin-bottom: var(--sm-s-3);
+    margin-bottom: var(--sm-s-2);
     background-color: var(--sm-surface);
     background-image: url("project://database/Assets/UI/MainMenu/paper-grain.svg");
     
@@ -2585,14 +2890,20 @@ TextField > .unity-text-field__input,
 }
 
 /* Portrait frame — fills the top of the card. */
+/* Phase 41h — portrait sits LEFT of the name/role column inside
+   the horizontal compact card. Fixed 80×80 so the card's overall
+   height stays predictable for vertical stacking inside each role
+   column. */
 .sm-rc__queue-portrait {
-    width: 100%;
-    height: 200px;
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    margin: 4px;
     background-color: var(--sm-surface-3);
     align-items: center;
     justify-content: center;
-    border-bottom-width: 1px;
-    border-bottom-color: var(--sm-border);
+    border-right-width: 1px;
+    border-right-color: var(--sm-border);
     overflow: hidden;
 }
 
@@ -2618,30 +2929,38 @@ TextField > .unity-text-field__input,
 }
 
 /* Meta strip below the portrait. */
+/* Phase 41h — meta column right of portrait inside the horizontal
+   compact card. Name on top, role caption below, both with text-
+   overflow:ellipsis so long names don't break the row height. */
 .sm-rc__queue-meta {
     flex-grow: 1;
+    flex-shrink: 1;
     flex-direction: column;
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    padding-left: var(--sm-s-3);
+    justify-content: center;
     padding-right: var(--sm-s-3);
+    overflow: hidden;
 }
 
 .sm-rc__queue-name {
-    font-size: var(--sm-text-md);
+    font-size: var(--sm-text-sm);
     color: var(--sm-text);
     font-weight: 700;
     letter-spacing: 0.5px;
-    white-space: normal;
-    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
 }
 
 .sm-rc__queue-position {
     
     font-size: var(--sm-text-micro);
     color: var(--sm-text-muted);
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* ── Assets/UI/Theme/theme-present-polish.uss ── */

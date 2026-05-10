@@ -1088,6 +1088,63 @@ TextField > .unity-text-field__input,
 .sm-icon--alert {  }
 .sm-icon--success {  }
 
+/* ─────────────────────────────────────────────────────────
+   Phase 41h — small inline glyph icons used to replace
+   Unicode glyphs (✓/✗/▲/▼/⏳/●) inside procedurally-built
+   surfaces (mission graph, intel chips, status pills).
+   The base .sm-icon-glyph class is 10×10 + scale-to-fit;
+   each per-glyph modifier just sets the SVG via
+   background-image. C# code AddToClassList's both the base
+   and the modifier, then sets a tint via inline style.
+   ───────────────────────────────────────────────────────── */
+.sm-icon-glyph {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    
+}
+.sm-icon-glyph--xs { width: 8px;  height: 8px; }
+.sm-icon-glyph--sm { width: 12px; height: 12px; }
+.sm-icon-glyph--md { width: 14px; height: 14px; }
+
+.sm-icon-glyph--check {
+    background-image: url("project://database/Assets/UI/Icons/check.svg");
+}
+.sm-icon-glyph--x {
+    background-image: url("project://database/Assets/UI/Icons/x.svg");
+}
+.sm-icon-glyph--caret-down {
+    background-image: url("project://database/Assets/UI/Icons/caret-down.svg");
+}
+.sm-icon-glyph--caret-up {
+    background-image: url("project://database/Assets/UI/Icons/caret-down.svg");
+    rotate: 180deg;
+}
+.sm-icon-glyph--clock {
+    background-image: url("project://database/Assets/UI/Icons/clock.svg");
+}
+.sm-icon-glyph--lock {
+    background-image: url("project://database/Assets/UI/Icons/lock.svg");
+}
+.sm-icon-glyph--mission-active {
+    background-image: url("project://database/Assets/UI/Icons/mission-active.svg");
+}
+.sm-icon-glyph--mission-available {
+    background-image: url("project://database/Assets/UI/Icons/mission-available.svg");
+}
+.sm-icon-glyph--mission-locked {
+    background-image: url("project://database/Assets/UI/Icons/mission-locked.svg");
+}
+.sm-icon-glyph--outcome-success {
+    background-image: url("project://database/Assets/UI/Icons/outcome-success.svg");
+}
+.sm-icon-glyph--outcome-failed {
+    background-image: url("project://database/Assets/UI/Icons/outcome-failed.svg");
+}
+.sm-icon-glyph--star {
+    background-image: url("project://database/Assets/UI/Icons/star-prestige.svg");
+}
+
 /* =========================================================
  * EMPTY STATE label (used when lists have no data)
  * ========================================================= */
@@ -1748,11 +1805,141 @@ TextField > .unity-text-field__input,
 }
 
 /* ── Assets/UI/Screens/BudgetScreen.uss ── */
-/* 06a · Budget Screen */
+/* 06a · Budget Screen — Phase 41i polish (header strip + body + statusbar) */
 
 .sm-bud {
-    flex-direction: row;
+    flex-direction: column;
     background-color: var(--sm-bg);
+}
+
+/* The original budget screen was a 3-column flex-row body; the
+   Phase-41i overhaul wraps it in a vertical stack (header / body /
+   statusbar). The 3-col flex-row now lives on .sm-bud__body. */
+.sm-bud__body {
+    flex-grow: 1;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+/* ===== Header strip (Phase 41i) — dossier register ===== */
+.sm-bud__header {
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    background-color: var(--sm-surface);
+    border-left-width: 2px;
+    border-left-color: var(--sm-warning);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+}
+.sm-bud__header-lead {
+    flex-direction: column;
+    flex-shrink: 0;
+}
+.sm-bud__header-eyebrow {
+    color: var(--sm-text-tertiary);
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+.sm-bud__header-title {
+    color: var(--sm-text);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 2px;
+}
+.sm-bud__header-codeline {
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+}
+.sm-bud__header-chips {
+    flex-direction: row;
+    align-items: stretch;
+}
+.sm-bud__header-chip {
+    flex-direction: column;
+    align-items: center;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: var(--sm-s-2);
+    background-color: var(--sm-surface-2);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    min-width: 80px;
+}
+.sm-bud__header-chip-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--sm-text);
+}
+.sm-bud__header-chip-sub {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-muted);
+    margin-top: 1px;
+}
+
+/* ===== Bottom statusbar (Phase 41i) ===== */
+.sm-bud__statusbar {
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    height: 28px;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    background-color: rgba(0, 0, 0, 0.20);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+}
+.sm-bud__statusbar-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--sm-success);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    margin-right: var(--sm-s-2);
+}
+.sm-bud__statusbar-cell {
+    color: var(--sm-text-tertiary);
+    font-size: 9px;
+    letter-spacing: 1.8px;
+}
+.sm-bud__statusbar-sep {
+    color: var(--sm-text-tertiary);
+    font-size: 10px;
+    margin-left: var(--sm-s-2);
+    margin-right: var(--sm-s-2);
+    opacity: 0.6;
 }
 
 /* ===== LEFT OVERVIEW ===== */
@@ -2332,70 +2519,107 @@ TextField > .unity-text-field__input,
 </div>
 <div class="uxml-root">
   <div class="sm-l1-base sm-screen sm-bud" id="budget-screen">
-    <div class="sm-col sm-bud__overview" id="overview-col">
-      <div class="sm-panel__header sm-bud__overview-header">
-        <div class="sm-panel__title">FINANCIAL STATUS</div>
+    <div class="sm-bud__header" id="bud-header">
+      <div class="sm-bud__header-lead">
+        <div class="sm-bud__header-eyebrow sm-mono">DIRECTOR'S DESK · BLACK LEDGER</div>
+        <div class="sm-bud__header-title sm-title-slab sm-title-slab--xl">BUDGET</div>
+        <div class="sm-bud__header-codeline sm-mono" id="bud-codeline">OPERATING ACCOUNTS · LIVE</div>
       </div>
-      <div class="sm-panel sm-bud__balance-panel">
-        <div class="sm-panel__body sm-bud__balance-body">
-          <div class="sm-label">CURRENT BALANCE</div>
-          <div class="sm-bud__balance-value sm-num sm-numeral-display sm-numeral-display--xl" id="balance-value">$0</div>
-          <div class="sm-row sm-bud__balance-row">
-            <div class="sm-bud__balance-sub sm-mono" id="allocation-sub">+$0 / DAY</div>
-            <div class="sm-bud__balance-sub sm-mono" id="maintenance-sub">−$0 / DAY</div>
-          </div>
+      <div class="sm-fill"></div>
+      <div class="sm-bud__header-chips">
+        <div class="sm-bud__header-chip">
+          <div class="sm-label">BLACK RESERVE</div>
+          <div class="sm-num sm-bud__header-chip-value" id="bud-chip-reserve">—</div>
+          <div class="sm-mono sm-label sm-bud__header-chip-sub">off-books</div>
         </div>
-      </div>
-      <div class="sm-panel sm-bud__conf-panel" title="Government Confidence — the oversight committee&#x27;s read on the agency. Rises with visible wins, falls with failures and political fallout. At 0 the agency is disbanded — campaign defeat.">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">GOVERNMENT CONFIDENCE</div>
-          <div class="sm-bud__conf-pct sm-mono" id="conf-pct">—</div>
+        <div class="sm-bud__header-chip">
+          <div class="sm-label">DAILY NET</div>
+          <div class="sm-num sm-bud__header-chip-value" id="bud-chip-net">—</div>
+          <div class="sm-mono sm-label sm-bud__header-chip-sub">$ / day</div>
         </div>
-        <div class="sm-panel__body sm-bud__conf-body">
-          <div class="sm-bud__conf-bar">
-            <div class="sm-bud__conf-fill" id="conf-fill"></div>
-          </div>
-          <div class="sm-bud__conf-note sm-mono" id="conf-note">NEXT REVIEW IN — DAYS</div>
-        </div>
-      </div>
-      <div class="sm-panel sm-bud__audit-panel" title="Audit Risk — accumulates each time the agency taps the Black Budget for unauthorised spending. At high levels triggers an oversight audit that can freeze accounts or expose covert programmes. Decays 0.2% per day; resets after a successful audit clearance.">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">AUDIT RISK</div>
-          <div class="sm-bud__audit-pct sm-mono" id="audit-pct">0%</div>
-        </div>
-        <div class="sm-panel__body sm-bud__audit-body">
-          <div class="sm-bud__audit-bar">
-            <div class="sm-bud__audit-fill" id="audit-fill"></div>
-          </div>
-          <div class="sm-bud__audit-note sm-mono">Increases with black-budget spending. Decays 0.2%/day.</div>
-        </div>
-      </div>
-      <div class="sm-panel sm-bud__black-panel">
-        <div class="sm-panel__body sm-bud__black-body">
-          <div class="sm-label">BLACK BUDGET RESERVE</div>
-          <div class="sm-bud__black-value sm-num sm-mono" id="black-value">$0</div>
+        <div class="sm-bud__header-chip">
+          <div class="sm-label">AUDIT %</div>
+          <div class="sm-num sm-bud__header-chip-value" id="bud-chip-audit">—</div>
+          <div class="sm-mono sm-label sm-bud__header-chip-sub">risk</div>
         </div>
       </div>
     </div>
-    <div class="sm-fill sm-bud__breakdown" id="breakdown-col">
-      <div class="sm-panel__header sm-bud__breakdown-header">
-        <div class="sm-panel__title">SPENDING BREAKDOWN</div>
-        <div class="sm-bud__period sm-mono" id="period-label">CURRENT CAMPAIGN</div>
+    <div class="sm-bud__body">
+      <div class="sm-col sm-bud__overview" id="overview-col">
+        <div class="sm-panel__header sm-bud__overview-header">
+          <div class="sm-panel__title">FINANCIAL STATUS</div>
+        </div>
+        <div class="sm-panel sm-bud__balance-panel">
+          <div class="sm-panel__body sm-bud__balance-body">
+            <div class="sm-label">CURRENT BALANCE</div>
+            <div class="sm-bud__balance-value sm-num sm-numeral-display sm-numeral-display--xl" id="balance-value">$0</div>
+            <div class="sm-row sm-bud__balance-row">
+              <div class="sm-bud__balance-sub sm-mono" id="allocation-sub">+$0 / DAY</div>
+              <div class="sm-bud__balance-sub sm-mono" id="maintenance-sub">−$0 / DAY</div>
+            </div>
+          </div>
+        </div>
+        <div class="sm-panel sm-bud__conf-panel" title="Government Confidence — the oversight committee&#x27;s read on the agency. Rises with visible wins, falls with failures and political fallout. At 0 the agency is disbanded — campaign defeat.">
+          <div class="sm-panel__header">
+            <div class="sm-panel__title">GOVERNMENT CONFIDENCE</div>
+            <div class="sm-bud__conf-pct sm-mono" id="conf-pct">—</div>
+          </div>
+          <div class="sm-panel__body sm-bud__conf-body">
+            <div class="sm-bud__conf-bar">
+              <div class="sm-bud__conf-fill" id="conf-fill"></div>
+            </div>
+            <div class="sm-bud__conf-note sm-mono" id="conf-note">NEXT REVIEW IN — DAYS</div>
+          </div>
+        </div>
+        <div class="sm-panel sm-bud__audit-panel" title="Audit Risk — accumulates each time the agency taps the Black Budget for unauthorised spending. At high levels triggers an oversight audit that can freeze accounts or expose covert programmes. Decays 0.2% per day; resets after a successful audit clearance.">
+          <div class="sm-panel__header">
+            <div class="sm-panel__title">AUDIT RISK</div>
+            <div class="sm-bud__audit-pct sm-mono" id="audit-pct">0%</div>
+          </div>
+          <div class="sm-panel__body sm-bud__audit-body">
+            <div class="sm-bud__audit-bar">
+              <div class="sm-bud__audit-fill" id="audit-fill"></div>
+            </div>
+            <div class="sm-bud__audit-note sm-mono">Increases with black-budget spending. Decays 0.2%/day.</div>
+          </div>
+        </div>
+        <div class="sm-panel sm-bud__black-panel">
+          <div class="sm-panel__body sm-bud__black-body">
+            <div class="sm-label">BLACK BUDGET RESERVE</div>
+            <div class="sm-bud__black-value sm-num sm-mono" id="black-value">$0</div>
+          </div>
+        </div>
       </div>
-      <div class="sm-bud__cat-list" id="cat-list" style="overflow-x:hidden; overflow-y:auto;"></div>
+      <div class="sm-fill sm-bud__breakdown" id="breakdown-col">
+        <div class="sm-panel__header sm-bud__breakdown-header">
+          <div class="sm-panel__title">SPENDING BREAKDOWN</div>
+          <div class="sm-bud__period sm-mono" id="period-label">CURRENT CAMPAIGN</div>
+        </div>
+        <div class="sm-bud__cat-list" id="cat-list" style="overflow-x:hidden; overflow-y:auto;"></div>
+      </div>
+      <div class="sm-col sm-bud__ledger" id="ledger-col">
+        <div class="sm-panel__header sm-bud__ledger-header">
+          <div class="sm-panel__title">VOUCHER LEDGER</div>
+          <div class="sm-bud__ledger-count sm-mono" id="ledger-count">0 ENTRIES</div>
+        </div>
+        <div class="sm-bud__ledger-cols">
+          <div class="sm-bud__ledger-th sm-bud__ledger-th--date">DATE</div>
+          <div class="sm-bud__ledger-th sm-bud__ledger-th--amount">AMOUNT</div>
+          <div class="sm-bud__ledger-th sm-bud__ledger-th--cat">CATEGORY</div>
+          <div class="sm-bud__ledger-th sm-bud__ledger-th--desc">DESCRIPTION</div>
+        </div>
+        <div class="sm-bud__ledger-scroll" id="ledger-list" style="overflow-x:hidden; overflow-y:auto;"></div>
+      </div>
     </div>
-    <div class="sm-col sm-bud__ledger" id="ledger-col">
-      <div class="sm-panel__header sm-bud__ledger-header">
-        <div class="sm-panel__title">VOUCHER LEDGER</div>
-        <div class="sm-bud__ledger-count sm-mono" id="ledger-count">0 ENTRIES</div>
-      </div>
-      <div class="sm-bud__ledger-cols">
-        <div class="sm-bud__ledger-th sm-bud__ledger-th--date">DATE</div>
-        <div class="sm-bud__ledger-th sm-bud__ledger-th--amount">AMOUNT</div>
-        <div class="sm-bud__ledger-th sm-bud__ledger-th--cat">CATEGORY</div>
-        <div class="sm-bud__ledger-th sm-bud__ledger-th--desc">DESCRIPTION</div>
-      </div>
-      <div class="sm-bud__ledger-scroll" id="ledger-list" style="overflow-x:hidden; overflow-y:auto;"></div>
+    <div class="sm-bud__statusbar">
+      <div class="sm-bud__statusbar-dot"></div>
+      <div class="sm-bud__statusbar-cell sm-mono">SECURE LINK</div>
+      <div class="sm-bud__statusbar-sep">·</div>
+      <div class="sm-bud__statusbar-cell sm-mono">ENCRYPTED · AES-256</div>
+      <div class="sm-bud__statusbar-sep">·</div>
+      <div class="sm-bud__statusbar-cell sm-mono" id="bud-status-period">—</div>
+      <div class="sm-fill"></div>
+      <div class="sm-bud__statusbar-cell sm-mono">DIRECTOR'S DESK · BLACK LEDGER</div>
     </div>
   </div>
 </div>

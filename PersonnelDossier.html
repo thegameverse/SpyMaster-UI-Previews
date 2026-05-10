@@ -1088,6 +1088,63 @@ TextField > .unity-text-field__input,
 .sm-icon--alert {  }
 .sm-icon--success {  }
 
+/* ─────────────────────────────────────────────────────────
+   Phase 41h — small inline glyph icons used to replace
+   Unicode glyphs (✓/✗/▲/▼/⏳/●) inside procedurally-built
+   surfaces (mission graph, intel chips, status pills).
+   The base .sm-icon-glyph class is 10×10 + scale-to-fit;
+   each per-glyph modifier just sets the SVG via
+   background-image. C# code AddToClassList's both the base
+   and the modifier, then sets a tint via inline style.
+   ───────────────────────────────────────────────────────── */
+.sm-icon-glyph {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    
+}
+.sm-icon-glyph--xs { width: 8px;  height: 8px; }
+.sm-icon-glyph--sm { width: 12px; height: 12px; }
+.sm-icon-glyph--md { width: 14px; height: 14px; }
+
+.sm-icon-glyph--check {
+    background-image: url("project://database/Assets/UI/Icons/check.svg");
+}
+.sm-icon-glyph--x {
+    background-image: url("project://database/Assets/UI/Icons/x.svg");
+}
+.sm-icon-glyph--caret-down {
+    background-image: url("project://database/Assets/UI/Icons/caret-down.svg");
+}
+.sm-icon-glyph--caret-up {
+    background-image: url("project://database/Assets/UI/Icons/caret-down.svg");
+    rotate: 180deg;
+}
+.sm-icon-glyph--clock {
+    background-image: url("project://database/Assets/UI/Icons/clock.svg");
+}
+.sm-icon-glyph--lock {
+    background-image: url("project://database/Assets/UI/Icons/lock.svg");
+}
+.sm-icon-glyph--mission-active {
+    background-image: url("project://database/Assets/UI/Icons/mission-active.svg");
+}
+.sm-icon-glyph--mission-available {
+    background-image: url("project://database/Assets/UI/Icons/mission-available.svg");
+}
+.sm-icon-glyph--mission-locked {
+    background-image: url("project://database/Assets/UI/Icons/mission-locked.svg");
+}
+.sm-icon-glyph--outcome-success {
+    background-image: url("project://database/Assets/UI/Icons/outcome-success.svg");
+}
+.sm-icon-glyph--outcome-failed {
+    background-image: url("project://database/Assets/UI/Icons/outcome-failed.svg");
+}
+.sm-icon-glyph--star {
+    background-image: url("project://database/Assets/UI/Icons/star-prestige.svg");
+}
+
 /* =========================================================
  * EMPTY STATE label (used when lists have no data)
  * ========================================================= */
@@ -1766,45 +1823,144 @@ TextField > .unity-text-field__input,
     flex-grow: 1;
 }
 
-/* ── Header strip ────────────────────────────────────────────────── */
+/* ── Header strip (Phase 41i — dossier register) ───────────────────
+   Replaces the previous title + subtitle band with the eyebrow +
+   slab + codeline pattern shared by Agency / Budget. The right-
+   side chip strip carries roster / field / active counts so the
+   crew picture reads at a glance. */
 
 .sm-pd__header {
+    flex-shrink: 0;
     flex-direction: row;
-    align-items: flex-end;
-    padding: var(--sm-s-4) var(--sm-s-5);
+    align-items: center;
+    padding: var(--sm-s-3) var(--sm-s-4);
     background-color: var(--sm-surface);
+    border-left-width: 2px;
+    border-left-color: var(--sm-warning);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
     border-bottom-width: var(--sm-stroke);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
     border-bottom-color: var(--sm-border);
 }
 
-.sm-pd__header-title {
+.sm-pd__header-lead {
     flex-direction: column;
+    flex-shrink: 0;
 }
 
-.sm-pd__title {
-    font-size: var(--sm-text-2xl);
-    color: var(--sm-text);
+.sm-pd__header-eyebrow {
+    color: var(--sm-text-tertiary);
+    font-size: 9px;
+    letter-spacing: 2.5px;
     font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.sm-pd__header-title {
+    color: var(--sm-text);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 2px;
+}
+
+.sm-pd__header-codeline {
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-xs);
     letter-spacing: var(--sm-letter-label);
 }
 
-.sm-pd__subtitle {
-    font-size: var(--sm-text-sm);
-    color: var(--sm-text-muted);
-    margin-top: var(--sm-s-1);
-    white-space: normal;
+.sm-pd__header-chips {
+    flex-direction: row;
+    align-items: stretch;
 }
 
-.sm-pd__header-stats {
-    margin-left: var(--sm-s-5);
-    align-items: flex-start;
+.sm-pd__header-chip {
+    flex-direction: column;
+    align-items: center;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: var(--sm-s-2);
+    background-color: var(--sm-surface-2);
+    border-top-left-radius: var(--sm-r-2);
+    border-top-right-radius: var(--sm-r-2);
+    border-bottom-left-radius: var(--sm-r-2);
+    border-bottom-right-radius: var(--sm-r-2);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    min-width: 80px;
 }
 
-.sm-pd__header-stat {
-    font-size: var(--sm-text-xl);
-    color: var(--sm-text);
+.sm-pd__header-chip-value {
+    font-size: 16px;
     font-weight: 700;
+    color: var(--sm-text);
 }
+
+.sm-pd__header-chip-sub {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-muted);
+    margin-top: 1px;
+}
+
+/* ── Bottom statusbar (Phase 41i) ─────────────────────────────── */
+
+.sm-pd__statusbar {
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    height: 28px;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    background-color: rgba(0, 0, 0, 0.20);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+}
+
+.sm-pd__statusbar-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--sm-success);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    margin-right: var(--sm-s-2);
+}
+
+.sm-pd__statusbar-cell {
+    color: var(--sm-text-tertiary);
+    font-size: 9px;
+    letter-spacing: 1.8px;
+}
+
+.sm-pd__statusbar-sep {
+    color: var(--sm-text-tertiary);
+    font-size: 10px;
+    margin-left: var(--sm-s-2);
+    margin-right: var(--sm-s-2);
+    opacity: 0.6;
+}
+
+/* Phase 41i — legacy title / subtitle / stat-block classes were
+   removed from the UXML; their rules are dropped too. The new
+   dossier classes above are the only header hooks now. */
 
 /* Filter row: search + position chips */
 
@@ -3041,14 +3197,28 @@ TextField > .unity-text-field__input,
 <div class="uxml-root">
   <div class="sm-l1-base sm-screen sm-pd" id="personnel-dossier">
     <div class="sm-pd__header" id="pd-header">
-      <div class="sm-col sm-pd__header-title">
-        <div class="sm-pd__title sm-title-slab sm-title-slab--xl">PEOPLE</div>
-        <div class="sm-pd__subtitle">Your crew — current, retired, fallen. Click any card to open their dossier.</div>
+      <div class="sm-pd__header-lead">
+        <div class="sm-pd__header-eyebrow sm-mono">DIRECTOR'S DESK · ROSTER</div>
+        <div class="sm-pd__header-title sm-title-slab sm-title-slab--xl">PEOPLE</div>
+        <div class="sm-pd__header-codeline sm-mono" id="pd-codeline">AGENCY ROSTER · CURRENT · RETIRED · FALLEN</div>
       </div>
       <div class="sm-fill"></div>
-      <div class="sm-col sm-pd__header-stats">
-        <div class="sm-label">ROSTER</div>
-        <div class="sm-mono sm-pd__header-stat" id="roster-count">12 TOTAL</div>
+      <div class="sm-pd__header-chips">
+        <div class="sm-pd__header-chip">
+          <div class="sm-label">ROSTER</div>
+          <div class="sm-mono sm-num sm-pd__header-chip-value" id="roster-count">12 TOTAL</div>
+          <div class="sm-mono sm-label sm-pd__header-chip-sub">total</div>
+        </div>
+        <div class="sm-pd__header-chip">
+          <div class="sm-label">FIELD</div>
+          <div class="sm-mono sm-num sm-pd__header-chip-value" id="pd-chip-field">—</div>
+          <div class="sm-mono sm-label sm-pd__header-chip-sub">officers</div>
+        </div>
+        <div class="sm-pd__header-chip">
+          <div class="sm-label">ACTIVE</div>
+          <div class="sm-mono sm-num sm-pd__header-chip-value" id="pd-chip-active">—</div>
+          <div class="sm-mono sm-label sm-pd__header-chip-sub">on duty</div>
+        </div>
       </div>
     </div>
     <div class="sm-row sm-pd__filter-row">
@@ -3397,6 +3567,16 @@ TextField > .unity-text-field__input,
           </div>
         </div>
       </div>
+    </div>
+    <div class="sm-pd__statusbar">
+      <div class="sm-pd__statusbar-dot"></div>
+      <div class="sm-pd__statusbar-cell sm-mono">SECURE LINK</div>
+      <div class="sm-pd__statusbar-sep">·</div>
+      <div class="sm-pd__statusbar-cell sm-mono">ENCRYPTED · AES-256</div>
+      <div class="sm-pd__statusbar-sep">·</div>
+      <div class="sm-pd__statusbar-cell sm-mono" id="pd-status-codeline">—</div>
+      <div class="sm-fill"></div>
+      <div class="sm-pd__statusbar-cell sm-mono">DIRECTOR'S DESK · PERSONNEL FILES</div>
     </div>
   </div>
 </div>

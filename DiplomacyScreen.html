@@ -1088,6 +1088,63 @@ TextField > .unity-text-field__input,
 .sm-icon--alert {  }
 .sm-icon--success {  }
 
+/* ─────────────────────────────────────────────────────────
+   Phase 41h — small inline glyph icons used to replace
+   Unicode glyphs (✓/✗/▲/▼/⏳/●) inside procedurally-built
+   surfaces (mission graph, intel chips, status pills).
+   The base .sm-icon-glyph class is 10×10 + scale-to-fit;
+   each per-glyph modifier just sets the SVG via
+   background-image. C# code AddToClassList's both the base
+   and the modifier, then sets a tint via inline style.
+   ───────────────────────────────────────────────────────── */
+.sm-icon-glyph {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    
+}
+.sm-icon-glyph--xs { width: 8px;  height: 8px; }
+.sm-icon-glyph--sm { width: 12px; height: 12px; }
+.sm-icon-glyph--md { width: 14px; height: 14px; }
+
+.sm-icon-glyph--check {
+    background-image: url("project://database/Assets/UI/Icons/check.svg");
+}
+.sm-icon-glyph--x {
+    background-image: url("project://database/Assets/UI/Icons/x.svg");
+}
+.sm-icon-glyph--caret-down {
+    background-image: url("project://database/Assets/UI/Icons/caret-down.svg");
+}
+.sm-icon-glyph--caret-up {
+    background-image: url("project://database/Assets/UI/Icons/caret-down.svg");
+    rotate: 180deg;
+}
+.sm-icon-glyph--clock {
+    background-image: url("project://database/Assets/UI/Icons/clock.svg");
+}
+.sm-icon-glyph--lock {
+    background-image: url("project://database/Assets/UI/Icons/lock.svg");
+}
+.sm-icon-glyph--mission-active {
+    background-image: url("project://database/Assets/UI/Icons/mission-active.svg");
+}
+.sm-icon-glyph--mission-available {
+    background-image: url("project://database/Assets/UI/Icons/mission-available.svg");
+}
+.sm-icon-glyph--mission-locked {
+    background-image: url("project://database/Assets/UI/Icons/mission-locked.svg");
+}
+.sm-icon-glyph--outcome-success {
+    background-image: url("project://database/Assets/UI/Icons/outcome-success.svg");
+}
+.sm-icon-glyph--outcome-failed {
+    background-image: url("project://database/Assets/UI/Icons/outcome-failed.svg");
+}
+.sm-icon-glyph--star {
+    background-image: url("project://database/Assets/UI/Icons/star-prestige.svg");
+}
+
 /* =========================================================
  * EMPTY STATE label (used when lists have no data)
  * ========================================================= */

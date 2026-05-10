@@ -1088,6 +1088,63 @@ TextField > .unity-text-field__input,
 .sm-icon--alert {  }
 .sm-icon--success {  }
 
+/* ─────────────────────────────────────────────────────────
+   Phase 41h — small inline glyph icons used to replace
+   Unicode glyphs (✓/✗/▲/▼/⏳/●) inside procedurally-built
+   surfaces (mission graph, intel chips, status pills).
+   The base .sm-icon-glyph class is 10×10 + scale-to-fit;
+   each per-glyph modifier just sets the SVG via
+   background-image. C# code AddToClassList's both the base
+   and the modifier, then sets a tint via inline style.
+   ───────────────────────────────────────────────────────── */
+.sm-icon-glyph {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    
+}
+.sm-icon-glyph--xs { width: 8px;  height: 8px; }
+.sm-icon-glyph--sm { width: 12px; height: 12px; }
+.sm-icon-glyph--md { width: 14px; height: 14px; }
+
+.sm-icon-glyph--check {
+    background-image: url("project://database/Assets/UI/Icons/check.svg");
+}
+.sm-icon-glyph--x {
+    background-image: url("project://database/Assets/UI/Icons/x.svg");
+}
+.sm-icon-glyph--caret-down {
+    background-image: url("project://database/Assets/UI/Icons/caret-down.svg");
+}
+.sm-icon-glyph--caret-up {
+    background-image: url("project://database/Assets/UI/Icons/caret-down.svg");
+    rotate: 180deg;
+}
+.sm-icon-glyph--clock {
+    background-image: url("project://database/Assets/UI/Icons/clock.svg");
+}
+.sm-icon-glyph--lock {
+    background-image: url("project://database/Assets/UI/Icons/lock.svg");
+}
+.sm-icon-glyph--mission-active {
+    background-image: url("project://database/Assets/UI/Icons/mission-active.svg");
+}
+.sm-icon-glyph--mission-available {
+    background-image: url("project://database/Assets/UI/Icons/mission-available.svg");
+}
+.sm-icon-glyph--mission-locked {
+    background-image: url("project://database/Assets/UI/Icons/mission-locked.svg");
+}
+.sm-icon-glyph--outcome-success {
+    background-image: url("project://database/Assets/UI/Icons/outcome-success.svg");
+}
+.sm-icon-glyph--outcome-failed {
+    background-image: url("project://database/Assets/UI/Icons/outcome-failed.svg");
+}
+.sm-icon-glyph--star {
+    background-image: url("project://database/Assets/UI/Icons/star-prestige.svg");
+}
+
 /* =========================================================
  * EMPTY STATE label (used when lists have no data)
  * ========================================================= */
@@ -1765,7 +1822,266 @@ TextField > .unity-text-field__input,
     padding-right: var(--sm-s-4);
 }
 
-/* ===== Hero banner (AD-01 / AD-02) ===== */
+/* ===== Phase 41i header strip (replaces the AD-01 hero band) =====
+   Compact dossier-register: eyebrow + slab title + codeline on the
+   left, agency-status chips on the right. Single horizontal band so
+   the strategic content (Investigation Arc + 4-panel row) gets the
+   vertical space the heavy hero banner used to consume. */
+.sm-ad__header {
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    margin-bottom: var(--sm-s-3);
+    background-color: var(--sm-surface);
+    border-left-width: 2px;
+    border-left-color: var(--sm-warning);
+    border-right-width: var(--sm-stroke);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-right-color: var(--sm-border);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+}
+.sm-ad__header-lead {
+    flex-direction: column;
+    flex-shrink: 0;
+}
+.sm-ad__header-eyebrow {
+    color: var(--sm-text-tertiary);
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+.sm-ad__header-title {
+    color: var(--sm-text);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 2px;
+}
+.sm-ad__header-codeline-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 2px;
+}
+.sm-ad__header-codeline-row > .sm-live-dot {
+    margin-right: 8px;
+}
+.sm-ad__header-codeline {
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-xs);
+    letter-spacing: var(--sm-letter-label);
+}
+/* Phase 41j — DOC.ID / CLASS / DIST stationery line under the
+   codeline. Same mono-caps register the Main Menu's status bar
+   uses on its right edge; tucked beneath the codeline so the
+   header reads like a real document header. */
+.sm-ad__header-stationery {
+    color: var(--sm-text-muted);
+    font-size: 9px;
+    letter-spacing: var(--sm-letter-mono-caps);
+    margin-top: 4px;
+}
+/* Phase 41j — agency crest emblem. Reuses the Main Menu's
+   agency-crest.svg, sized down + identity-red tinted so it reads
+   as a brand emblem rather than a hero. Sits to the LEFT of the
+   header-lead column, vertically centred. */
+.sm-ad__header-crest {
+    width: 48px;
+    height: 48px;
+    background-image: url("project://database/Assets/UI/Icons/agency-crest.svg");
+    
+    
+    margin-right: var(--sm-s-3);
+    flex-shrink: 0;
+}
+.sm-ad__header-chips {
+    flex-direction: row;
+    align-items: stretch;
+}
+
+/* ===== Operations frame (Phase 41j — Main-Menu bottom row) =====
+   3-zone band above the statusbar: classified warning (left),
+   analyst quote (centre), watch-board active-ops counter (right).
+   Mirrors .sm-mm__bottom-row from the Main Menu so the Agency
+   Dashboard reads as a sibling screen — same ritual ending. */
+.sm-ad__opsframe {
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    margin-top: var(--sm-s-3);
+    background-color: rgba(0, 0, 0, 0.18);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+}
+
+/* LEFT — classified warning */
+.sm-ad__opsframe-classified {
+    flex-direction: column;
+    flex-shrink: 0;
+    max-width: 280px;
+}
+.sm-ad__opsframe-classified-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 3px;
+}
+.sm-ad__opsframe-classified-icon {
+    width: 10px;
+    height: 10px;
+    background-color: var(--sm-identity);
+    margin-right: 8px;
+}
+.sm-ad__opsframe-classified-label {
+    color: var(--sm-identity);
+    font-size: 10px;
+    letter-spacing: var(--sm-letter-mono-caps);
+    font-weight: 700;
+}
+.sm-ad__opsframe-classified-text {
+    color: var(--sm-text-muted);
+    font-size: 9px;
+    white-space: normal;
+}
+
+/* CENTRE — analyst / handler quote */
+.sm-ad__opsframe-quote {
+    flex-direction: column;
+    flex-shrink: 1;
+    max-width: 380px;
+    align-items: center;
+}
+.sm-ad__opsframe-quote-text {
+    color: var(--sm-text-secondary);
+    font-size: 12px;
+    font-style: italic;
+    text-align: center; justify-content: center; align-items: center;
+    white-space: normal;
+}
+.sm-ad__opsframe-quote-attr {
+    color: var(--sm-text-muted);
+    font-size: 9px;
+    letter-spacing: var(--sm-letter-mono-caps);
+    margin-top: 4px;
+}
+
+/* RIGHT — active-operations watch board */
+.sm-ad__opsframe-watch {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+}
+.sm-ad__opsframe-watch-text {
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: var(--sm-s-3);
+}
+.sm-ad__opsframe-watch-label {
+    color: var(--sm-text-secondary);
+    font-size: 10px;
+    letter-spacing: var(--sm-letter-mono-caps);
+    font-weight: 700;
+}
+.sm-ad__opsframe-watch-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 2px;
+}
+.sm-ad__opsframe-watch-sub {
+    color: var(--sm-text-muted);
+    font-size: 9px;
+    letter-spacing: var(--sm-letter-mono-caps);
+    margin-right: 6px;
+}
+.sm-ad__opsframe-watch-num {
+    color: var(--sm-text);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* ===== Bottom statusbar (Phase 41i, refreshed in 41j) =====
+   Now carries the Main-Menu institutional register: NODE / UTC /
+   OPERATOR / clearance on the left, DOC.ID / CLASS / DIST
+   stationery on the right. */
+.sm-ad__statusbar {
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    height: 28px;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+    margin-top: var(--sm-s-3);
+    background-color: rgba(0, 0, 0, 0.20);
+    border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+    border-bottom-color: var(--sm-border);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
+}
+.sm-ad__statusbar-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--sm-success);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    margin-right: var(--sm-s-2);
+}
+.sm-ad__statusbar-cell {
+    color: var(--sm-text-tertiary);
+    font-size: 9px;
+    letter-spacing: 1.8px;
+}
+.sm-ad__statusbar-sep {
+    color: var(--sm-text-tertiary);
+    font-size: 10px;
+    margin-left: var(--sm-s-2);
+    margin-right: var(--sm-s-2);
+    opacity: 0.6;
+}
+/* Phase 41j — DOC.ID / CLASS / DIST stationery cell on the right
+   side of the statusbar. Same mono-caps register used by the Main
+   Menu's status bar so the agency closes with the same ritual line
+   as the menu screen. */
+.sm-ad__statusbar-stationery {
+    color: var(--sm-text-muted);
+    font-size: 9px;
+    letter-spacing: var(--sm-letter-mono-caps);
+}
+
+/* ===== Hidden stash (Phase 41i) — legacy named refs preserved
+   off-screen so tests / callsites that still resolve hs-* / hero-*
+   names by Q() find a valid (but invisible) target. ===== */
+.sm-ad__hidden-stash {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+/* ===== Hero banner (AD-01 / AD-02) — legacy class kept for any
+   external callsite that still adds .sm-ad__hero. The new header
+   strip above replaces this; the rule below collapses the band so
+   it occupies zero space if anyone re-adds the markup. ===== */
 .sm-ad__hero {
     /* v2-polish Session 6 — inter-row gap lifted s-3 → s-4 so hero
        breathes against row2 per reference PDF. */
@@ -3240,138 +3556,34 @@ TextField > .unity-text-field__input,
 </div>
 <div class="uxml-root">
   <div class="sm-l1-base sm-screen sm-ad" id="agency-dashboard">
-    <div class="sm-panel sm-ad__hero">
-      <div class="sm-ad__hero-body">
-        <div class="sm-ad__hero-left">
-          <div class="sm-ad__hero-shield"></div>
-          <div class="sm-ad__hero-text">
-            <div class="sm-label sm-ad__hero-codeline" id="hero-codeline">HQ · ECHELON · —</div>
-            <div class="sm-h1 sm-ad__hero-greeting sm-title-slab sm-title-slab--xl" id="hero-greeting">Good morning, Director.</div>
-            <div class="sm-mono sm-label sm-ad__hero-subline" id="hero-subline">—</div>
-          </div>
+    <div class="sm-ad__header" id="ad-header">
+      <div class="sm-ad__header-crest"></div>
+      <div class="sm-ad__header-lead">
+        <div class="sm-ad__header-eyebrow sm-mono">DIRECTOR'S DESK · OPERATING DOSSIER</div>
+        <div class="sm-ad__header-title sm-title-slab sm-title-slab--xl">AGENCY HQ</div>
+        <div class="sm-ad__header-codeline-row">
+          <div class="sm-live-dot"></div>
+          <div class="sm-ad__header-codeline sm-mono" id="hero-codeline">HQ · ECHELON · —</div>
         </div>
-        <div class="sm-fill"></div>
-        <div class="sm-badge sm-badge--alert sm-ad__hero-attention" id="hero-attention"></div>
-        <div class="sm-ad__hero-chips">
-          <div class="sm-ad__hero-chip">
-            <div class="sm-label">AGENCY LVL</div>
-            <div class="sm-num sm-ad__hero-chip-value" id="hero-lvl">—</div>
-            <div class="sm-mono sm-label sm-ad__hero-chip-sub" id="hero-lvl-sub">ECHELON</div>
-          </div>
-          <div class="sm-ad__hero-chip">
-            <div class="sm-label">TENURE</div>
-            <div class="sm-num sm-ad__hero-chip-value" id="hero-tenure">—</div>
-            <div class="sm-mono sm-label sm-ad__hero-chip-sub">in post</div>
-          </div>
-          <div class="sm-ad__hero-chip">
-            <div class="sm-label">NEXT REVIEW</div>
-            <div class="sm-num sm-ad__hero-chip-value" id="hero-review">—</div>
-            <div class="sm-mono sm-label sm-ad__hero-chip-sub">cabinet</div>
-          </div>
+        <div class="sm-ad__header-stationery sm-mono" id="ad-doc-stationery">DOC.ID: AGY-HQ-0001  ·  CLASS: TS//NOFORN  ·  DIST: HQ-01/EYES</div>
+      </div>
+      <div class="sm-fill"></div>
+      <div class="sm-badge sm-badge--alert sm-ad__hero-attention" id="hero-attention"></div>
+      <div class="sm-ad__header-chips">
+        <div class="sm-ad__hero-chip">
+          <div class="sm-label">AGENCY LVL</div>
+          <div class="sm-num sm-ad__hero-chip-value" id="hero-lvl">—</div>
+          <div class="sm-mono sm-label sm-ad__hero-chip-sub" id="hero-lvl-sub">ECHELON</div>
         </div>
-      </div>
-    </div>
-    <div class="sm-row sm-ad__headline">
-      <div class="sm-stat sm-ad__hs sm-stat--success">
-        <div class="sm-label">BUDGET</div>
-        <div class="sm-stat__value sm-num" id="hs-budget">—</div>
-        <div class="sm-stat__sub sm-mono" id="hs-budget-sub">—</div>
-      </div>
-      <div class="sm-stat sm-ad__hs sm-stat--warning">
-        <div class="sm-label">HEAT</div>
-        <div class="sm-stat__value sm-num" id="hs-heat">—</div>
-        <div class="sm-stat__sub sm-mono" id="hs-heat-sub">—</div>
-      </div>
-      <div class="sm-stat sm-ad__hs">
-        <div class="sm-label">MORALE</div>
-        <div class="sm-stat__value sm-num" id="hs-morale">—</div>
-        <div class="sm-stat__sub sm-mono" id="hs-morale-sub">—</div>
-      </div>
-      <div class="sm-stat sm-ad__hs sm-stat--alert">
-        <div class="sm-label">NEXT GOV REVIEW</div>
-        <div class="sm-stat__value sm-num" id="hs-review">—</div>
-        <div class="sm-stat__sub sm-mono" id="hs-review-sub">—</div>
-      </div>
-    </div>
-    <div class="sm-row sm-ad__row2">
-      <div class="sm-panel sm-ad__depts">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">DEPARTMENTS</div>
-          <div class="sm-fill"></div>
-          <button class="sm-btn sm-ad__hire-btn" id="dept-hire-btn" title="Open recruitment — review applicants, manage open positions.">HIRE</button>
+        <div class="sm-ad__hero-chip">
+          <div class="sm-label">TENURE</div>
+          <div class="sm-num sm-ad__hero-chip-value" id="hero-tenure">—</div>
+          <div class="sm-mono sm-label sm-ad__hero-chip-sub">in post</div>
         </div>
-        <div class="sm-panel__body" id="dept-list"></div>
-      </div>
-      <div class="sm-panel sm-ad__budget">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">BLACK BUDGET · 90D</div>
-          <div class="sm-fill"></div>
-          <button class="sm-btn sm-ad__ledger-btn" id="budget-ledger-btn" title="Open the budget ledger — every voucher and transaction this campaign.">OPEN LEDGER</button>
-        </div>
-        <div class="sm-panel__body sm-ad__budget-body">
-          <div class="sm-row sm-ad__budget-stats">
-            <div class="sm-ad__budget-stat">
-              <div class="sm-label">BALANCE</div>
-              <div class="sm-num sm-ad__budget-stat-value sm-numeral-display" id="budget-balance">—</div>
-              <div class="sm-mono sm-label sm-ad__budget-stat-sub" id="budget-balance-sub">—</div>
-            </div>
-            <div class="sm-ad__budget-stat">
-              <div class="sm-label">INCOME</div>
-              <div class="sm-num sm-ad__budget-stat-value sm-ad__budget-stat-value--success" id="budget-income">—</div>
-              <div class="sm-mono sm-label sm-ad__budget-stat-sub">/day</div>
-            </div>
-            <div class="sm-ad__budget-stat">
-              <div class="sm-label">BURN</div>
-              <div class="sm-num sm-ad__budget-stat-value sm-ad__budget-stat-value--alert" id="budget-burn">—</div>
-              <div class="sm-mono sm-label sm-ad__budget-stat-sub">/day</div>
-            </div>
-          </div>
-          <div class="sm-row sm-ad__budget-chart" id="budget-chart"></div>
-          <div class="sm-row sm-ad__budget-axis" id="budget-axis"></div>
-          <div class="sm-row sm-ad__budget-legend">
-            <div class="sm-row sm-ad__legend-item">
-              <div class="sm-ad__legend-swatch sm-ad__legend-swatch--income"></div>
-              <div class="sm-mono sm-label">Balance</div>
-            </div>
-            <div class="sm-row sm-ad__legend-item">
-              <div class="sm-ad__legend-swatch sm-ad__legend-swatch--expense"></div>
-              <div class="sm-mono sm-label">Ops burn</div>
-            </div>
-            <div class="sm-row sm-ad__legend-item">
-              <div class="sm-ad__legend-swatch sm-ad__legend-swatch--heat-fine"></div>
-              <div class="sm-mono sm-label">Heat fines</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="sm-panel sm-ad__personnel">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">PERSONNEL</div>
-          <div class="sm-fill"></div>
-          <button class="sm-btn sm-ad__transit-btn" id="btn-transit" title="Show every operative currently in transit between cities.">IN TRANSIT</button>
-          <div class="sm-mono sm-label" id="personnel-count">—</div>
-        </div>
-        <div class="sm-panel__body sm-ad__personnel-body" id="personnel-grid"></div>
-      </div>
-      <div class="sm-panel sm-ad__gov">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">GOVERNMENT CONFIDENCE</div>
-        </div>
-        <div class="sm-panel__body sm-ad__gov-body">
-          <div class="sm-ad__gauge" id="gauge">
-            <div class="sm-ad__gauge-canvas" id="gauge-canvas"></div>
-            <div class="sm-ad__gauge-needle" id="gauge-needle"></div>
-          </div>
-          <div class="sm-ad__gov-sparkline" id="gov-sparkline"></div>
-          <div class="sm-row sm-ad__gov-value-row">
-            <div class="sm-h1 sm-num sm-ad__gov-value sm-numeral-display sm-numeral-display--xl" id="gov-value">—</div>
-            <div class="sm-badge sm-ad__gov-tone-badge" id="gov-tone-badge">—</div>
-          </div>
-          <div class="sm-mono sm-label sm-ad__gov-caption" id="gov-caption">—</div>
-          <div class="sm-ad__gov-review" id="gov-review">
-            <div class="sm-label sm-ad__gov-review-header">REVIEW</div>
-            <div id="gov-review-notes"></div>
-          </div>
+        <div class="sm-ad__hero-chip">
+          <div class="sm-label">NEXT REVIEW</div>
+          <div class="sm-num sm-ad__hero-chip-value" id="hero-review">—</div>
+          <div class="sm-mono sm-label sm-ad__hero-chip-sub">cabinet</div>
         </div>
       </div>
     </div>
@@ -3436,6 +3648,88 @@ TextField > .unity-text-field__input,
         </div>
       </div>
     </div>
+    <div class="sm-row sm-ad__row2">
+      <div class="sm-panel sm-ad__depts">
+        <div class="sm-panel__header">
+          <div class="sm-panel__title">DEPARTMENTS</div>
+          <div class="sm-fill"></div>
+          <button class="sm-btn sm-ad__hire-btn" id="dept-hire-btn" title="Open recruitment — review applicants, manage open positions.">HIRE</button>
+        </div>
+        <div class="sm-panel__body" id="dept-list"></div>
+      </div>
+      <div class="sm-panel sm-ad__budget">
+        <div class="sm-panel__header">
+          <div class="sm-panel__title">BLACK BUDGET · 90D</div>
+          <div class="sm-fill"></div>
+          <button class="sm-btn sm-ad__ledger-btn" id="budget-ledger-btn" title="Open the budget ledger — every voucher and transaction this campaign.">OPEN LEDGER</button>
+        </div>
+        <div class="sm-panel__body sm-ad__budget-body">
+          <div class="sm-row sm-ad__budget-stats">
+            <div class="sm-ad__budget-stat">
+              <div class="sm-label">BALANCE</div>
+              <div class="sm-num sm-ad__budget-stat-value sm-numeral-display" id="budget-balance">—</div>
+              <div class="sm-mono sm-label sm-ad__budget-stat-sub" id="budget-balance-sub">—</div>
+            </div>
+            <div class="sm-ad__budget-stat">
+              <div class="sm-label">INCOME</div>
+              <div class="sm-num sm-ad__budget-stat-value sm-ad__budget-stat-value--success" id="budget-income">—</div>
+              <div class="sm-mono sm-label sm-ad__budget-stat-sub" id="budget-income-sub">/day</div>
+            </div>
+            <div class="sm-ad__budget-stat">
+              <div class="sm-label">BURN</div>
+              <div class="sm-num sm-ad__budget-stat-value sm-ad__budget-stat-value--alert" id="budget-burn">—</div>
+              <div class="sm-mono sm-label sm-ad__budget-stat-sub" id="budget-burn-sub">/day</div>
+            </div>
+          </div>
+          <div class="sm-row sm-ad__budget-chart" id="budget-chart"></div>
+          <div class="sm-row sm-ad__budget-axis" id="budget-axis"></div>
+          <div class="sm-row sm-ad__budget-legend">
+            <div class="sm-row sm-ad__legend-item">
+              <div class="sm-ad__legend-swatch sm-ad__legend-swatch--income"></div>
+              <div class="sm-mono sm-label">Balance</div>
+            </div>
+            <div class="sm-row sm-ad__legend-item">
+              <div class="sm-ad__legend-swatch sm-ad__legend-swatch--expense"></div>
+              <div class="sm-mono sm-label">Ops burn</div>
+            </div>
+            <div class="sm-row sm-ad__legend-item">
+              <div class="sm-ad__legend-swatch sm-ad__legend-swatch--heat-fine"></div>
+              <div class="sm-mono sm-label">Heat fines</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sm-panel sm-ad__personnel">
+        <div class="sm-panel__header">
+          <div class="sm-panel__title">PERSONNEL</div>
+          <div class="sm-fill"></div>
+          <button class="sm-btn sm-ad__transit-btn" id="btn-transit" title="Show every operative currently in transit between cities.">IN TRANSIT</button>
+          <div class="sm-mono sm-label" id="personnel-count">—</div>
+        </div>
+        <div class="sm-panel__body sm-ad__personnel-body" id="personnel-grid"></div>
+      </div>
+      <div class="sm-panel sm-ad__gov">
+        <div class="sm-panel__header">
+          <div class="sm-panel__title">GOVERNMENT CONFIDENCE</div>
+        </div>
+        <div class="sm-panel__body sm-ad__gov-body">
+          <div class="sm-ad__gauge" id="gauge">
+            <div class="sm-ad__gauge-canvas" id="gauge-canvas"></div>
+            <div class="sm-ad__gauge-needle" id="gauge-needle"></div>
+          </div>
+          <div class="sm-ad__gov-sparkline" id="gov-sparkline"></div>
+          <div class="sm-row sm-ad__gov-value-row">
+            <div class="sm-h1 sm-num sm-ad__gov-value sm-numeral-display sm-numeral-display--xl" id="gov-value">—</div>
+            <div class="sm-badge sm-ad__gov-tone-badge" id="gov-tone-badge">—</div>
+          </div>
+          <div class="sm-mono sm-label sm-ad__gov-caption" id="gov-caption">—</div>
+          <div class="sm-ad__gov-review" id="gov-review">
+            <div class="sm-label sm-ad__gov-review-header">REVIEW</div>
+            <div id="gov-review-notes"></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="sm-row sm-ad__row3 sm-fill">
       <div class="sm-panel sm-ad__safe">
         <div class="sm-panel__header">
@@ -3493,6 +3787,55 @@ TextField > .unity-text-field__input,
         </div>
         <div class="sm-ad__feed-scroll" id="feed-list" style="overflow-x:hidden; overflow-y:auto;"></div>
       </div>
+    </div>
+    <div class="sm-ad__opsframe">
+      <div class="sm-ad__opsframe-classified">
+        <div class="sm-ad__opsframe-classified-row">
+          <div class="sm-ad__opsframe-classified-icon"></div>
+          <div class="sm-ad__opsframe-classified-label sm-mono">CLASSIFIED  ·  EYES ONLY</div>
+        </div>
+        <div class="sm-ad__opsframe-classified-text sm-mono">Per 18 U.S.C. § 798 — unauthorized disclosure prohibited.</div>
+      </div>
+      <div class="sm-fill"></div>
+      <div class="sm-ad__opsframe-quote">
+        <div class="sm-ad__opsframe-quote-text" id="ad-opsframe-quote">“Operations stands ready to receive standing orders.”</div>
+        <div class="sm-ad__opsframe-quote-attr sm-mono" id="ad-opsframe-quote-attr">— OPS CHIEF, R.</div>
+      </div>
+      <div class="sm-fill"></div>
+      <div class="sm-ad__opsframe-watch">
+        <div class="sm-ad__opsframe-watch-text">
+          <div class="sm-ad__opsframe-watch-label sm-mono">ACTIVE OPERATIONS</div>
+          <div class="sm-ad__opsframe-watch-row">
+            <div class="sm-ad__opsframe-watch-sub sm-mono">WATCH BOARD  ·  LIVE</div>
+            <div class="sm-live-dot"></div>
+          </div>
+        </div>
+        <div class="sm-ad__opsframe-watch-num sm-num sm-numeral-display sm-numeral-display--xl" id="ad-opsframe-watch-count">00</div>
+      </div>
+    </div>
+    <div class="sm-ad__statusbar">
+      <div class="sm-ad__statusbar-dot"></div>
+      <div class="sm-ad__statusbar-cell sm-mono">NODE / HQ-01</div>
+      <div class="sm-ad__statusbar-sep">·</div>
+      <div class="sm-ad__statusbar-cell sm-mono" id="ad-status-utc">UTC 00:00:00</div>
+      <div class="sm-ad__statusbar-sep">·</div>
+      <div class="sm-ad__statusbar-cell sm-mono" id="ad-status-codeline">—</div>
+      <div class="sm-ad__statusbar-sep">·</div>
+      <div class="sm-ad__statusbar-cell sm-mono">TS//SCI</div>
+      <div class="sm-fill"></div>
+      <div class="sm-ad__statusbar-stationery sm-mono">DOC.ID: AGY-HQ-0001  ·  CLASS: TS//NOFORN  ·  DIST: HQ-01/EYES</div>
+    </div>
+    <div class="sm-ad__hidden-stash">
+      <div id="hs-budget">—</div>
+      <div id="hs-budget-sub">—</div>
+      <div id="hs-heat">—</div>
+      <div id="hs-heat-sub">—</div>
+      <div id="hs-morale">—</div>
+      <div id="hs-morale-sub">—</div>
+      <div id="hs-review">—</div>
+      <div id="hs-review-sub">—</div>
+      <div id="hero-greeting">—</div>
+      <div id="hero-subline">—</div>
     </div>
   </div>
 </div>
