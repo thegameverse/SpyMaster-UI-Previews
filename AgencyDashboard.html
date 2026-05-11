@@ -1805,15 +1805,19 @@ TextField > .unity-text-field__input,
 }
 
 /* ── Assets/UI/Screens/AgencyDashboard.uss ── */
-/* 02 · Agency Dashboard — screen-specific styles */
+/* 02 · Agency Dashboard — decision-oriented redesign.
+
+   Each panel answers one question:
+     • Header   — who am I, what's my context
+     • Arc      — how close to winning
+     • Inbox    — what needs my attention
+     • Pressure — how close to losing
+     • State    — do I have the resources
+     • Budget   — how long can I keep operating
+
+   Rules below are organised top → bottom matching the UXML order. */
 
 .sm-ad {
-    /* v2-polish Session 6 breathing-room pass — outer padding lifted
-       12 → 16 (s-3 → s-4) per AgencyDashboard reference PDF. Earlier
-       Bloomberg-density pass tightened to 12 to disconnect-prevent
-       against the topbar; the topbar visual chrome (border + 64px
-       height) now provides enough separation that 16 reads cleanly
-       without the disconnected feel. */
     flex-direction: column;
     background-color: var(--sm-bg);
     padding-top: var(--sm-s-4);
@@ -1822,11 +1826,9 @@ TextField > .unity-text-field__input,
     padding-right: var(--sm-s-4);
 }
 
-/* ===== Phase 41i header strip (replaces the AD-01 hero band) =====
-   Compact dossier-register: eyebrow + slab title + codeline on the
-   left, agency-status chips on the right. Single horizontal band so
-   the strategic content (Investigation Arc + 4-panel row) gets the
-   vertical space the heavy hero banner used to consume. */
+/* ============================================================
+   HEADER STRIP
+   ============================================================ */
 .sm-ad__header {
     flex-shrink: 0;
     flex-direction: row;
@@ -1845,6 +1847,15 @@ TextField > .unity-text-field__input,
     border-right-color: var(--sm-border);
     border-top-color: var(--sm-border);
     border-bottom-color: var(--sm-border);
+}
+.sm-ad__header-crest {
+    width: 48px;
+    height: 48px;
+    background-image: url("project://database/Assets/UI/Icons/agency-crest.svg");
+    
+    
+    margin-right: var(--sm-s-3);
+    flex-shrink: 0;
 }
 .sm-ad__header-lead {
     flex-direction: column;
@@ -1877,261 +1888,11 @@ TextField > .unity-text-field__input,
     font-size: var(--sm-text-xs);
     letter-spacing: var(--sm-letter-label);
 }
-/* Phase 41j — DOC.ID / CLASS / DIST stationery line under the
-   codeline. Same mono-caps register the Main Menu's status bar
-   uses on its right edge; tucked beneath the codeline so the
-   header reads like a real document header. */
 .sm-ad__header-stationery {
     color: var(--sm-text-muted);
     font-size: 9px;
     letter-spacing: var(--sm-letter-mono-caps);
     margin-top: 4px;
-}
-/* Phase 41j — agency crest emblem. Reuses the Main Menu's
-   agency-crest.svg, sized down + identity-red tinted so it reads
-   as a brand emblem rather than a hero. Sits to the LEFT of the
-   header-lead column, vertically centred. */
-.sm-ad__header-crest {
-    width: 48px;
-    height: 48px;
-    background-image: url("project://database/Assets/UI/Icons/agency-crest.svg");
-    
-    
-    margin-right: var(--sm-s-3);
-    flex-shrink: 0;
-}
-.sm-ad__header-chips {
-    flex-direction: row;
-    align-items: stretch;
-}
-
-/* ===== Operations frame (Phase 41j — Main-Menu bottom row) =====
-   3-zone band above the statusbar: classified warning (left),
-   analyst quote (centre), watch-board active-ops counter (right).
-   Mirrors .sm-mm__bottom-row from the Main Menu so the Agency
-   Dashboard reads as a sibling screen — same ritual ending. */
-.sm-ad__opsframe {
-    flex-shrink: 0;
-    flex-direction: row;
-    align-items: center;
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
-    margin-top: var(--sm-s-3);
-    background-color: rgba(0, 0, 0, 0.18);
-    border-top-width: var(--sm-stroke);
-    border-bottom-width: var(--sm-stroke);
-    border-left-width: var(--sm-stroke);
-    border-right-width: var(--sm-stroke);
-    border-top-color: var(--sm-border);
-    border-bottom-color: var(--sm-border);
-    border-left-color: var(--sm-border);
-    border-right-color: var(--sm-border);
-}
-
-/* LEFT — classified warning */
-.sm-ad__opsframe-classified {
-    flex-direction: column;
-    flex-shrink: 0;
-    max-width: 280px;
-}
-.sm-ad__opsframe-classified-row {
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 3px;
-}
-.sm-ad__opsframe-classified-icon {
-    width: 10px;
-    height: 10px;
-    background-color: var(--sm-identity);
-    margin-right: 8px;
-}
-.sm-ad__opsframe-classified-label {
-    color: var(--sm-identity);
-    font-size: 10px;
-    letter-spacing: var(--sm-letter-mono-caps);
-    font-weight: 700;
-}
-.sm-ad__opsframe-classified-text {
-    color: var(--sm-text-muted);
-    font-size: 9px;
-    white-space: normal;
-}
-
-/* CENTRE — analyst / handler quote */
-.sm-ad__opsframe-quote {
-    flex-direction: column;
-    flex-shrink: 1;
-    max-width: 380px;
-    align-items: center;
-}
-.sm-ad__opsframe-quote-text {
-    color: var(--sm-text-secondary);
-    font-size: 12px;
-    font-style: italic;
-    text-align: center; justify-content: center; align-items: center;
-    white-space: normal;
-}
-.sm-ad__opsframe-quote-attr {
-    color: var(--sm-text-muted);
-    font-size: 9px;
-    letter-spacing: var(--sm-letter-mono-caps);
-    margin-top: 4px;
-}
-
-/* RIGHT — active-operations watch board */
-.sm-ad__opsframe-watch {
-    flex-direction: row;
-    align-items: center;
-    flex-shrink: 0;
-}
-.sm-ad__opsframe-watch-text {
-    flex-direction: column;
-    align-items: flex-end;
-    margin-right: var(--sm-s-3);
-}
-.sm-ad__opsframe-watch-label {
-    color: var(--sm-text-secondary);
-    font-size: 10px;
-    letter-spacing: var(--sm-letter-mono-caps);
-    font-weight: 700;
-}
-.sm-ad__opsframe-watch-row {
-    flex-direction: row;
-    align-items: center;
-    margin-top: 2px;
-}
-.sm-ad__opsframe-watch-sub {
-    color: var(--sm-text-muted);
-    font-size: 9px;
-    letter-spacing: var(--sm-letter-mono-caps);
-    margin-right: 6px;
-}
-.sm-ad__opsframe-watch-num {
-    color: var(--sm-text);
-    font-size: 28px;
-    font-weight: 700;
-}
-
-/* ===== Bottom statusbar (Phase 41i, refreshed in 41j) =====
-   Now carries the Main-Menu institutional register: NODE / UTC /
-   OPERATOR / clearance on the left, DOC.ID / CLASS / DIST
-   stationery on the right. */
-.sm-ad__statusbar {
-    flex-shrink: 0;
-    flex-direction: row;
-    align-items: center;
-    height: 28px;
-    padding-left: var(--sm-s-3);
-    padding-right: var(--sm-s-3);
-    margin-top: var(--sm-s-3);
-    background-color: rgba(0, 0, 0, 0.20);
-    border-top-width: var(--sm-stroke);
-    border-bottom-width: var(--sm-stroke);
-    border-left-width: var(--sm-stroke);
-    border-right-width: var(--sm-stroke);
-    border-top-color: var(--sm-border);
-    border-bottom-color: var(--sm-border);
-    border-left-color: var(--sm-border);
-    border-right-color: var(--sm-border);
-}
-.sm-ad__statusbar-dot {
-    width: 6px;
-    height: 6px;
-    background-color: var(--sm-success);
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-    margin-right: var(--sm-s-2);
-}
-.sm-ad__statusbar-cell {
-    color: var(--sm-text-tertiary);
-    font-size: 9px;
-    letter-spacing: 1.8px;
-}
-.sm-ad__statusbar-sep {
-    color: var(--sm-text-tertiary);
-    font-size: 10px;
-    margin-left: var(--sm-s-2);
-    margin-right: var(--sm-s-2);
-    opacity: 0.6;
-}
-/* Phase 41j — DOC.ID / CLASS / DIST stationery cell on the right
-   side of the statusbar. Same mono-caps register used by the Main
-   Menu's status bar so the agency closes with the same ritual line
-   as the menu screen. */
-.sm-ad__statusbar-stationery {
-    color: var(--sm-text-muted);
-    font-size: 9px;
-    letter-spacing: var(--sm-letter-mono-caps);
-}
-
-/* ===== Hidden stash (Phase 41i) — legacy named refs preserved
-   off-screen so tests / callsites that still resolve hs-* / hero-*
-   names by Q() find a valid (but invisible) target. ===== */
-.sm-ad__hidden-stash {
-    position: absolute;
-    width: 0;
-    height: 0;
-    overflow: hidden;
-}
-
-/* ===== Hero banner (AD-01 / AD-02) — legacy class kept for any
-   external callsite that still adds .sm-ad__hero. The new header
-   strip above replaces this; the rule below collapses the band so
-   it occupies zero space if anyone re-adds the markup. ===== */
-.sm-ad__hero {
-    /* v2-polish Session 6 — inter-row gap lifted s-3 → s-4 so hero
-       breathes against row2 per reference PDF. */
-    flex-shrink: 0;
-    margin-bottom: var(--sm-s-4);
-}
-.sm-ad__hero-body {
-    /* v2-polish reset to pattern values. The prior "10/14 trimmed for
-     * density" treatment made the hero feel cramped against the slab
-     * greeting; reference shows ~14/20 with the chips breathing on the
-     * right. */
-    flex-direction: row;
-    align-items: center;
-    padding-top: 14px;
-    padding-bottom: 14px;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-.sm-ad__hero-left {
-    flex-direction: row;
-    align-items: center;
-    flex-grow: 1;
-}
-.sm-ad__hero-shield {
-    /* Slimmer shield — 40×48 → 28×34. Reads as an icon, not a chunk. */
-    width: 28px;
-    height: 34px;
-    background-color: var(--sm-warning);
-    margin-right: var(--sm-s-3);
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
-}
-.sm-ad__hero-codeline {
-    color: var(--sm-text-secondary);
-    letter-spacing: var(--sm-letter-label);
-    margin-bottom: 1px;
-}
-.sm-ad__hero-greeting {
-    /* Greeting was --sm-text-xl (24 px); 18 px reads as a screen header
-       not a marketing banner, matches the title size in Recruitment. */
-    font-size: 18px;
-    color: var(--sm-text);
-    font-weight: 700;
-    margin-bottom: 1px;
-}
-.sm-ad__hero-subline {
-    color: var(--sm-text-tertiary);
-    font-size: var(--sm-text-xs);
 }
 .sm-ad__hero-attention {
     margin-right: var(--sm-s-3);
@@ -2139,57 +1900,10 @@ TextField > .unity-text-field__input,
     display: none;
 }
 .sm-ad__hero-attention--visible { display: flex; }
-.sm-ad__hero-chips {
-    flex-direction: row;
-    align-items: stretch;
-}
-.sm-ad__hero-chip {
-    /* Tighter chips: pad 12/16 → 7/10, min-width 100 → 80, margin 12 → 6. */
-    flex-direction: column;
-    align-items: center;
-    padding-top: 7px;
-    padding-bottom: 7px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-left: var(--sm-s-2);
-    background-color: var(--sm-surface-2);
-    border-top-left-radius: var(--sm-r-2);
-    border-top-right-radius: var(--sm-r-2);
-    border-bottom-left-radius: var(--sm-r-2);
-    border-bottom-right-radius: var(--sm-r-2);
-    border-left-width: var(--sm-stroke);
-    border-right-width: var(--sm-stroke);
-    border-top-width: var(--sm-stroke);
-    border-bottom-width: var(--sm-stroke);
-    border-left-color: var(--sm-border);
-    border-right-color: var(--sm-border);
-    border-top-color: var(--sm-border);
-    border-bottom-color: var(--sm-border);
-    min-width: 80px;
-}
-.sm-ad__hero-chip-value {
-    /* Was --sm-text-xl (24 px); 16 px lets three chips fit in tighter
-       horizontal space without overflowing the hero band. */
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--sm-text);
-}
-.sm-ad__hero-chip-sub {
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-muted);
-    margin-top: 1px;
-}
 
-/* ===== Screen-wide panel density (overrides theme.uss defaults) ===== */
-/* All panels inside the agency dashboard get tighter header / body
-   padding so the density matches Recruitment + Mission Graph. The
-   theme defaults (16 px) read as luxurious on a 1080p resolution; on
-   the dashboard's 4-column row 2 + 3-column row 3 the inner content
-   ends up cramped against generous chrome. */
-/* v2-polish — relaxed back toward pattern values. The prior 8/12 (--sm-s-2/3)
- * paddings were a "tighten for Bloomberg density" override that contradicted
- * the reference's more generous breathing room. Reference Agency Dashboard
- * panels read at ~12/16 header and ~16/16 body. */
+/* ============================================================
+   Screen-wide panel density (overrides theme.uss defaults)
+   ============================================================ */
 .sm-ad .sm-panel__header {
     padding-top: 12px;
     padding-bottom: 12px;
@@ -2203,84 +1917,38 @@ TextField > .unity-text-field__input,
     padding-right: 16px;
 }
 
-/* ===== Headline stats (Row 1) — hidden; hs-* kept for test compatibility (AD-03) ===== */
-.sm-ad__headline {
-    height: 96px;
-    flex-direction: row;
-    align-items: stretch;
-    margin-bottom: var(--sm-s-6);
-    display: none;
-}
-
-/* Sub-label delta tones (up = positive trend / down = negative trend) */
-.sm-delta--up   { color: var(--sm-success); }
-.sm-delta--down { color: var(--sm-alert); }
-
-.sm-ad__hs {
-    flex-grow: 1;
-    flex-basis: 25%;
-    padding-top: var(--sm-s-4);
-    padding-bottom: var(--sm-s-4);
-    padding-left: var(--sm-s-5);
-    padding-right: var(--sm-s-5);
-    margin-right: 80px;
-    background-color: var(--sm-surface);
-    border-left-width: var(--sm-stroke);
-    border-right-width: var(--sm-stroke);
-    border-top-width: var(--sm-stroke);
-    border-bottom-width: var(--sm-stroke);
-    border-left-color: var(--sm-border);
-    border-right-color: var(--sm-border);
-    border-top-color: var(--sm-border);
-    border-bottom-color: var(--sm-border);
-    border-top-left-radius: var(--sm-r-2);
-    border-top-right-radius: var(--sm-r-2);
-    border-bottom-left-radius: var(--sm-r-2);
-    border-bottom-right-radius: var(--sm-r-2);
-}
-
-/* Dept HIRE + Budget OPEN LEDGER header buttons */
-.sm-ad__hire-btn,
-.sm-ad__ledger-btn {
+/* Generic header buttons sized for the dashboard density */
+.sm-ad__ledger-btn,
+.sm-ad__inbox-all-btn,
+.sm-ad__pressure-btn,
+.sm-ad__state-action-btn {
     height: 24px;
     font-size: var(--sm-text-xs);
     padding-left: var(--sm-s-3);
     padding-right: var(--sm-s-3);
     padding-top: 0;
     padding-bottom: 0;
+    margin-left: var(--sm-s-2);
 }
 
-/* Gov value row — big number + tone badge side by side */
-.sm-ad__gov-value-row {
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: var(--sm-s-2);
-}
-.sm-ad__gov-tone-badge {
-    margin-left: var(--sm-s-3);
-    align-self: center;
-}
-
-/* ===== Row 2 ===== */
-.sm-ad__row2 {
-    /* v2-polish Session 6 — height 320px matches the reference's
-     * panel height proportions (4-column row with breathing room
-     * around the gauge, sparkline, personnel grid). Inter-row gap
-     * relaxed s-3 → s-4 in this session to fully match reference. */
-    height: 320px;
+/* ============================================================
+   HERO ROW — Arc + Inbox
+   ============================================================ */
+.sm-ad__hero-row {
     flex-direction: row;
     margin-bottom: var(--sm-s-4);
 }
-
-/* ========== Phase 25.48 — Investigation Arc ribbon ==========
-   Strategic-context strip between Row 2 and Row 3. Reveal-stage
-   markers + 2 stat bars + primary terminal chip. Slim — ~110 px tall
-   so it doesn't crowd Row 3, but big enough to render the stage rail
-   legibly. */
 .sm-ad__arc {
-    /* v2-polish Session 6 — inter-row gap relaxed s-3 → s-4. */
-    margin-bottom: var(--sm-s-4);
+    flex-grow: 6;
+    flex-basis: 0;
+    margin-right: var(--sm-s-4);
 }
+.sm-ad__inbox {
+    flex-grow: 4;
+    flex-basis: 0;
+}
+
+/* Investigation Arc internals */
 .sm-ad__arc-body {
     flex-direction: column;
     padding: var(--sm-s-3);
@@ -2292,9 +1960,6 @@ TextField > .unity-text-field__input,
 .sm-ad__arc-doomsday--alert { color: var(--sm-alert); }
 .sm-ad__arc-doomsday--warn  { color: var(--sm-warning); }
 
-/* Stage marker — 3 dots connected by 2 rails. Active stage gets
-   filled-circle treatment + accent colour; passed stages stay
-   tinted; future stages render as dim hollow circles. */
 .sm-ad__arc-stages {
     flex-direction: row;
     align-items: center;
@@ -2325,7 +1990,6 @@ TextField > .unity-text-field__input,
     font-size: 10px;
     letter-spacing: 1.4px;
 }
-/* Stage states — set on each .sm-ad__arc-stage container by C# */
 .sm-ad__arc-stage--reached > .sm-ad__arc-stage-dot {
     background-color: var(--sm-info);
     border-color: var(--sm-info);
@@ -2358,7 +2022,6 @@ TextField > .unity-text-field__input,
     background-color: var(--sm-info);
 }
 
-/* Stat tracks — layers revealed + intel types corroborated */
 .sm-ad__arc-tracks {
     flex-direction: row;
     align-items: stretch;
@@ -2398,7 +2061,6 @@ TextField > .unity-text-field__input,
 .sm-ad__arc-track-fill--mastermind { background-color: var(--sm-warning); }
 .sm-ad__arc-track-fill--intel      { background-color: var(--sm-success); }
 
-/* Primary terminal target chip — sits at the end of the tracks row */
 .sm-ad__arc-target {
     flex-direction: column;
     justify-content: center;
@@ -2412,82 +2074,263 @@ TextField > .unity-text-field__input,
     font-weight: 700;
     color: var(--sm-text);
 }
-/* 4-panel Row 2: Depts(2) · Budget(3) · Personnel(2) · Gov(2) — AD-27 adds Personnel */
-.sm-ad__depts      { flex-grow: 2; flex-basis: 0; margin-right: var(--sm-s-3); }
-.sm-ad__budget     { flex-grow: 3; flex-basis: 0; margin-right: var(--sm-s-3); }
-.sm-ad__personnel  { flex-grow: 2; flex-basis: 0; margin-right: var(--sm-s-3); }
-.sm-ad__gov        { flex-grow: 2; flex-basis: 0; }
 
-/* Department rows */
-.sm-ad__dept-row {
+/* Urgent Inbox internals */
+.sm-ad__inbox-count {
+    margin-left: var(--sm-s-2);
+    background-color: var(--sm-surface-2);
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-xs);
+    font-weight: 700;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+.sm-ad__inbox-count--alert {
+    background-color: var(--sm-alert);
+    color: var(--sm-bg);
+}
+.sm-ad__inbox-scroll {
+    flex-grow: 1;
+    padding-left: var(--sm-s-3);
+    padding-right: var(--sm-s-3);
+}
+.sm-ad__inbox-empty {
+    color: var(--sm-text-muted);
+    font-size: var(--sm-text-xs);
+    font-style: italic;
+    padding: var(--sm-s-4);
+    text-align: center; justify-content: center; align-items: center;
+}
+.sm-ad__inbox-row {
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     padding-top: var(--sm-s-3);
     padding-bottom: var(--sm-s-3);
     border-bottom-width: var(--sm-stroke);
     border-bottom-color: var(--sm-border);
+    transition-property: opacity, translate;
+    transition-duration: 220ms;
 }
-.sm-ad__dept-row--clickable:hover { background-color: var(--sm-surface-2); }
-.sm-ad__dept-row--locked        { opacity: 0.55; }
-.sm-ad__dept-icon {
+.sm-ad__inbox-row-severity {
     width: 18px;
-    height: 18px;
-    background-color: transparent;
-    
+    font-size: 14px;
     margin-right: var(--sm-s-2);
-    flex-shrink: 0;
+    text-align: center; justify-content: center; align-items: center;
 }
-
-/* ── Department SVG icons (Assets/UI/Icons/dept-*.svg) ─────────────────────── */
-.sm-dept-icon--operations   { background-image: url("project://database/Assets/UI/Icons/dept-operations.svg"); }
-.sm-dept-icon--analysis     { background-image: url("project://database/Assets/UI/Icons/dept-analysis.svg"); }
-.sm-dept-icon--cyber        { background-image: url("project://database/Assets/UI/Icons/dept-cyber.svg"); }
-.sm-dept-icon--logistics    { background-image: url("project://database/Assets/UI/Icons/dept-logistics.svg"); }
-.sm-dept-icon--randd        { background-image: url("project://database/Assets/UI/Icons/dept-randd.svg"); }
-.sm-dept-icon--counterintel { background-image: url("project://database/Assets/UI/Icons/dept-counterintel.svg"); }
-/* Legal: no SVG asset yet — amber tint on the unicode glyph fallback */
-.sm-dept-icon--legal        { color: var(--sm-warning); }
-.sm-ad__dept-badge--locked {
-    background-color: var(--sm-surface-2);
-    color: var(--sm-text-muted);
-}
-.sm-ad__dept-locked-caption {
-    flex-grow: 0;
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-muted);
-    letter-spacing: 0.5px;
-}
-.sm-ad__dept-name {
-    flex-grow: 0;
-    flex-shrink: 0;
-    width: 100px;
-    font-size: var(--sm-text-sm);
-    color: var(--sm-text);
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-.sm-ad__dept-staff {
-    width: 90px;
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-tertiary);
-    letter-spacing: 0.5px;
-    margin-right: var(--sm-s-3);
-    text-align: right; justify-content: right; align-items: center;
-}
-.sm-ad__dept-bar {
+.sm-ad__inbox-row--alert > .sm-ad__inbox-row-severity { color: var(--sm-alert); }
+.sm-ad__inbox-row--warn  > .sm-ad__inbox-row-severity { color: var(--sm-warning); }
+.sm-ad__inbox-row--info  > .sm-ad__inbox-row-severity { color: var(--sm-info); }
+.sm-ad__inbox-row-body {
+    flex-direction: column;
     flex-grow: 1;
+}
+.sm-ad__inbox-row-title {
+    color: var(--sm-text);
+    font-size: var(--sm-text-sm);
+    white-space: normal;
+}
+.sm-ad__inbox-row-meta {
+    color: var(--sm-text-muted);
+    font-size: 9px;
+    letter-spacing: var(--sm-letter-mono-caps);
+    margin-top: 2px;
+}
+.sm-ad__inbox-row--new {
+    opacity: 0;
+    translate: 0 8px;
+}
+.sm-ad__inbox-row--flash {
+    background-color: rgba(78, 148, 184, 0.10);
+}
+
+/* ============================================================
+   PRESSURE strip
+   ============================================================ */
+.sm-ad__pressure {
+    flex-shrink: 0;
+    margin-bottom: var(--sm-s-4);
+}
+.sm-ad__pressure-body {
+    flex-direction: column;
+}
+.sm-ad__pressure-meters {
+    flex-direction: row;
+    align-items: stretch;
+    margin-bottom: var(--sm-s-3);
+}
+.sm-ad__pressure-meter {
+    flex-grow: 1;
+    flex-basis: 0;
+    flex-direction: column;
+    margin-right: var(--sm-s-4);
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
+    padding-left: var(--sm-s-4);
+    padding-right: var(--sm-s-4);
+    background-color: var(--sm-surface-2);
+    border-left-width: 2px;
+    border-left-color: var(--sm-surface-3);
+}
+/* Note: no :last-child {margin-right:0} rule — UI Toolkit USS doesn't
+   support :last-child / :first-child / :nth-child. The trailing
+   meter's right margin sits inside the panel's right padding so it
+   reads as breathing room rather than a layout gap. */
+
+.sm-ad__pressure-meter--heat { border-left-color: var(--sm-warning); }
+.sm-ad__pressure-meter--conf { border-left-color: var(--sm-info); }
+.sm-ad__pressure-meter--doom { border-left-color: var(--sm-alert); }
+
+.sm-ad__pressure-meter-value-row {
+    flex-direction: row;
+    align-items: flex-end;
+    margin-bottom: var(--sm-s-2);
+}
+.sm-ad__pressure-meter-value {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--sm-text);
+}
+.sm-ad__pressure-meter-unit {
+    color: var(--sm-text-muted);
+    font-size: var(--sm-text-xs);
+    margin-left: var(--sm-s-2);
+    margin-bottom: 6px;
+}
+.sm-ad__pressure-meter-track {
     height: 4px;
+    background-color: var(--sm-surface-3);
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+.sm-ad__pressure-meter-fill {
+    height: 4px;
+    width: 0;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+.sm-ad__pressure-meter-fill--heat { background-color: var(--sm-warning); }
+.sm-ad__pressure-meter-fill--conf { background-color: var(--sm-info); }
+.sm-ad__pressure-meter-fill--doom { background-color: var(--sm-alert); }
+
+.sm-ad__pressure-meter-status {
+    margin-top: var(--sm-s-2);
+    color: var(--sm-text-secondary);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+}
+
+/* Top countries by heat — one-line inline row */
+.sm-ad__pressure-countries-row {
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--sm-s-2);
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+}
+.sm-ad__pressure-countries-label {
+    color: var(--sm-text-muted);
+    font-size: 10px;
+    letter-spacing: var(--sm-letter-mono-caps);
     margin-right: var(--sm-s-3);
+}
+.sm-ad__pressure-countries {
+    flex-direction: row;
+    flex-grow: 1;
+}
+.sm-ad__pressure-countries-empty {
+    color: var(--sm-text-tertiary);
+    font-size: var(--sm-text-xs);
+    font-style: italic;
+}
+.sm-ad__pressure-country-chip {
+    flex-direction: row;
+    align-items: center;
+    margin-right: var(--sm-s-3);
+    padding-left: var(--sm-s-2);
+    padding-right: var(--sm-s-2);
+    padding-top: 2px;
+    padding-bottom: 2px;
     background-color: var(--sm-surface-2);
 }
-.sm-ad__dept-bar-fill {
-    height: 4px;
-    background-color: var(--sm-success);
+.sm-ad__pressure-country-name {
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-xs);
+    letter-spacing: 0.5px;
+    margin-right: var(--sm-s-2);
 }
-.sm-ad__dept-bar-fill--warn    { background-color: var(--sm-warning); }
-.sm-ad__dept-bar-fill--crit    { background-color: var(--sm-alert); }
+.sm-ad__pressure-country-heat {
+    color: var(--sm-warning);
+    font-size: var(--sm-text-xs);
+    font-weight: 700;
+}
+.sm-ad__pressure-country-heat--critical { color: var(--sm-alert); }
+.sm-ad__pressure-world-link {
+    color: var(--sm-text-secondary);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+}
 
-/* Budget stat triptych (AD-11) */
+/* ============================================================
+   RESOURCES ROW — Agency State + Black Budget
+   ============================================================ */
+.sm-ad__resources-row {
+    flex-direction: row;
+    margin-bottom: var(--sm-s-4);
+}
+.sm-ad__state {
+    flex-grow: 5;
+    flex-basis: 0;
+    margin-right: var(--sm-s-4);
+}
+.sm-ad__budget {
+    flex-grow: 5;
+    flex-basis: 0;
+}
+
+/* Agency State internals */
+.sm-ad__state-body {
+    flex-direction: column;
+}
+/* Dividers between state lines render via border-TOP on every line
+   EXCEPT the first. UI Toolkit doesn't support :first-child or
+   :last-child pseudo-classes, so we apply the rule to a modifier
+   that the C# is free to add when needed — or, simpler, just leave
+   every line bordered top + the first state-line ends up touching
+   the panel body padding and reads cleanly. */
+.sm-ad__state-line {
+    flex-direction: row;
+    align-items: center;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-top-width: var(--sm-stroke);
+    border-top-color: var(--sm-border);
+}
+/* First state-line gets a class modifier from the C# to drop its top
+   border so the panel body's top padding is clean. */
+.sm-ad__state-line--first { border-top-width: 0; }
+.sm-ad__state-line-key {
+    width: 140px;
+    color: var(--sm-text-secondary);
+    font-size: var(--sm-text-xs);
+    letter-spacing: 0.6px;
+}
+.sm-ad__state-line-value {
+    flex-grow: 1;
+    color: var(--sm-text);
+    font-size: var(--sm-text-sm);
+}
+.sm-ad__state-actions {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: var(--sm-s-4);
+}
+
+/* Black Budget internals (unchanged) */
 .sm-ad__budget-stats {
     flex-direction: row;
     margin-bottom: var(--sm-s-3);
@@ -2509,8 +2352,6 @@ TextField > .unity-text-field__input,
     color: var(--sm-text-tertiary);
     margin-top: 1px;
 }
-
-/* Budget chart — vertical bars, placeholder line-chart */
 .sm-ad__budget-body {
     flex-direction: column;
     flex-grow: 1;
@@ -2589,552 +2430,154 @@ TextField > .unity-text-field__input,
 .sm-ad__legend-swatch--expense   { background-color: var(--sm-alert); }
 .sm-ad__legend-swatch--heat-fine { background-color: var(--sm-warning); }
 
-/* Gov confidence — simple half-disc gauge + big number */
-.sm-ad__gov-body {
-    flex-direction: column;
+/* ============================================================
+   OPERATIONS FRAME
+   ============================================================ */
+.sm-ad__opsframe {
+    flex-shrink: 0;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    flex-grow: 1;
-    padding-top: var(--sm-s-4);
-    padding-bottom: var(--sm-s-4);
+    padding-top: var(--sm-s-3);
+    padding-bottom: var(--sm-s-3);
     padding-left: var(--sm-s-4);
     padding-right: var(--sm-s-4);
-}
-.sm-ad__gauge {
-    width: 180px;
-    height: 100px;
-    position: relative;
-    margin-bottom: var(--sm-s-3);
-}
-.sm-ad__gauge--clickable:hover { background-color: var(--sm-surface-2); }
-.sm-ad__gauge-canvas {
-    position: absolute;
-    left: 0; right: 0; top: 0; bottom: 0;
-}
-.sm-ad__gauge-needle {
-    /* Anchored at the arc centre (90, 90). Rotated from C# to map 0..100 → 180°..0°.
-       Needle is 2px wide × 70px tall, hangs downward pre-rotation; transform-origin
-       aligned so the tip extends past the rim. */
-    position: absolute;
-    left: 89px;
-    top: 18px;
-    width: 2px;
-    height: 72px;
-    background-color: var(--sm-text);
-    transform-origin: 50% 100%;
-}
-/* AD-15 — sparkline (Painter2D canvas; controller draws the line) */
-.sm-ad__gov-sparkline {
-    width: 100%;
-    height: 36px;
-    margin-bottom: var(--sm-s-2);
-}
-
-.sm-ad__gov-value {
-    font-size: 42px;
-    color: var(--sm-text);
-    font-weight: 700;
-}
-.sm-ad__gov-caption {
-    color: var(--sm-text-tertiary);
-    letter-spacing: 1px;
-    margin-top: var(--sm-s-1);
-}
-
-/* AD-17 — REVIEW notes section */
-.sm-ad__gov-review {
-    flex-direction: column;
     margin-top: var(--sm-s-3);
+    background-color: rgba(0, 0, 0, 0.18);
     border-top-width: var(--sm-stroke);
-    border-top-color: var(--sm-border);
-    padding-top: var(--sm-s-3);
-}
-.sm-ad__gov-review-header {
-    letter-spacing: var(--sm-letter-label);
-    color: var(--sm-text-secondary);
-    margin-bottom: var(--sm-s-2);
-}
-.sm-ad__gov-review-note {
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-secondary);
-    margin-bottom: 2px;
-    white-space: normal;
-}
-.sm-ad__gov-review-note--pos { color: var(--sm-success); }
-.sm-ad__gov-review-note--neg { color: var(--sm-alert); }
-
-/* ===== Row 3 ===== */
-.sm-ad__row3 {
-    flex-direction: row;
-    flex-grow: 1;
-}
-/* 3-panel Row 3: Safe(5) · HeatThreat(3) · Feed(4) — AD-28 adds HeatThreat
- * v2-polish: inter-panel gap bumped to var(--sm-s-4) = 16px to match the
- * reference's column rhythm. */
-.sm-ad__safe { flex-grow: 5; flex-basis: 0; margin-right: var(--sm-s-4); }
-.sm-ad__ht   { flex-grow: 3; flex-basis: 0; margin-right: var(--sm-s-4); }
-.sm-ad__feed { flex-grow: 4; flex-basis: 0; }
-
-/* Safe-houses table */
-.sm-ad__safe-head {
-    flex-direction: row;
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
     border-bottom-width: var(--sm-stroke);
-    border-bottom-color: var(--sm-border);
-    background-color: var(--sm-surface-2);
-}
-.sm-ad__safe-col {
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-secondary);
-    letter-spacing: var(--sm-letter-label);
-    font-weight: 700;
-}
-.sm-ad__safe-col--city      { flex-grow: 2; flex-basis: 0; }
-.sm-ad__safe-col--code      { width: 80px; }
-.sm-ad__safe-col--cover     { flex-grow: 2; flex-basis: 0; }
-.sm-ad__safe-col--condition { width: 110px; }
-.sm-ad__safe-col--comms-cap { width: 70px; text-align: right; justify-content: right; align-items: center; }
-.sm-ad__safe-col--heat      { width: 60px; text-align: right; justify-content: right; align-items: center; }
-.sm-ad__safe-col--actions   { width: 80px; text-align: right; justify-content: right; align-items: center; }
-.sm-ad__safe-col--clickable:hover { color: var(--sm-text); }
-
-.sm-ad__safe-scroll { flex-grow: 1; }
-.sm-ad__safe-row {
-    flex-direction: row;
-    align-items: center;
-    padding-top: var(--sm-s-2);
-    padding-bottom: var(--sm-s-2);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
-    height: 32px;
-    border-bottom-width: var(--sm-stroke);
-    border-bottom-color: var(--sm-border);
-}
-.sm-ad__safe-row:hover { background-color: var(--sm-surface-2); }
-
-/* AD-20 country-code prefix chip */
-.sm-ad__safe-cell-cc {
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-muted);
-    letter-spacing: 0.5px;
-    font-weight: 700;
-    margin-right: var(--sm-s-2);
-    
-}
-/* AD-22 capacity cell */
-.sm-ad__safe-cell-cap { width: 56px; font-size: var(--sm-text-xs); color: var(--sm-text-tertiary); letter-spacing: 0.5px; text-align: right; justify-content: right; align-items: center; }
-
-.sm-ad__safe-cell-city  { flex-grow: 2; flex-basis: 0; font-size: var(--sm-text-sm); color: var(--sm-text); }
-.sm-ad__safe-cell-code  { width: 80px; font-size: var(--sm-text-sm); color: var(--sm-text-secondary); letter-spacing: 0.5px; }
-.sm-ad__safe-cell-cover { flex-grow: 2; flex-basis: 0; font-size: var(--sm-text-sm); color: var(--sm-text-secondary); }
-.sm-ad__safe-cell-cond  { width: 110px; flex-direction: row; align-items: center; }
-.sm-ad__safe-cond-bar {
-    width: 80px;
-    height: 4px;
-    background-color: var(--sm-surface-2);
-    margin-right: var(--sm-s-2);
-}
-.sm-ad__safe-cond-fill {
-    height: 4px;
-    background-color: var(--sm-info);
-}
-.sm-ad__safe-cell-heat  { width: 60px; font-size: var(--sm-text-sm); color: var(--sm-warning); text-align: right; justify-content: right; align-items: center; letter-spacing: 0.5px; }
-.sm-ad__safe-cell-actions {
-    width: 80px;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-}
-.sm-ad__safe-open-btn {
-    padding-top: 2px;
-    padding-bottom: 2px;
-    padding-left: var(--sm-s-2);
-    padding-right: var(--sm-s-2);
-    font-size: var(--sm-text-xs);
-    background-color: var(--sm-surface-2);
-    color: var(--sm-text-secondary);
-    letter-spacing: 0.5px;
     border-left-width: var(--sm-stroke);
     border-right-width: var(--sm-stroke);
-    border-top-width: var(--sm-stroke);
-    border-bottom-width: var(--sm-stroke);
-    border-left-color: var(--sm-border);
-    border-right-color: var(--sm-border);
     border-top-color: var(--sm-border);
     border-bottom-color: var(--sm-border);
-}
-.sm-ad__safe-open-btn:hover { color: var(--sm-text); background-color: var(--sm-surface-3); }
-.sm-ad__safe-row--clickable:hover { background-color: var(--sm-surface-2); }
-
-/* Urgency badge in feed header — hidden when no alerts */
-.sm-ad__feed-urgent-badge { display: none; }
-.sm-ad__feed-urgent-badge--visible { display: flex; }
-
-/* Activity feed */
-.sm-ad__feed-scroll { flex-grow: 1; }
-.sm-ad__feed-row {
-    flex-direction: row;
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
-    border-bottom-width: var(--sm-stroke);
-    border-bottom-color: var(--sm-border);
-}
-.sm-ad__feed-time {
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-muted);
-    letter-spacing: 0.5px;
-    width: 46px;
-    margin-right: var(--sm-s-3);
-}
-.sm-ad__feed-category {
-    font-size: var(--sm-text-xs);
-    width: 60px;
-    margin-right: var(--sm-s-3);
-    letter-spacing: var(--sm-letter-label);
-    font-weight: 700;
-    text-align: center; justify-content: center; align-items: center;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    padding-left: 5px;
-    padding-right: 5px;
-    background-color: var(--sm-surface-2);
-    border-left-width: var(--sm-stroke);
-    border-right-width: var(--sm-stroke);
-    border-top-width: var(--sm-stroke);
-    border-bottom-width: var(--sm-stroke);
     border-left-color: var(--sm-border);
     border-right-color: var(--sm-border);
-    border-top-color: var(--sm-border);
-    border-bottom-color: var(--sm-border);
-    border-top-left-radius: var(--sm-r-2);
-    border-top-right-radius: var(--sm-r-2);
-    border-bottom-left-radius: var(--sm-r-2);
-    border-bottom-right-radius: var(--sm-r-2);
-    color: var(--sm-text-secondary);
 }
-.sm-ad__feed-category--op        { color: var(--sm-cat-1); background-color: rgba(78,148,184,0.12); border-left-color: rgba(78,148,184,0.25); border-right-color: rgba(78,148,184,0.25); border-top-color: rgba(78,148,184,0.25); border-bottom-color: rgba(78,148,184,0.25); }
-.sm-ad__feed-category--intel     { color: var(--sm-info);    background-color: var(--sm-info-soft);    border-left-color: rgba(78,148,184,0.25); border-right-color: rgba(78,148,184,0.25); border-top-color: rgba(78,148,184,0.25); border-bottom-color: rgba(78,148,184,0.25); }
-.sm-ad__feed-category--personnel { color: var(--sm-cat-4);  background-color: rgba(111,163,122,0.12); border-left-color: rgba(111,163,122,0.25); border-right-color: rgba(111,163,122,0.25); border-top-color: rgba(111,163,122,0.25); border-bottom-color: rgba(111,163,122,0.25); }
-.sm-ad__feed-category--diplomacy { color: var(--sm-cat-3);  background-color: rgba(194,138,92,0.12);  border-left-color: rgba(194,138,92,0.25); border-right-color: rgba(194,138,92,0.25); border-top-color: rgba(194,138,92,0.25); border-bottom-color: rgba(194,138,92,0.25); }
-.sm-ad__feed-category--budget    { color: var(--sm-success); background-color: var(--sm-success-soft); border-left-color: rgba(111,163,122,0.3); border-right-color: rgba(111,163,122,0.3); border-top-color: rgba(111,163,122,0.3); border-bottom-color: rgba(111,163,122,0.3); }
-.sm-ad__feed-category--alert     { color: var(--sm-alert);   background-color: var(--sm-alert-soft);   border-left-color: rgba(209,75,61,0.3);   border-right-color: rgba(209,75,61,0.3);   border-top-color: rgba(209,75,61,0.3);   border-bottom-color: rgba(209,75,61,0.3); }
-.sm-ad__feed-category--hr        { color: var(--sm-cat-5);  background-color: rgba(154,165,179,0.12); border-left-color: rgba(154,165,179,0.25); border-right-color: rgba(154,165,179,0.25); border-top-color: rgba(154,165,179,0.25); border-bottom-color: rgba(154,165,179,0.25); }
-.sm-ad__feed-category--fin       { color: var(--sm-success); background-color: var(--sm-success-soft); border-left-color: rgba(111,163,122,0.3); border-right-color: rgba(111,163,122,0.3); border-top-color: rgba(111,163,122,0.3); border-bottom-color: rgba(111,163,122,0.3); }
-
-.sm-ad__feed-msg {
-    flex-grow: 1;
-    font-size: var(--sm-text-sm);
-    color: var(--sm-text-secondary);
-    white-space: normal;
-}
-
-/* F-05 · New rows slide in from slightly above, fading up from 30 % opacity.
-   The .--new class is applied pre-frame and stripped on the next schedule tick,
-   so the transition runs from (translateY -8px, α 0.3) → (0, 1). */
-.sm-ad__feed-row {
-    transition-property: translate, opacity;
-    transition-duration: var(--sm-dur-base);
-    transition-timing-function: ease-out;
-    translate: 0 0;
-    opacity: 1;
-}
-.sm-ad__feed-row--new {
-    translate: 0 -8px;
-    opacity: 0.3;
-}
-/* A short alert-soft tint that the controller clears after 1200 ms. */
-.sm-ad__feed-row--flash {
-    background-color: var(--sm-surface-2);
-}
-
-/* ===== Personnel panel (AD-27) ===== */
-.sm-ad__personnel-body {
+.sm-ad__opsframe-classified {
     flex-direction: column;
-    flex-grow: 1;
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
+    flex-shrink: 0;
+    max-width: 280px;
+}
+.sm-ad__opsframe-classified-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 3px;
+}
+.sm-ad__opsframe-classified-icon {
+    width: 10px;
+    height: 10px;
+    background-color: var(--sm-identity);
+    margin-right: 8px;
+}
+.sm-ad__opsframe-classified-label {
+    color: var(--sm-identity);
+    font-size: 10px;
+    letter-spacing: var(--sm-letter-mono-caps);
+    font-weight: 700;
+}
+.sm-ad__opsframe-classified-text {
+    color: var(--sm-text-muted);
+    font-size: 9px;
+    white-space: normal;
+}
+.sm-ad__opsframe-quote {
+    flex-direction: column;
+    flex-shrink: 1;
+    max-width: 380px;
+    align-items: center;
+}
+.sm-ad__opsframe-quote-text {
+    color: var(--sm-text-secondary);
+    font-size: 12px;
+    font-style: italic;
+    text-align: center; justify-content: center; align-items: center;
+    white-space: normal;
+}
+.sm-ad__opsframe-quote-attr {
+    color: var(--sm-text-muted);
+    font-size: 9px;
+    letter-spacing: var(--sm-letter-mono-caps);
+    margin-top: 4px;
+}
+.sm-ad__opsframe-watch {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+}
+.sm-ad__opsframe-watch-text {
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: var(--sm-s-3);
+}
+.sm-ad__opsframe-watch-label {
+    color: var(--sm-text-secondary);
+    font-size: 10px;
+    letter-spacing: var(--sm-letter-mono-caps);
+    font-weight: 700;
+}
+.sm-ad__opsframe-watch-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 2px;
+}
+.sm-ad__opsframe-watch-sub {
+    color: var(--sm-text-muted);
+    font-size: 9px;
+    letter-spacing: var(--sm-letter-mono-caps);
+    margin-right: 6px;
+}
+.sm-ad__opsframe-watch-num {
+    color: var(--sm-text);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* ============================================================
+   STATUS BAR
+   ============================================================ */
+.sm-ad__statusbar {
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    height: 28px;
     padding-left: var(--sm-s-3);
     padding-right: var(--sm-s-3);
-}
-.sm-ad__personnel-grid {
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-bottom: var(--sm-s-2);
-}
-.sm-ad__personnel-stat {
-    width: 50%;
-    flex-direction: column;
-    padding-top: var(--sm-s-2);
-    padding-bottom: var(--sm-s-2);
-    padding-left: var(--sm-s-2);
-    padding-right: var(--sm-s-2);
-}
-.sm-ad__personnel-stat-value {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--sm-text);
-}
-.sm-ad__personnel-stat-delta {
-    font-size: var(--sm-text-xs);
-    color: var(--sm-success);
-    margin-left: 3px;
-}
-.sm-ad__personnel-stat-label {
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-secondary);
-    letter-spacing: var(--sm-letter-label);
-}
-.sm-ad__personnel-footer {
-    flex-direction: row;
+    margin-top: var(--sm-s-3);
+    background-color: rgba(0, 0, 0, 0.20);
     border-top-width: var(--sm-stroke);
+    border-bottom-width: var(--sm-stroke);
+    border-left-width: var(--sm-stroke);
+    border-right-width: var(--sm-stroke);
     border-top-color: var(--sm-border);
-    padding-top: var(--sm-s-3);
-    margin-top: var(--sm-s-1);
+    border-bottom-color: var(--sm-border);
+    border-left-color: var(--sm-border);
+    border-right-color: var(--sm-border);
 }
-.sm-ad__personnel-footer-stat {
-    flex-grow: 1;
-    flex-direction: column;
-    align-items: center;
-}
-.sm-ad__personnel-footer-value {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--sm-text);
-}
-.sm-ad__personnel-footer-label {
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-secondary);
-    letter-spacing: var(--sm-letter-label);
-    text-align: center; justify-content: center; align-items: center;
-}
-
-/* ===== Heat &amp; Threat panel (AD-28) ===== */
-.sm-ad__ht-body {
-    flex-direction: column;
-    flex-grow: 1;
-    padding-top: var(--sm-s-4);
-    padding-bottom: var(--sm-s-4);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
-}
-.sm-ad__ht-value-row {
-    flex-direction: row;
-    align-items: flex-end;
-    margin-bottom: var(--sm-s-3);
-}
-.sm-ad__ht-value {
-    font-size: 42px;
-    font-weight: 700;
-    color: var(--sm-warning);
-}
-.sm-ad__ht-unit {
-    font-size: var(--sm-text-sm);
-    color: var(--sm-text-muted);
-    margin-left: var(--sm-s-2);
-}
-.sm-ad__ht-delta {
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-secondary);
-    letter-spacing: 0.5px;
-    align-self: center;
-}
-.sm-ad__ht-countries { flex-direction: column; flex-grow: 1; }
-.sm-ad__ht-country-row {
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: var(--sm-s-2);
-}
-.sm-ad__ht-country-name {
-    width: 72px;
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-secondary);
-    letter-spacing: 0.5px;
-}
-.sm-ad__ht-country-bar {
-    flex-grow: 1;
-    height: 4px;
-    background-color: var(--sm-surface-2);
-    margin-left: var(--sm-s-2);
+.sm-ad__statusbar-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--sm-success);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
     margin-right: var(--sm-s-2);
 }
-.sm-ad__ht-country-fill {
-    height: 4px;
-    background-color: var(--sm-warning);
-}
-.sm-ad__ht-country-fill--critical { background-color: var(--sm-alert); }
-.sm-ad__ht-country-heat {
-    width: 28px;
-    font-size: var(--sm-text-xs);
-    color: var(--sm-warning);
-    text-align: right; justify-content: right; align-items: center;
-}
-
-/* ── Transit button (in PERSONNEL panel header) ─────────────────────────── */
-.sm-ad__transit-btn {
+.sm-ad__statusbar-cell {
+    color: var(--sm-text-tertiary);
     font-size: 9px;
-    letter-spacing: 1.2px;
-    color: #6FA37A;
-    background-color: transparent;
-    border-width: 1px;
-    border-color: rgba(111, 163, 122, 0.40);
-    padding: 3px 8px;
-    margin-right: 8px;
-    cursor: link;
-    transition-property: background-color, border-color, color;
-    transition-duration: var(--sm-dur-fast);
+    letter-spacing: 1.8px;
 }
-.sm-ad__transit-btn:hover {
-    /* Phase 25.80 — bg uses --sm-success-soft (0.14α, was 0.12 hand-
-       typed). Hover-brighten color #8ED99A kept inline — it's a
-       deliberate brightness-bump on top of --sm-success
-       (#6FA37A) and we don't have an --sm-success-bright token. */
-    background-color: var(--sm-success-soft);
-    border-color: var(--sm-success);
-    color: #8ED99A;
-}
-
-/* ── CI Suspects button (in HEAT & THREAT panel header) ─────────────────── */
-.sm-ad__ci-suspects-btn {
-    font-size: 9px;
-    letter-spacing: 1.2px;
-    color: #4E94B8;
-    background-color: transparent;
-    border-width: 1px;
-    border-color: rgba(78, 148, 184, 0.40);
-    padding: 3px 8px;
-    margin-right: 6px;
-    cursor: link;
-    transition-property: background-color, border-color, color;
-    transition-duration: var(--sm-dur-fast);
-}
-.sm-ad__ci-suspects-btn:hover {
-    background-color: var(--sm-info-soft);
-    border-color: var(--sm-info);
-    color: #7ABBD9;   /* hover-brighten on top of --sm-info */
-}
-
-/* ── Tip-inbox button (in HEAT & THREAT panel header) ───────────────────── */
-.sm-ad__tip-inbox-btn {
-    font-size: 9px;
-    letter-spacing: 1.2px;
-    color: #D9A441;
-    background-color: transparent;
-    border-width: 1px;
-    border-color: rgba(217, 164, 65, 0.40);
-    padding: 3px 8px;
-    margin-right: 6px;
-    cursor: link;
-    transition-property: background-color, border-color, color;
-    transition-duration: var(--sm-dur-fast);
-}
-.sm-ad__tip-inbox-btn:hover {
-    background-color: var(--sm-warning-soft);
-    border-color: var(--sm-warning);
-    color: #E6C86A;   /* hover-brighten on top of --sm-warning */
-}
-
-/* ── Blowback meter (in HEAT & THREAT panel body)
-   Phase 25.80 — every hex literal here mapped to a --sm-* token.
-   #172030 → --sm-surface-2; #212C3B → --sm-border; #5A6876 →
-   --sm-text-secondary; #E6EDF3 → --sm-text; #6FA37A → --sm-success;
-   #D9A441 → --sm-warning; #D14B3D → --sm-alert. Pre-fix the
-   blowback meter was the worst offender for theme drift in the
-   dashboard — every single colour was a hex literal. */
-.sm-ad__blowback {
-    border-top-width: 1px;
-    border-top-color: var(--sm-border);
-    padding-top: 8px;
-    margin-top: 6px;
-}
-.sm-ad__blowback-header {
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 4px;
-}
-.sm-ad__blowback-label {
+.sm-ad__statusbar-sep {
+    color: var(--sm-text-tertiary);
     font-size: 10px;
-    color: var(--sm-text-secondary);
-    letter-spacing: 1.2px;
-    flex: 1;
+    margin-left: var(--sm-s-2);
+    margin-right: var(--sm-s-2);
+    opacity: 0.6;
 }
-.sm-ad__blowback-value {
-    font-size: 14px;
-    color: var(--sm-text);
-    margin-right: 3px;
-}
-.sm-ad__blowback-unit {
-    font-size: 10px;
-    color: var(--sm-text-secondary);
-}
-.sm-ad__blowback-track {
-    height: 4px;
-    background-color: var(--sm-surface-2);
-    border-width: 1px;
-    border-color: var(--sm-border);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 4px;
-}
-.sm-ad__blowback-fill {
-    height: 100%;
-    width: 0%;
-    background-color: var(--sm-success);
-    border-radius: 2px;
-    transition-property: width, background-color;
-    transition-duration: var(--sm-dur-base);
-}
-.sm-ad__blowback-fill--warning  { background-color: var(--sm-warning); }
-.sm-ad__blowback-fill--critical { background-color: var(--sm-alert); }
-.sm-ad__blowback-status {
-    font-size: 10px;
-    color: var(--sm-text-secondary);
-    letter-spacing: 1px;
-}
-.sm-ad__blowback-status--warning  { color: var(--sm-warning); }
-.sm-ad__blowback-status--critical { color: var(--sm-alert); }
-
-/* ── Walk-ins button (in RECENT ACTIVITY panel header) ──────────────────── */
-.sm-ad__walkins-btn {
+.sm-ad__statusbar-stationery {
+    color: var(--sm-text-muted);
     font-size: 9px;
-    letter-spacing: 1.2px;
-    color: #D14B3D;
-    background-color: transparent;
-    border-width: 1px;
-    border-color: rgba(209, 75, 61, 0.40);
-    padding: 3px 8px;
-    margin-right: 6px;
-    cursor: link;
-    transition-property: background-color, border-color, color;
-    transition-duration: var(--sm-dur-fast);
-}
-.sm-ad__walkins-btn:hover {
-    background-color: var(--sm-alert-soft);
-    border-color: var(--sm-alert);
-    color: #E8705E;   /* hover-brighten on top of --sm-alert */
-}
-
-/* ── Threat-report button (in HEAT & THREAT panel header) ────────────────── */
-.sm-ad__threat-report-btn {
-    font-size: 9px;
-    letter-spacing: 1.2px;
-    color: var(--sm-text-secondary);
-    background-color: transparent;
-    border-width: 1px;
-    border-color: var(--sm-border);
-    padding: 3px 8px;
-    cursor: link;
-    transition-property: background-color, border-color, color;
-    transition-duration: var(--sm-dur-fast);
-}
-.sm-ad__threat-report-btn:hover {
-    background-color: var(--sm-info-soft);
-    border-color: var(--sm-info);
-    color: var(--sm-info);
+    letter-spacing: var(--sm-letter-mono-caps);
 }
 
 /* ── Assets/UI/Theme/theme-present-polish.uss ── */
@@ -3569,93 +3012,166 @@ TextField > .unity-text-field__input,
       </div>
       <div class="sm-fill"></div>
       <div class="sm-badge sm-badge--alert sm-ad__hero-attention" id="hero-attention"></div>
-      <div class="sm-ad__header-chips">
-        <div class="sm-ad__hero-chip">
-          <div class="sm-label">AGENCY LVL</div>
-          <div class="sm-num sm-ad__hero-chip-value" id="hero-lvl">—</div>
-          <div class="sm-mono sm-label sm-ad__hero-chip-sub" id="hero-lvl-sub">ECHELON</div>
-        </div>
-        <div class="sm-ad__hero-chip">
-          <div class="sm-label">TENURE</div>
-          <div class="sm-num sm-ad__hero-chip-value" id="hero-tenure">—</div>
-          <div class="sm-mono sm-label sm-ad__hero-chip-sub">in post</div>
-        </div>
-        <div class="sm-ad__hero-chip">
-          <div class="sm-label">NEXT REVIEW</div>
-          <div class="sm-num sm-ad__hero-chip-value" id="hero-review">—</div>
-          <div class="sm-mono sm-label sm-ad__hero-chip-sub">cabinet</div>
-        </div>
-      </div>
     </div>
-    <div class="sm-panel sm-ad__arc">
-      <div class="sm-panel__header">
-        <div class="sm-panel__title">INVESTIGATION ARC</div>
-        <div class="sm-fill"></div>
-        <div class="sm-mono sm-label sm-ad__arc-doomsday" id="arc-doomsday" title="Days until the conspiracy executes its plan. Resolve a primary terminal-state op before this hits zero.">DOOMSDAY · — d</div>
-      </div>
-      <div class="sm-panel__body sm-ad__arc-body">
-        <div class="sm-ad__arc-stages" id="arc-stages">
-          <div class="sm-ad__arc-stage" id="arc-stage-0">
-            <div class="sm-ad__arc-stage-dot"></div>
-            <div class="sm-mono sm-label sm-ad__arc-stage-label">UNKNOWN</div>
-          </div>
-          <div class="sm-ad__arc-stage-rail"></div>
-          <div class="sm-ad__arc-stage" id="arc-stage-1">
-            <div class="sm-ad__arc-stage-dot"></div>
-            <div class="sm-mono sm-label sm-ad__arc-stage-label">NETWORK KNOWN</div>
-          </div>
-          <div class="sm-ad__arc-stage-rail"></div>
-          <div class="sm-ad__arc-stage" id="arc-stage-2">
-            <div class="sm-ad__arc-stage-dot"></div>
-            <div class="sm-mono sm-label sm-ad__arc-stage-label">MASTERMIND</div>
-          </div>
-        </div>
-        <div class="sm-row sm-ad__arc-tracks">
-          <div class="sm-ad__arc-track" title="UNMASKED victory condition. Reveal every conspiracy layer (Layer 0 → Mastermind) to unlock this ending. Each successful layer reveal exposes the next tier of cells.">
-            <div class="sm-row sm-ad__arc-track-head">
-              <div class="sm-mono sm-label">UNMASKED</div>
-              <div class="sm-fill"></div>
-              <div class="sm-num sm-ad__arc-track-value" id="arc-layers-value">—/—</div>
-            </div>
-            <div class="sm-ad__arc-track-rail">
-              <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--layers" id="arc-layers-fill"></div>
-            </div>
-          </div>
-          <div class="sm-ad__arc-track" title="DECAPITATION STRIKE victory condition. Reveal every named conspirator at the Mastermind layer (the deepest layer of the conspiracy) to unlock this ending — the lore-correct gate for the assassination/decapitation path.">
-            <div class="sm-row sm-ad__arc-track-head">
-              <div class="sm-mono sm-label">DECAPITATION</div>
-              <div class="sm-fill"></div>
-              <div class="sm-num sm-ad__arc-track-value" id="arc-mastermind-value">—/—</div>
-            </div>
-            <div class="sm-ad__arc-track-rail">
-              <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--mastermind" id="arc-mastermind-fill"></div>
-            </div>
-          </div>
-          <div class="sm-ad__arc-track" title="Distinct intel types corroborated against the conspiracy (HUMINT / SIGINT / CYBINT / OSINT / IMINT / FININT / GEOINT / TECHINT / MASINT). Strengthens evidence weight at terminal-state ops; some terminals have minimum-coverage gates.">
-            <div class="sm-row sm-ad__arc-track-head">
-              <div class="sm-mono sm-label">EVIDENCE WEIGHT</div>
-              <div class="sm-fill"></div>
-              <div class="sm-num sm-ad__arc-track-value" id="arc-intel-value">—/9</div>
-            </div>
-            <div class="sm-ad__arc-track-rail">
-              <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--intel" id="arc-intel-fill"></div>
-            </div>
-          </div>
-          <div class="sm-ad__arc-target" title="Primary terminal target — the ending your campaign DNA is currently best positioned for. Drive the corresponding terminal-state op before the doomsday clock expires to win.">
-            <div class="sm-mono sm-label">PRIMARY TARGET</div>
-            <div class="sm-num sm-ad__arc-target-value" id="arc-target-value">—</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="sm-row sm-ad__row2">
-      <div class="sm-panel sm-ad__depts">
+    <div class="sm-row sm-ad__hero-row">
+      <div class="sm-panel sm-ad__arc">
         <div class="sm-panel__header">
-          <div class="sm-panel__title">DEPARTMENTS</div>
+          <div class="sm-panel__title">INVESTIGATION ARC</div>
           <div class="sm-fill"></div>
-          <button class="sm-btn sm-ad__hire-btn" id="dept-hire-btn" title="Open recruitment — review applicants, manage open positions.">HIRE</button>
+          <div class="sm-mono sm-label sm-ad__arc-doomsday" id="arc-doomsday" title="Days until the conspiracy executes its plan. Resolve a primary terminal-state op before this hits zero.">DOOMSDAY · — d</div>
         </div>
-        <div class="sm-panel__body" id="dept-list"></div>
+        <div class="sm-panel__body sm-ad__arc-body">
+          <div class="sm-ad__arc-stages" id="arc-stages">
+            <div class="sm-ad__arc-stage" id="arc-stage-0">
+              <div class="sm-ad__arc-stage-dot"></div>
+              <div class="sm-mono sm-label sm-ad__arc-stage-label">UNKNOWN</div>
+            </div>
+            <div class="sm-ad__arc-stage-rail"></div>
+            <div class="sm-ad__arc-stage" id="arc-stage-1">
+              <div class="sm-ad__arc-stage-dot"></div>
+              <div class="sm-mono sm-label sm-ad__arc-stage-label">NETWORK KNOWN</div>
+            </div>
+            <div class="sm-ad__arc-stage-rail"></div>
+            <div class="sm-ad__arc-stage" id="arc-stage-2">
+              <div class="sm-ad__arc-stage-dot"></div>
+              <div class="sm-mono sm-label sm-ad__arc-stage-label">MASTERMIND</div>
+            </div>
+          </div>
+          <div class="sm-row sm-ad__arc-tracks">
+            <div class="sm-ad__arc-track" title="UNMASKED victory condition. Reveal every conspiracy layer (Layer 0 → Mastermind) to unlock this ending.">
+              <div class="sm-row sm-ad__arc-track-head">
+                <div class="sm-mono sm-label">UNMASKED</div>
+                <div class="sm-fill"></div>
+                <div class="sm-num sm-ad__arc-track-value" id="arc-layers-value">—/—</div>
+              </div>
+              <div class="sm-ad__arc-track-rail">
+                <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--layers" id="arc-layers-fill"></div>
+              </div>
+            </div>
+            <div class="sm-ad__arc-track" title="DECAPITATION STRIKE victory condition. Reveal every named conspirator at the Mastermind layer.">
+              <div class="sm-row sm-ad__arc-track-head">
+                <div class="sm-mono sm-label">DECAPITATION</div>
+                <div class="sm-fill"></div>
+                <div class="sm-num sm-ad__arc-track-value" id="arc-mastermind-value">—/—</div>
+              </div>
+              <div class="sm-ad__arc-track-rail">
+                <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--mastermind" id="arc-mastermind-fill"></div>
+              </div>
+            </div>
+            <div class="sm-ad__arc-track" title="Distinct intel types corroborated against the conspiracy. Strengthens evidence weight at terminal-state ops.">
+              <div class="sm-row sm-ad__arc-track-head">
+                <div class="sm-mono sm-label">EVIDENCE WEIGHT</div>
+                <div class="sm-fill"></div>
+                <div class="sm-num sm-ad__arc-track-value" id="arc-intel-value">—/9</div>
+              </div>
+              <div class="sm-ad__arc-track-rail">
+                <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--intel" id="arc-intel-fill"></div>
+              </div>
+            </div>
+            <div class="sm-ad__arc-target" title="Primary terminal target — the ending your campaign DNA is currently best positioned for.">
+              <div class="sm-mono sm-label">PRIMARY TARGET</div>
+              <div class="sm-num sm-ad__arc-target-value" id="arc-target-value">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sm-panel sm-ad__inbox">
+        <div class="sm-panel__header">
+          <div class="sm-panel__title">URGENT INBOX</div>
+          <div class="sm-badge sm-ad__inbox-count" id="inbox-count">0</div>
+          <div class="sm-fill"></div>
+          <button class="sm-btn sm-ad__inbox-all-btn" id="btn-inbox-all" title="Open the full inbox — walk-ins, tip-offs, cabinet timers, all in one queue.">SEE ALL</button>
+        </div>
+        <div class="sm-ad__inbox-scroll" id="inbox-list" style="overflow-x:hidden; overflow-y:auto;"></div>
+        <div class="sm-ad__inbox-empty sm-mono" id="inbox-empty">No items pending. The desk is quiet.</div>
+      </div>
+    </div>
+    <div class="sm-panel sm-ad__pressure">
+      <div class="sm-panel__header">
+        <div class="sm-panel__title">PRESSURE</div>
+        <div class="sm-fill"></div>
+        <button class="sm-btn sm-ad__pressure-btn" id="btn-ci-suspects" title="Counter-intel suspects under active surveillance.">CI SUSPECTS</button>
+        <button class="sm-btn sm-ad__pressure-btn" id="btn-tip-inbox" title="Tip inbox — informant leads waiting for a follow-up op.">TIP INBOX</button>
+        <button class="sm-btn sm-ad__pressure-btn" id="btn-threat-report" title="Analyst-aggregated intel digest.">WEEKLY BRIEF</button>
+      </div>
+      <div class="sm-panel__body sm-ad__pressure-body">
+        <div class="sm-row sm-ad__pressure-meters">
+          <div class="sm-ad__pressure-meter sm-ad__pressure-meter--heat">
+            <div class="sm-label">GLOBAL HEAT</div>
+            <div class="sm-row sm-ad__pressure-meter-value-row">
+              <div class="sm-num sm-numeral-display sm-ad__pressure-meter-value" id="pressure-heat-value">—</div>
+              <div class="sm-label sm-ad__pressure-meter-unit">/ 100</div>
+            </div>
+            <div class="sm-ad__pressure-meter-track">
+              <div class="sm-ad__pressure-meter-fill sm-ad__pressure-meter-fill--heat" id="pressure-heat-fill"></div>
+            </div>
+            <div class="sm-mono sm-label sm-ad__pressure-meter-status" id="pressure-heat-status">STABLE</div>
+          </div>
+          <div class="sm-ad__pressure-meter sm-ad__pressure-meter--conf">
+            <div class="sm-label">GOV CONFIDENCE</div>
+            <div class="sm-row sm-ad__pressure-meter-value-row">
+              <div class="sm-num sm-numeral-display sm-ad__pressure-meter-value" id="pressure-conf-value">—</div>
+              <div class="sm-label sm-ad__pressure-meter-unit">/ 100</div>
+            </div>
+            <div class="sm-ad__pressure-meter-track">
+              <div class="sm-ad__pressure-meter-fill sm-ad__pressure-meter-fill--conf" id="pressure-conf-fill"></div>
+            </div>
+            <div class="sm-mono sm-label sm-ad__pressure-meter-status" id="pressure-conf-status">STEADY</div>
+          </div>
+          <div class="sm-ad__pressure-meter sm-ad__pressure-meter--doom">
+            <div class="sm-label">DOOMSDAY</div>
+            <div class="sm-row sm-ad__pressure-meter-value-row">
+              <div class="sm-num sm-numeral-display sm-ad__pressure-meter-value" id="pressure-doom-value">—</div>
+              <div class="sm-label sm-ad__pressure-meter-unit">days</div>
+            </div>
+            <div class="sm-ad__pressure-meter-track">
+              <div class="sm-ad__pressure-meter-fill sm-ad__pressure-meter-fill--doom" id="pressure-doom-fill"></div>
+            </div>
+            <div class="sm-mono sm-label sm-ad__pressure-meter-status" id="pressure-doom-status">—</div>
+          </div>
+        </div>
+        <div class="sm-row sm-ad__pressure-countries-row">
+          <div class="sm-mono sm-label sm-ad__pressure-countries-label">TOP COUNTRIES BY HEAT</div>
+          <div class="sm-ad__pressure-countries" id="pressure-countries"></div>
+          <div class="sm-fill"></div>
+          <div class="sm-mono sm-label sm-ad__pressure-world-link" title="Switch to the world view to inspect per-country heat in detail.">[ WORLD → ]</div>
+        </div>
+      </div>
+    </div>
+    <div class="sm-row sm-ad__resources-row">
+      <div class="sm-panel sm-ad__state">
+        <div class="sm-panel__header">
+          <div class="sm-panel__title">AGENCY STATE</div>
+        </div>
+        <div class="sm-panel__body sm-ad__state-body">
+          <div class="sm-row sm-ad__state-line sm-ad__state-line--first" id="state-line-personnel">
+            <div class="sm-mono sm-label sm-ad__state-line-key">Personnel</div>
+            <div class="sm-mono sm-ad__state-line-value" id="state-personnel-value">—</div>
+          </div>
+          <div class="sm-row sm-ad__state-line" id="state-line-departments">
+            <div class="sm-mono sm-label sm-ad__state-line-key">Departments</div>
+            <div class="sm-mono sm-ad__state-line-value" id="state-departments-value">—</div>
+          </div>
+          <div class="sm-row sm-ad__state-line" id="state-line-safehouses">
+            <div class="sm-mono sm-label sm-ad__state-line-key">Safe houses</div>
+            <div class="sm-mono sm-ad__state-line-value" id="state-safehouses-value">—</div>
+          </div>
+          <div class="sm-row sm-ad__state-line" id="state-line-ops">
+            <div class="sm-mono sm-label sm-ad__state-line-key">Active ops</div>
+            <div class="sm-mono sm-ad__state-line-value" id="state-ops-value">—</div>
+          </div>
+          <div class="sm-row sm-ad__state-line" id="state-line-tenure">
+            <div class="sm-mono sm-label sm-ad__state-line-key">Tenure</div>
+            <div class="sm-mono sm-ad__state-line-value" id="state-tenure-value">—</div>
+          </div>
+          <div class="sm-fill"></div>
+          <div class="sm-row sm-ad__state-actions">
+            <button class="sm-btn sm-ad__state-action-btn" id="state-hire-btn" title="Open recruitment — review applicants, manage open positions.">HIRE</button>
+            <button class="sm-btn sm-ad__state-action-btn" id="state-network-btn" title="Open the full safe house network — comms, capacity, heat per node.">SAFE HOUSE NETWORK</button>
+            <button class="sm-btn sm-ad__state-action-btn" id="state-transit-btn" title="Show every operative currently in transit between cities.">IN TRANSIT</button>
+            <button class="sm-btn sm-ad__state-action-btn" id="state-walkins-btn" title="Walk-in candidates — defectors and informants who have approached the agency.">WALK-INS</button>
+          </div>
+        </div>
       </div>
       <div class="sm-panel sm-ad__budget">
         <div class="sm-panel__header">
@@ -3699,94 +3215,6 @@ TextField > .unity-text-field__input,
           </div>
         </div>
       </div>
-      <div class="sm-panel sm-ad__personnel">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">PERSONNEL</div>
-          <div class="sm-fill"></div>
-          <button class="sm-btn sm-ad__transit-btn" id="btn-transit" title="Show every operative currently in transit between cities.">IN TRANSIT</button>
-          <div class="sm-mono sm-label" id="personnel-count">—</div>
-        </div>
-        <div class="sm-panel__body sm-ad__personnel-body" id="personnel-grid"></div>
-      </div>
-      <div class="sm-panel sm-ad__gov">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">GOVERNMENT CONFIDENCE</div>
-        </div>
-        <div class="sm-panel__body sm-ad__gov-body">
-          <div class="sm-ad__gauge" id="gauge">
-            <div class="sm-ad__gauge-canvas" id="gauge-canvas"></div>
-            <div class="sm-ad__gauge-needle" id="gauge-needle"></div>
-          </div>
-          <div class="sm-ad__gov-sparkline" id="gov-sparkline"></div>
-          <div class="sm-row sm-ad__gov-value-row">
-            <div class="sm-h1 sm-num sm-ad__gov-value sm-numeral-display sm-numeral-display--xl" id="gov-value">—</div>
-            <div class="sm-badge sm-ad__gov-tone-badge" id="gov-tone-badge">—</div>
-          </div>
-          <div class="sm-mono sm-label sm-ad__gov-caption" id="gov-caption">—</div>
-          <div class="sm-ad__gov-review" id="gov-review">
-            <div class="sm-label sm-ad__gov-review-header">REVIEW</div>
-            <div id="gov-review-notes"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="sm-row sm-ad__row3 sm-fill">
-      <div class="sm-panel sm-ad__safe">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">SAFE HOUSE NETWORK</div>
-          <div class="sm-fill"></div>
-          <div class="sm-mono sm-label" id="safe-count">—</div>
-        </div>
-        <div class="sm-ad__safe-head" id="safe-head">
-          <div class="sm-ad__safe-col sm-ad__safe-col--city" id="safe-head-city">CITY</div>
-          <div class="sm-ad__safe-col sm-ad__safe-col--code" id="safe-head-code">CODE</div>
-          <div class="sm-ad__safe-col sm-ad__safe-col--cover" id="safe-head-cover">COVER</div>
-          <div class="sm-ad__safe-col sm-ad__safe-col--condition" id="safe-head-condition">CONDITION</div>
-          <div class="sm-ad__safe-col sm-ad__safe-col--comms-cap" id="safe-head-comms">COMMS/CAP</div>
-          <div class="sm-ad__safe-col sm-ad__safe-col--heat" id="safe-head-heat">HEAT</div>
-          <div class="sm-ad__safe-col sm-ad__safe-col--actions">ACTIONS</div>
-        </div>
-        <div class="sm-ad__safe-scroll" id="safe-list" style="overflow-x:hidden; overflow-y:auto;"></div>
-      </div>
-      <div class="sm-panel sm-ad__ht">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">HEAT &amp; THREAT</div>
-          <div class="sm-fill"></div>
-          <button class="sm-btn sm-ad__ci-suspects-btn" id="btn-ci-suspects" title="Counter-intel suspects under active surveillance.">CI SUSPECTS</button>
-          <button class="sm-btn sm-ad__tip-inbox-btn" id="btn-tip-inbox" title="Tip inbox — informant leads waiting for a follow-up op.">TIP INBOX</button>
-          <button class="sm-btn sm-ad__threat-report-btn" id="btn-threat-report" title="Open the weekly threat brief — analyst-aggregated intel digest.">WEEKLY BRIEF</button>
-        </div>
-        <div class="sm-panel__body sm-ad__ht-body">
-          <div class="sm-row sm-ad__ht-value-row">
-            <div class="sm-h1 sm-num sm-ad__ht-value sm-numeral-display" id="ht-value">—</div>
-            <div class="sm-label sm-ad__ht-unit">/ 100</div>
-            <div class="sm-fill"></div>
-            <div class="sm-label sm-ad__ht-delta" id="ht-delta">STABLE</div>
-          </div>
-          <div class="sm-ad__ht-countries" id="ht-countries"></div>
-          <div class="sm-ad__blowback" id="blowback-section">
-            <div class="sm-row sm-ad__blowback-header">
-              <div class="sm-label sm-ad__blowback-label">BLOWBACK</div>
-              <div class="sm-fill"></div>
-              <div class="sm-num sm-ad__blowback-value" id="blowback-value">0</div>
-              <div class="sm-label sm-ad__blowback-unit">/ 100</div>
-            </div>
-            <div class="sm-ad__blowback-track">
-              <div class="sm-ad__blowback-fill" id="blowback-fill"></div>
-            </div>
-            <div class="sm-mono sm-label sm-ad__blowback-status" id="blowback-status">CONTAINED</div>
-          </div>
-        </div>
-      </div>
-      <div class="sm-panel sm-ad__feed">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">RECENT ACTIVITY</div>
-          <div class="sm-fill"></div>
-          <button class="sm-btn sm-ad__walkins-btn" id="btn-walkins" title="Walk-in candidates — defectors and informants who have approached the agency.">WALK-INS</button>
-          <div class="sm-badge sm-badge--alert sm-ad__feed-urgent-badge" id="feed-urgent-badge"></div>
-        </div>
-        <div class="sm-ad__feed-scroll" id="feed-list" style="overflow-x:hidden; overflow-y:auto;"></div>
-      </div>
     </div>
     <div class="sm-ad__opsframe">
       <div class="sm-ad__opsframe-classified">
@@ -3824,18 +3252,6 @@ TextField > .unity-text-field__input,
       <div class="sm-ad__statusbar-cell sm-mono">TS//SCI</div>
       <div class="sm-fill"></div>
       <div class="sm-ad__statusbar-stationery sm-mono">DOC.ID: AGY-HQ-0001  ·  CLASS: TS//NOFORN  ·  DIST: HQ-01/EYES</div>
-    </div>
-    <div class="sm-ad__hidden-stash">
-      <div id="hs-budget">—</div>
-      <div id="hs-budget-sub">—</div>
-      <div id="hs-heat">—</div>
-      <div id="hs-heat-sub">—</div>
-      <div id="hs-morale">—</div>
-      <div id="hs-morale-sub">—</div>
-      <div id="hs-review">—</div>
-      <div id="hs-review-sub">—</div>
-      <div id="hero-greeting">—</div>
-      <div id="hero-subline">—</div>
     </div>
   </div>
 </div>
