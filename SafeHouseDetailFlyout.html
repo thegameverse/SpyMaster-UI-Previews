@@ -165,6 +165,41 @@ body {
     --sm-border-strong:   #2A3547;
     --sm-border-focus:    #4E94B8;
 
+    /* =========================================================
+     * DEPTH  (May 2026 "game-feel" pass)
+     * ---------------------------------------------------------
+     * UI Toolkit has NO box-shadow at runtime. Depth is faked with:
+     *   1. BEVEL — light top/left edge + dark bottom/right edge so a
+     *      surface reads as raised (lit from above). Applied as
+     *      per-side border colours.
+     *   2. ELEVATION ramp — each layer up the z-order is a visibly
+     *      lighter surface. Reuses --sm-surface{,-2,-3} plus two
+     *      dedicated floating tiers below.
+     *   3. ACCENT EDGE / GLOW — a hot brand-red or info-blue border
+     *      that makes interactive + classified surfaces emit light
+     *      instead of sitting flat.
+     * These four are what turn the "enterprise dashboard" read into a
+     * "game HUD" read without any new art or fonts.
+     * ========================================================= */
+    --sm-bevel-light:     rgba(255, 255, 255, 0.07);  /* top/left highlight */
+    --sm-bevel-light-2:   rgba(255, 255, 255, 0.12);  /* stronger emboss (modals, hero cards) */
+    --sm-bevel-dark:      rgba(0, 0, 0, 0.45);         /* bottom/right shadow stand-in */
+    --sm-bevel-dark-2:    rgba(0, 0, 0, 0.60);         /* deeper drop (floating surfaces) */
+
+    /* Floating-surface tiers — modals/popups sit ABOVE panels, so they
+       need a lighter base than --sm-surface to read as elevated. */
+    --sm-elev-floating:   #1A2433;
+    --sm-elev-raised:     #141D29;
+
+    /* Accent edges — the brand-red "classified stripe" + focus glow.
+       These are the single highest-impact game-feel move: a 2px hot
+       rule on a panel header / modal top edge reads as a HUD seam. */
+    --sm-hairline-hot:    #D14B3D;                     /* solid brand rule */
+    --sm-glow-accent:     rgba(209, 75, 61, 0.55);     /* hot red edge glow */
+    --sm-glow-accent-dim: rgba(209, 75, 61, 0.28);     /* ambient red tint */
+    --sm-glow-focus:      rgba(78, 148, 184, 0.70);    /* info-blue focus glow */
+    --sm-glow-focus-dim:  rgba(78, 148, 184, 0.32);
+
     /* ── TYPOGRAPHY */
     --sm-font-sans:   "Inter", "Segoe UI", sans-serif;
     --sm-font-mono:   "JetBrains Mono", "Consolas", monospace;
@@ -420,10 +455,16 @@ body {
     border-right-width: var(--sm-stroke);
     border-top-width: var(--sm-stroke);
     border-bottom-width: var(--sm-stroke);
+    /* Game-feel pass (May 2026) — top-lit bevel. The four borders were
+       all --sm-border (flat outline = SaaS tile). Now the top edge
+       catches light and the bottom edge drops a shadow, so the panel
+       reads as a raised physical surface. Sides keep the structural
+       --sm-border so the panel still has a defined silhouette against
+       the canvas. This is the no-box-shadow elevation trick. */
+    border-top-color: var(--sm-bevel-light);
     border-left-color: var(--sm-border);
     border-right-color: var(--sm-border);
-    border-top-color: var(--sm-border);
-    border-bottom-color: var(--sm-border);
+    border-bottom-color: var(--sm-bevel-dark);
     border-top-left-radius: var(--sm-r-2);
     border-top-right-radius: var(--sm-r-2);
     border-bottom-left-radius: var(--sm-r-2);
@@ -552,15 +593,20 @@ body {
     padding-top: 0;
     padding-bottom: 0;
     margin: 0;
-    background-color: rgba(255, 255, 255, 0.02);
+    /* Game-feel pass — the default button was an almost-invisible
+       rgba(255,255,255,0.02) ghost on the surface, reading as a
+       disabled web form control. Now it has a real raised fill
+       (--sm-surface-2) with a top-lit bevel: light top edge, dark
+       bottom edge, structural sides. It reads as a physical key. */
+    background-color: var(--sm-surface-2);
     border-left-width: var(--sm-stroke);
     border-right-width: var(--sm-stroke);
     border-top-width: var(--sm-stroke);
     border-bottom-width: var(--sm-stroke);
     border-left-color: var(--sm-border-strong);
     border-right-color: var(--sm-border-strong);
-    border-top-color: var(--sm-border-strong);
-    border-bottom-color: var(--sm-border-strong);
+    border-top-color: var(--sm-bevel-light-2);
+    border-bottom-color: var(--sm-bevel-dark);
     border-top-left-radius: var(--sm-r-2);
     border-top-right-radius: var(--sm-r-2);
     border-bottom-left-radius: var(--sm-r-2);
@@ -573,11 +619,13 @@ body {
     transition-duration: var(--sm-dur-fast);
 }
 .sm-btn:hover {
-    background-color: var(--sm-surface-2);
-    border-left-color: var(--sm-border-focus);
-    border-right-color: var(--sm-border-focus);
-    border-top-color: var(--sm-border-focus);
-    border-bottom-color: var(--sm-border-focus);
+    /* Hover lights up the whole frame with the info-blue focus glow —
+       all four edges, not just sides, so the key reads as "energised". */
+    background-color: var(--sm-surface-3);
+    border-left-color: var(--sm-glow-focus);
+    border-right-color: var(--sm-glow-focus);
+    border-top-color: var(--sm-glow-focus);
+    border-bottom-color: var(--sm-glow-focus);
 }
 .sm-btn:active { background-color: var(--sm-surface-3); }
 .sm-btn:disabled { opacity: 0.4; }
@@ -586,8 +634,11 @@ body {
     background-color: var(--sm-alert);
     border-left-color: var(--sm-alert);
     border-right-color: var(--sm-alert);
-    border-top-color: var(--sm-alert);
-    border-bottom-color: var(--sm-alert);
+    /* Game-feel pass — sheen on the primary key: a white highlight on
+       the top edge + a black drop on the bottom make the solid-red
+       button look lit and pressable rather than a flat colour swatch. */
+    border-top-color: var(--sm-bevel-light-2);
+    border-bottom-color: var(--sm-bevel-dark);
     color: #0B0F14;
 }
 .sm-btn--primary:hover {
@@ -697,8 +748,11 @@ body {
     border-bottom-width: var(--sm-stroke);
     border-right-width: var(--sm-stroke);
     border-left-width: 3px;
-    border-top-color: var(--sm-border);
-    border-bottom-color: var(--sm-border);
+    /* Game-feel pass — top-lit bevel on top/bottom edges so the card
+       reads as raised; the 3px left edge stays the severity-accent
+       rail (tinted by the --sm-card--* modifiers below). */
+    border-top-color: var(--sm-bevel-light);
+    border-bottom-color: var(--sm-bevel-dark);
     border-right-color: var(--sm-border);
     border-left-color: var(--sm-surface-3);
     border-top-left-radius: var(--sm-r-2);
@@ -762,8 +816,13 @@ body {
     margin-bottom: 2px;
 }
 .sm-stat-tile__value {
+    /* Game-feel pass — stat values are the data the player reads at a
+       glance. Mono display face + lg size + tight tracking makes them
+       read as instrument readouts rather than body text. The mono
+       face is what separates "a number" from "a HUD gauge". */
+    
     color: var(--sm-text);
-    font-size: var(--sm-text-md);
+    font-size: var(--sm-text-lg);
     font-weight: 700;
 }
 .sm-stat-tile__subtitle {
@@ -772,11 +831,11 @@ body {
 }
 /* Hero size — dashboard hero chips. */
 .sm-stat-tile--hero .sm-stat-tile__value {
-    font-size: var(--sm-text-xl);
+    font-size: var(--sm-text-2xl);
 }
 /* Display size — budget screen / landing-page big numbers. */
 .sm-stat-tile--display .sm-stat-tile__value {
-    font-size: var(--sm-text-3xl);
+    font-size: var(--sm-text-display);
 }
 /* Severity tinting on the value only — label + subtitle stay
    secondary so the colour-coded value reads as the signal. */
@@ -1502,17 +1561,26 @@ TextField > .unity-text-field__input,
     max-width: 92%;
     max-height: 92%;
     flex-direction: column;
-    background-color: var(--sm-surface);
+    /* Game-feel pass — modals float ABOVE panels, so they ride the
+       lighter --sm-elev-floating surface instead of the flat
+       --sm-surface that made the dossier blend into the scrim. */
+    background-color: var(--sm-elev-floating);
     background-image: url("project://database/Assets/UI/MainMenu/paper-grain.svg");
     
+    /* CLASSIFIED STRIPE — a 3px brand-red top edge turns the modal
+       from "flat dialog box" into "a classified case file slapped on
+       the desk". This single hot rule is the highest-impact game-feel
+       move on the most-looked-at surface in the game. Sides + bottom
+       carry the top-lit bevel (light is implied from above-front, so
+       bottom drops the deepest shadow). */
+    border-top-width: 3px;
     border-left-width: var(--sm-stroke-2);
     border-right-width: var(--sm-stroke-2);
-    border-top-width: var(--sm-stroke-2);
     border-bottom-width: var(--sm-stroke-2);
-    border-left-color: var(--sm-border-strong);
+    border-top-color: var(--sm-hairline-hot);
+    border-left-color: var(--sm-bevel-light);
     border-right-color: var(--sm-border-strong);
-    border-top-color: var(--sm-border-strong);
-    border-bottom-color: var(--sm-border-strong);
+    border-bottom-color: var(--sm-bevel-dark-2);
     border-top-left-radius: var(--sm-r-2);
     border-top-right-radius: var(--sm-r-2);
     border-bottom-left-radius: var(--sm-r-2);
@@ -1555,11 +1623,17 @@ TextField > .unity-text-field__input,
     justify-content: space-between;
     padding-left: 18px;
     padding-right: var(--sm-s-3);
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    background-color: var(--sm-surface-2);
-    border-bottom-width: 1px;
-    border-bottom-color: var(--sm-border);
+    padding-top: var(--sm-s-4);
+    padding-bottom: var(--sm-s-4);
+    /* Game-feel pass — header is a raised seam under the classified
+       stripe: lighter elevation surface, a top highlight bevel, and a
+       brand-red dim rule along the bottom so the header band reads as
+       a lit HUD strip rather than a flat title bar. */
+    background-color: var(--sm-surface-3);
+    border-top-width: 1px;
+    border-top-color: var(--sm-bevel-light-2);
+    border-bottom-width: 2px;
+    border-bottom-color: var(--sm-glow-accent-dim);
     flex-shrink: 0;
 }
 
@@ -1592,9 +1666,13 @@ TextField > .unity-text-field__input,
 }
 
 .sm-modal-header__title {
-    font-size: var(--sm-text-lg);
+    /* Game-feel pass — the modal title is a focal headline, not a
+       form-field label. Lifted lg→xl with heavier tracking so
+       "DOSSIER" / "IMAGERY · MYANMAR" reads as a stamped document
+       title rather than breadcrumb text. */
+    font-size: var(--sm-text-xl);
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     color: var(--sm-text);
 }
 
