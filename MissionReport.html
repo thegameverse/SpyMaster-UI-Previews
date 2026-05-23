@@ -54,55 +54,66 @@ body {
  */
 
 :root {
-    /* ── SURFACE ─ cool desaturated slate, dark-first */
-    --sm-bg:              #080F14; /* app background */
-    --sm-surface:         #111821; /* card / panel */
-    --sm-surface-2:       #172030; /* nested, hover */
-    --sm-surface-3:       #1E2838; /* active, raised */
-    --sm-nav-bg:          #0A0E13; /* nav rail */
-    --sm-topbar-bg:       #0D1319;
-    --sm-ticker-bg:       #0A0E13;
-    /* Phase 25.60 — canvas surfaces for the investigation graph + tech tree
-       node-canvas backgrounds. Slightly lighter than --sm-bg so node cards
-       (which use --sm-surface = #111821) still pop against the canvas with
-       a visible edge. Pre-fix InvestigationGraph.uss / TechTreeScreen.uss
-       hardcoded #0D1117 in two places, blocking theme reskin. */
-    --sm-canvas-bg:       #0D1117;
+    /* =========================================================
+     * THEME — "THE DIRECTORATE DESK" (May 2026 reskin)
+     * Warm aged-paper documents laid on a dark Cold-War leather desk.
+     * Two contexts:
+     *   PAPER  — content panels/cards are cream stock with dark ink.
+     *   DESK   — the shell (nav rail, ticker) + canvases are dark
+     *            leather/wood with cream text.
+     * The defining inversion vs. the old dark-slate theme: panels are
+     * now LIGHT. Primary --sm-text is therefore dark ink (it sits on
+     * paper, which is the bulk of the UI). The dark shell carries its
+     * own cream text via --sm-text-on-dark (overridden in NavRail /
+     * Ticker USS).
+     * ========================================================= */
 
-    /* ── TEXT
-     *
-     * Phase 23d (project-wide contrast pass): the original tertiary/muted
-     * values were too dark to read on `--sm-surface` — `--sm-text-muted`
-     * (#3E4A58) was 2.0:1 contrast and `--sm-text-tertiary` (#5A6876) was
-     * 3.1:1, both failing WCAG AA (4.5:1). They were applied as-is to key
-     * labels, hint text, captions, and dossier metadata across every
-     * screen, producing the dark-grey-on-dark-background problem the
-     * playtest flagged. Both have been lifted while preserving their
-     * relative hierarchy:
-     *
-     *   --sm-text            E6EDF3   ~14:1 on --sm-surface (unchanged)
-     *   --sm-text-secondary  8B97A6   ~5.7:1 (unchanged, already passing)
-     *   --sm-text-tertiary   94A0AD   ~6.4:1 (was 3.1:1, now passing AA)
-     *   --sm-text-muted      7A8694   ~4.6:1 (was 2.0:1, now passing AA)
-     *
-     * NEVER drop `--sm-text-tertiary` below #828F9C or `--sm-text-muted`
-     * below #6F7B8A on a `--sm-surface*` background — re-introduces the
-     * unreadable-grey regression.
+    /* ── SURFACE ── */
+    --sm-bg:              #1C1611; /* the desk — dark warm leather, shows between cards */
+    --sm-surface:         #ECE3D2; /* paper card / panel */
+    --sm-surface-2:       #E3D8C2; /* paper, nested / header strip (a shade darker) */
+    --sm-surface-3:       #D8CBB0; /* paper, active / raised / pressed */
+    --sm-nav-bg:          #141009; /* nav rail — near-black warm */
+    --sm-topbar-bg:       #ECE3D2; /* top bar is paper in this theme */
+    --sm-ticker-bg:       #141009; /* ticker — dark desk */
+    /* Canvas surfaces (globe / investigation graph / tech tree) stay
+       DARK — they read as a lit situation table set into the desk, with
+       the cream node cards floating over them. */
+    --sm-canvas-bg:       #181410;
+
+    /* ── TEXT (default = dark ink on paper) ──
+     * Primary text now sits on cream paper, so it is dark brown ink, not
+     * near-white. The relative hierarchy (primary > secondary > tertiary
+     * > muted) is preserved as progressively-faded ink. NEVER lift these
+     * toward white — that was the old dark-theme convention and would be
+     * invisible on paper.
      */
-    --sm-text:            #E6EDF3;
-    --sm-text-secondary:  #8B97A6;
-    --sm-text-tertiary:   #94A0AD;
-    --sm-text-muted:      #7A8694;
+    --sm-text:            #2B2418; /* dark brown ink */
+    --sm-text-secondary:  #5A4F3E; /* faded ink */
+    --sm-text-tertiary:   #6E6250; /* lighter faded ink — captions/meta */
+    --sm-text-muted:      #837561; /* faintest legible ink */
 
-    /* ── SEMANTIC (the one warm accent is --sm-alert) */
-    --sm-alert:           #D14B3D; /* critical only — agency brand mark, CLASSIFIED, etc. */
-    --sm-alert-soft:      rgba(209, 75, 61, 0.12);
-    --sm-success:         #6FA37A;
-    --sm-success-soft:    rgba(111, 163, 122, 0.14);
-    --sm-warning:         #D9A441;
-    --sm-warning-soft:    rgba(217, 164, 65, 0.12);
-    --sm-info:            #4E94B8;
-    --sm-info-soft:       rgba(78, 148, 184, 0.14);
+    /* ── TEXT ON DARK (the shell: nav rail, ticker, canvases) ──
+     * Cream/tan text for the dark leather surfaces. NavRail.uss,
+     * Ticker.uss and any dark canvas overlay reference these instead of
+     * the paper-ink --sm-text above. */
+    --sm-text-on-dark:        #D9CFBA; /* cream on leather */
+    --sm-text-on-dark-dim:    #9C8E76; /* faded cream */
+    --sm-text-on-dark-muted:  #7A6E58;
+
+    /* ── SEMANTIC (warm Cold-War palette) ── */
+    --sm-alert:           #A8392B; /* oxblood brick red — CLASSIFIED stamps, high alert, doomsday, brand */
+    --sm-alert-soft:      rgba(168, 57, 43, 0.12);
+    --sm-success:         #5E7344; /* olive field green — STABLE, ACTIVE, online */
+    --sm-success-soft:    rgba(94, 115, 68, 0.16);
+    --sm-warning:         #BF842F; /* amber / ochre — caution, medium */
+    --sm-warning-soft:    rgba(191, 132, 47, 0.14);
+    --sm-info:            #4F6B78; /* muted steel-teal — links / focus / data accent */
+    --sm-info-soft:       rgba(79, 107, 120, 0.16);
+    /* Brass / gold — agency seals, the wordmark, ceremonial chrome. New
+       to this theme; the old slate palette had no gold. */
+    --sm-gold:            #B0892F;
+    --sm-gold-soft:       rgba(176, 137, 47, 0.16);
 
     /* ── DATA PALETTE (charts, categories) */
     --sm-cat-1:           #4E94B8; /* steel blue */
@@ -160,10 +171,13 @@ body {
     --sm-role-researcher-soft: rgba(190, 144, 64, 0.22);
     --sm-role-researcher-border: rgba(190, 144, 64, 0.62);
 
-    /* ── BORDERS */
-    --sm-border:          #212C3B;
-    --sm-border-strong:   #2A3547;
-    --sm-border-focus:    #4E94B8;
+    /* ── BORDERS (dark warm rules on paper) ── */
+    --sm-border:          #C7B89C; /* faint paper rule */
+    --sm-border-strong:   #B2A082; /* document divider / card edge */
+    --sm-border-focus:    #A8392B; /* red focus — the agency accent */
+    /* Borders on the dark shell (nav rail / ticker dividers) — used by
+       the shell USS, which can't use the paper rules above. */
+    --sm-border-on-dark:  #2A2018;
 
     /* =========================================================
      * DEPTH  (May 2026 "game-feel" pass)
@@ -181,24 +195,28 @@ body {
      * These four are what turn the "enterprise dashboard" read into a
      * "game HUD" read without any new art or fonts.
      * ========================================================= */
-    --sm-bevel-light:     rgba(255, 255, 255, 0.07);  /* top/left highlight */
-    --sm-bevel-light-2:   rgba(255, 255, 255, 0.12);  /* stronger emboss (modals, hero cards) */
-    --sm-bevel-dark:      rgba(0, 0, 0, 0.45);         /* bottom/right shadow stand-in */
-    --sm-bevel-dark-2:    rgba(0, 0, 0, 0.60);         /* deeper drop (floating surfaces) */
+    /* On PAPER, depth reads differently than on the old dark slate: the
+       top edge is a faint paper highlight and the bottom edge is a warm
+       drop shadow (brown, not pure black), so a card looks like stock
+       lifted off the desk. */
+    --sm-bevel-light:     rgba(255, 250, 240, 0.55);   /* paper top highlight */
+    --sm-bevel-light-2:   rgba(255, 252, 244, 0.85);   /* stronger fold highlight */
+    --sm-bevel-dark:      rgba(58, 44, 28, 0.28);       /* warm paper shadow */
+    --sm-bevel-dark-2:    rgba(40, 28, 16, 0.45);       /* deeper drop (floating docs) */
 
-    /* Floating-surface tiers — modals/popups sit ABOVE panels, so they
-       need a lighter base than --sm-surface to read as elevated. */
-    --sm-elev-floating:   #1A2433;
-    --sm-elev-raised:     #141D29;
+    /* Floating-surface tiers — modals/popups are a fresh page laid ON TOP
+       of the desk, so they ride a brighter, whiter paper than panels. */
+    --sm-elev-floating:   #F2EADB;
+    --sm-elev-raised:     #EFE6D5;
 
-    /* Accent edges — the brand-red "classified stripe" + focus glow.
-       These are the single highest-impact game-feel move: a 2px hot
-       rule on a panel header / modal top edge reads as a HUD seam. */
-    --sm-hairline-hot:    #D14B3D;                     /* solid brand rule */
-    --sm-glow-accent:     rgba(209, 75, 61, 0.55);     /* hot red edge glow */
-    --sm-glow-accent-dim: rgba(209, 75, 61, 0.28);     /* ambient red tint */
-    --sm-glow-focus:      rgba(78, 148, 184, 0.70);    /* info-blue focus glow */
-    --sm-glow-focus-dim:  rgba(78, 148, 184, 0.32);
+    /* Accent edges — the oxblood "CLASSIFIED stripe" + steel focus glow.
+       A 2-3px red rule on a document's top edge reads as a classification
+       band; the steel focus glow lights interactive elements. */
+    --sm-hairline-hot:    #A8392B;                     /* solid oxblood rule */
+    --sm-glow-accent:     rgba(168, 57, 43, 0.60);     /* hot red edge */
+    --sm-glow-accent-dim: rgba(168, 57, 43, 0.30);     /* ambient red tint */
+    --sm-glow-focus:      rgba(79, 107, 120, 0.70);    /* steel focus glow */
+    --sm-glow-focus-dim:  rgba(79, 107, 120, 0.34);
 
     /* ── TYPOGRAPHY */
     --sm-font-sans:   "Inter", "Segoe UI", sans-serif;
@@ -277,10 +295,12 @@ body {
          idle   : barely-visible thumb when not interacting
          hover  : confirms interactivity
          active : full info-blue while dragging */
-    --sm-scrollbar-track:        rgba(33, 44, 59, 0.55);
-    --sm-scrollbar-thumb-idle:   rgba(255, 255, 255, 0.10);
-    --sm-scrollbar-thumb-hover:  rgba(255, 255, 255, 0.24);
-    --sm-scrollbar-thumb-active: rgba(78, 148, 184, 0.80);
+    /* Scrollbars now ride on paper, so the thumb is a warm dark ink and
+       the active state is the oxblood accent. */
+    --sm-scrollbar-track:        rgba(120, 105, 80, 0.20);
+    --sm-scrollbar-thumb-idle:   rgba(58, 44, 28, 0.28);
+    --sm-scrollbar-thumb-hover:  rgba(58, 44, 28, 0.45);
+    --sm-scrollbar-thumb-active: rgba(168, 57, 43, 0.80);
 
     /* ── PANEL OVERLAYS — Phase 41 consolidation
        Translucent surfaces used by floating overlays (cinematic
@@ -288,10 +308,10 @@ body {
        still feel the layer below. Pre-fix WorldGlobe.uss left-rail
        used `rgba(10,14,19,0.85)` directly — a tinted variant of
        --sm-bg with explicit transparency. Now: derived once. */
-    --sm-panel-dim:        rgba(10, 14, 19, 0.85);     /* nav-bg with transparency */
-    --sm-panel-floating:   rgba(8, 12, 18, 0.96);      /* deeper, for full popups */
-    --sm-scrim:            rgba(8, 15, 20, 0.85);      /* modal scrim — matches MainMenu modal-scrim */
-    --sm-scrim-strong:     rgba(8, 15, 20, 0.96);      /* heavier scrim for full takeovers (cinematic) */
+    --sm-panel-dim:        rgba(20, 16, 9, 0.85);       /* warm dark desk with transparency */
+    --sm-panel-floating:   rgba(16, 12, 7, 0.96);       /* deeper, for full popups */
+    --sm-scrim:            rgba(14, 10, 6, 0.78);       /* modal scrim — darkens the desk behind a document */
+    --sm-scrim-strong:     rgba(12, 9, 5, 0.92);        /* heavier scrim for full takeovers (cinematic) */
 
     /* =========================================================
      * Phase v2-polish (May 2026) — DIFFERENTIATION TOKENS
@@ -450,6 +470,8 @@ body {
        glossy SaaS tiles. -unity-background-image-tint-color sets
        the alpha; the SVG provides the noise. */
     background-image: url("project://database/Assets/UI/MainMenu/paper-grain.svg");
+    /* Directorate Desk — warm-dark grain so cards read as aged paper
+       stock. (White grain was invisible on the new cream surface.) */
     
     border-left-width: var(--sm-stroke);
     border-right-width: var(--sm-stroke);
@@ -639,14 +661,14 @@ body {
        button look lit and pressable rather than a flat colour swatch. */
     border-top-color: var(--sm-bevel-light-2);
     border-bottom-color: var(--sm-bevel-dark);
-    color: #0B0F14;
+    color: #F2EADB;
 }
 .sm-btn--primary:hover {
-    background-color: #E35A4C;
-    border-left-color: #E35A4C;
-    border-right-color: #E35A4C;
-    border-top-color: #E35A4C;
-    border-bottom-color: #E35A4C;
+    background-color: #BE4636;
+    border-left-color: #BE4636;
+    border-right-color: #BE4636;
+    border-top-color: var(--sm-bevel-light-2);
+    border-bottom-color: var(--sm-bevel-dark);
 }
 
 .sm-btn--outline {
@@ -1997,8 +2019,8 @@ TextField > .unity-text-field__input,
     border-bottom-width: var(--sm-stroke);
     border-bottom-color: var(--sm-border);
 }
-.sm-mr__tl-row--incident { background-color: rgba(209,75,61,0.06); }
-.sm-mr__tl-row--success  { background-color: rgba(111,163,122,0.06); }
+.sm-mr__tl-row--incident { background-color: rgba(168, 57, 43, 0.06); }
+.sm-mr__tl-row--success  { background-color: rgba(94, 115, 68, 0.06); }
 
 .sm-mr__tl-spine {
     width: 24px;
@@ -2481,7 +2503,7 @@ TextField > .unity-text-field__input,
        (0.06). This card sits between two emphasis tiers; using
        either token would shift it visibly. Documented as an
        intentional one-off rather than a hand-typed drift. */
-    background-color: rgba(217,164,65,0.10);
+    background-color: rgba(191, 132, 47, 0.10);
     border-left-width: 3px;
     border-left-color: var(--sm-warning);
     border-right-width: 0;
