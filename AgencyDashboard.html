@@ -1905,780 +1905,549 @@ TextField > .unity-text-field__input,
 }
 
 /* ── Assets/UI/Screens/AgencyDashboard.uss ── */
-/* 02 · Agency Dashboard — decision-oriented redesign.
+/*
+ * Agency Dashboard — "AGENCY OVERVIEW" reference rebuild.
+ * Dense directorate dashboard on paper. Pairs with AgencyDashboard.uxml
+ * (skeleton + named containers) and AgencyDashboard.cs (data binding).
+ * Reuses shared .sm-panel / .sm-panel__header / .sm-panel__title from theme.uss.
+ */
 
-   Each panel answers one question:
-     • Header   — who am I, what's my context
-     • Arc      — how close to winning
-     • Inbox    — what needs my attention
-     • Pressure — how close to losing
-     • State    — do I have the resources
-     • Budget   — how long can I keep operating
-
-   Rules below are organised top → bottom matching the UXML order. */
-
-.sm-ad {
+.sm-ad2 {
+    flex-grow: 1;
     flex-direction: column;
+    padding: var(--sm-s-3) var(--sm-s-5) var(--sm-s-2) var(--sm-s-5);
     background-color: var(--sm-bg);
-    padding-top: var(--sm-s-4);
-    padding-bottom: var(--sm-s-4);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
 }
 
-/* ============================================================
-   HEADER STRIP
-   ============================================================ */
-.sm-ad__header {
-    flex-shrink: 0;
-    flex-direction: row;
-    align-items: center;
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
-    margin-bottom: var(--sm-s-3);
-    background-color: var(--sm-surface);
-    border-left-width: 2px;
-    border-left-color: var(--sm-warning);
-    border-right-width: var(--sm-stroke);
-    border-top-width: var(--sm-stroke);
-    border-bottom-width: var(--sm-stroke);
-    border-right-color: var(--sm-border);
-    border-top-color: var(--sm-border);
-    border-bottom-color: var(--sm-border);
-}
-.sm-ad__header-crest {
-    width: 48px;
-    height: 48px;
-    background-image: url("project://database/Assets/UI/Icons/agency-crest.svg");
-    
-    
-    margin-right: var(--sm-s-3);
-    flex-shrink: 0;
-}
-.sm-ad__header-lead {
-    flex-direction: column;
-    flex-shrink: 0;
-}
-.sm-ad__header-eyebrow {
-    color: var(--sm-text-tertiary);
-    font-size: 9px;
-    letter-spacing: 2.5px;
-    font-weight: 700;
-    margin-bottom: 2px;
-}
-.sm-ad__header-title {
-    color: var(--sm-text);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    margin-bottom: 2px;
-}
-.sm-ad__header-codeline-row {
-    flex-direction: row;
-    align-items: center;
-    margin-top: 2px;
-}
-.sm-ad__header-codeline-row > .sm-live-dot {
-    margin-right: 8px;
-}
-.sm-ad__header-codeline {
-    color: var(--sm-text-secondary);
-    font-size: var(--sm-text-xs);
-    letter-spacing: var(--sm-letter-label);
-}
-.sm-ad__header-stationery {
-    color: var(--sm-text-muted);
-    font-size: 9px;
-    letter-spacing: var(--sm-letter-mono-caps);
-    margin-top: 4px;
-}
-.sm-ad__hero-attention {
-    margin-right: var(--sm-s-3);
-    align-self: center;
-    display: none;
-}
-.sm-ad__hero-attention--visible { display: flex; }
-
-/* ============================================================
-   Screen-wide panel density (overrides theme.uss defaults)
-   ============================================================ */
-.sm-ad .sm-panel__header {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    padding-left: 16px;
-    padding-right: 16px;
-}
-.sm-ad .sm-panel__body {
-    padding-top: 16px;
-    padding-bottom: 16px;
-    padding-left: 16px;
-    padding-right: 16px;
-}
-
-/* Generic header buttons sized for the dashboard density */
-.sm-ad__ledger-btn,
-.sm-ad__inbox-all-btn,
-.sm-ad__pressure-btn,
-.sm-ad__state-action-btn {
-    height: 24px;
-    font-size: var(--sm-text-xs);
-    padding-left: var(--sm-s-3);
-    padding-right: var(--sm-s-3);
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-left: var(--sm-s-2);
-}
-
-/* ============================================================
-   HERO ROW — Arc + Inbox
-   ============================================================ */
-.sm-ad__hero-row {
-    flex-direction: row;
-    margin-bottom: var(--sm-s-4);
-}
-.sm-ad__arc {
-    flex-grow: 6;
-    flex-basis: 0;
-    margin-right: var(--sm-s-4);
-}
-.sm-ad__inbox {
-    flex-grow: 4;
-    flex-basis: 0;
-}
-
-/* Investigation Arc internals */
-.sm-ad__arc-body {
-    flex-direction: column;
-    padding: var(--sm-s-3);
-}
-.sm-ad__arc-doomsday {
-    color: var(--sm-text-secondary);
-    font-weight: 700;
-}
-.sm-ad__arc-doomsday--alert { color: var(--sm-alert); }
-.sm-ad__arc-doomsday--warn  { color: var(--sm-warning); }
-
-.sm-ad__arc-stages {
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: var(--sm-s-3);
-}
-.sm-ad__arc-stage {
-    flex-direction: row;
-    align-items: center;
-}
-.sm-ad__arc-stage-dot {
-    width: 12px;
-    height: 12px;
-    margin-right: var(--sm-s-2);
-    background-color: var(--sm-surface-3);
-    border-color: var(--sm-text-secondary);
-    border-top-width: 1.5px;
-    border-bottom-width: 1.5px;
-    border-left-width: 1.5px;
-    border-right-width: 1.5px;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-}
-.sm-ad__arc-stage-label {
-    color: var(--sm-text-secondary);
-    margin-right: var(--sm-s-3);
-    font-size: 10px;
-    letter-spacing: 1.4px;
-}
-.sm-ad__arc-stage--reached > .sm-ad__arc-stage-dot {
-    background-color: var(--sm-info);
-    border-color: var(--sm-info);
-}
-.sm-ad__arc-stage--reached > .sm-ad__arc-stage-label {
-    color: var(--sm-text);
-}
-.sm-ad__arc-stage--current > .sm-ad__arc-stage-dot {
-    background-color: var(--sm-success);
-    border-color: var(--sm-success);
-    width: 14px;
-    height: 14px;
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
-    border-bottom-left-radius: 7px;
-    border-bottom-right-radius: 7px;
-}
-.sm-ad__arc-stage--current > .sm-ad__arc-stage-label {
-    color: var(--sm-success);
-    font-weight: 700;
-}
-.sm-ad__arc-stage-rail {
-    flex-grow: 1;
-    flex-shrink: 1;
-    height: 2px;
-    margin-right: var(--sm-s-3);
-    background-color: var(--sm-surface-3);
-}
-.sm-ad__arc-stage-rail--reached {
-    background-color: var(--sm-info);
-}
-
-.sm-ad__arc-tracks {
-    flex-direction: row;
-    align-items: stretch;
-}
-.sm-ad__arc-track {
-    flex-grow: 1;
-    flex-basis: 0;
-    flex-direction: column;
-    margin-right: var(--sm-s-3);
-}
-.sm-ad__arc-track-head {
-    align-items: center;
-    margin-bottom: var(--sm-s-1);
-}
-.sm-ad__arc-track-value {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--sm-text);
-}
-.sm-ad__arc-track-rail {
-    height: 4px;
-    background-color: var(--sm-surface-3);
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
-    border-bottom-left-radius: 2px;
-    border-bottom-right-radius: 2px;
-}
-.sm-ad__arc-track-fill {
-    height: 4px;
-    width: 0;
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
-    border-bottom-left-radius: 2px;
-    border-bottom-right-radius: 2px;
-}
-.sm-ad__arc-track-fill--layers     { background-color: var(--sm-info); }
-.sm-ad__arc-track-fill--mastermind { background-color: var(--sm-warning); }
-.sm-ad__arc-track-fill--intel      { background-color: var(--sm-success); }
-
-.sm-ad__arc-target {
-    flex-direction: column;
-    justify-content: center;
-    min-width: 160px;
-    padding-left: var(--sm-s-3);
-    border-left-color: var(--sm-surface-3);
-    border-left-width: 1px;
-}
-.sm-ad__arc-target-value {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--sm-text);
-}
-
-/* Urgent Inbox internals */
-.sm-ad__inbox-count {
-    margin-left: var(--sm-s-2);
-    background-color: var(--sm-surface-2);
-    color: var(--sm-text-secondary);
-    font-size: var(--sm-text-xs);
-    font-weight: 700;
-    padding-left: 6px;
-    padding-right: 6px;
-}
-.sm-ad__inbox-count--alert {
-    background-color: var(--sm-alert);
-    color: var(--sm-bg);
-}
-.sm-ad__inbox-scroll {
-    flex-grow: 1;
-    padding-left: var(--sm-s-3);
-    padding-right: var(--sm-s-3);
-}
-.sm-ad__inbox-empty {
-    color: var(--sm-text-muted);
-    font-size: var(--sm-text-xs);
-    font-style: italic;
-    padding: var(--sm-s-4);
-    text-align: center; justify-content: center; align-items: center;
-}
-.sm-ad__inbox-row {
-    flex-direction: row;
-    align-items: flex-start;
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    border-bottom-width: var(--sm-stroke);
-    border-bottom-color: var(--sm-border);
-    transition-property: opacity, translate;
-    transition-duration: 220ms;
-}
-.sm-ad__inbox-row-severity {
-    width: 18px;
-    font-size: 14px;
-    margin-right: var(--sm-s-2);
-    text-align: center; justify-content: center; align-items: center;
-}
-.sm-ad__inbox-row--alert > .sm-ad__inbox-row-severity { color: var(--sm-alert); }
-.sm-ad__inbox-row--warn  > .sm-ad__inbox-row-severity { color: var(--sm-warning); }
-.sm-ad__inbox-row--info  > .sm-ad__inbox-row-severity { color: var(--sm-info); }
-.sm-ad__inbox-row-body {
-    flex-direction: column;
-    flex-grow: 1;
-}
-.sm-ad__inbox-row-title {
-    color: var(--sm-text);
-    font-size: var(--sm-text-sm);
-    white-space: normal;
-}
-.sm-ad__inbox-row-meta {
-    color: var(--sm-text-muted);
-    font-size: 9px;
-    letter-spacing: var(--sm-letter-mono-caps);
-    margin-top: 2px;
-}
-.sm-ad__inbox-row--new {
-    opacity: 0;
-    translate: 0 8px;
-}
-.sm-ad__inbox-row--flash {
-    background-color: rgba(79, 107, 120, 0.10);
-}
-
-/* ============================================================
-   PRESSURE strip
-   ============================================================ */
-.sm-ad__pressure {
-    flex-shrink: 0;
-    margin-bottom: var(--sm-s-4);
-}
-.sm-ad__pressure-body {
-    flex-direction: column;
-}
-.sm-ad__pressure-meters {
-    flex-direction: row;
-    align-items: stretch;
-    margin-bottom: var(--sm-s-3);
-}
-.sm-ad__pressure-meter {
-    flex-grow: 1;
-    flex-basis: 0;
-    flex-direction: column;
-    margin-right: var(--sm-s-4);
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
-    background-color: var(--sm-surface-2);
-    border-left-width: 2px;
-    border-left-color: var(--sm-surface-3);
-}
-/* Note: no :last-child {margin-right:0} rule — UI Toolkit USS doesn't
-   support :last-child / :first-child / :nth-child. The trailing
-   meter's right margin sits inside the panel's right padding so it
-   reads as breathing room rather than a layout gap. */
-
-.sm-ad__pressure-meter--heat { border-left-color: var(--sm-warning); }
-.sm-ad__pressure-meter--conf { border-left-color: var(--sm-info); }
-.sm-ad__pressure-meter--doom { border-left-color: var(--sm-alert); }
-
-.sm-ad__pressure-meter-value-row {
+/* ── Header ── */
+.sm-ad2__header {
     flex-direction: row;
     align-items: flex-end;
     margin-bottom: var(--sm-s-2);
 }
-.sm-ad__pressure-meter-value {
-    font-size: 34px;
-    font-weight: 700;
+.sm-ad2__title {
+    font-size: 26px;
     color: var(--sm-text);
+    letter-spacing: 1px;
+    font-weight: 700;
 }
-.sm-ad__pressure-meter-unit {
+.sm-ad2__subtitle {
+    font-size: var(--sm-text-md);
+    color: var(--sm-text-tertiary);
+    margin-left: var(--sm-s-4);
+    margin-bottom: 4px;
+}
+.sm-ad2__doc {
+    font-size: var(--sm-text-micro);
     color: var(--sm-text-muted);
-    font-size: var(--sm-text-xs);
-    margin-left: var(--sm-s-2);
-    margin-bottom: 6px;
-}
-.sm-ad__pressure-meter-track {
-    height: 4px;
-    background-color: var(--sm-surface-3);
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
-    border-bottom-left-radius: 2px;
-    border-bottom-right-radius: 2px;
-}
-.sm-ad__pressure-meter-fill {
-    height: 4px;
-    width: 0;
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
-    border-bottom-left-radius: 2px;
-    border-bottom-right-radius: 2px;
-}
-.sm-ad__pressure-meter-fill--heat { background-color: var(--sm-warning); }
-.sm-ad__pressure-meter-fill--conf { background-color: var(--sm-info); }
-.sm-ad__pressure-meter-fill--doom { background-color: var(--sm-alert); }
-
-.sm-ad__pressure-meter-status {
-    margin-top: var(--sm-s-2);
-    color: var(--sm-text-secondary);
-    font-size: 10px;
-    letter-spacing: 1.5px;
+    letter-spacing: 0.6px;
+    opacity: 0.7;
 }
 
-/* Top countries by heat — one-line inline row */
-.sm-ad__pressure-countries-row {
-    flex-direction: row;
-    align-items: center;
-    padding-top: var(--sm-s-2);
-    border-top-width: var(--sm-stroke);
-    border-top-color: var(--sm-border);
-}
-.sm-ad__pressure-countries-label {
-    color: var(--sm-text-muted);
-    font-size: 10px;
-    letter-spacing: var(--sm-letter-mono-caps);
-    margin-right: var(--sm-s-3);
-}
-.sm-ad__pressure-countries {
+/* ── Body / columns ── */
+.sm-ad2__body {
     flex-direction: row;
     flex-grow: 1;
+    align-items: flex-start;
 }
-.sm-ad__pressure-countries-empty {
-    color: var(--sm-text-tertiary);
-    font-size: var(--sm-text-xs);
-    font-style: italic;
+.sm-ad2__main {
+    flex-grow: 1;
+    flex-shrink: 1;
 }
-.sm-ad__pressure-country-chip {
-    flex-direction: row;
-    align-items: center;
-    margin-right: var(--sm-s-3);
-    padding-left: var(--sm-s-2);
-    padding-right: var(--sm-s-2);
-    padding-top: 2px;
-    padding-bottom: 2px;
-    background-color: var(--sm-surface-2);
-}
-.sm-ad__pressure-country-name {
-    color: var(--sm-text-secondary);
-    font-size: var(--sm-text-xs);
-    letter-spacing: 0.5px;
-    margin-right: var(--sm-s-2);
-}
-.sm-ad__pressure-country-heat {
-    color: var(--sm-warning);
-    font-size: var(--sm-text-xs);
-    font-weight: 700;
-}
-.sm-ad__pressure-country-heat--critical { color: var(--sm-alert); }
-.sm-ad__pressure-world-link {
-    color: var(--sm-text-secondary);
-    font-size: 10px;
-    letter-spacing: 1.5px;
+.sm-ad2__rail {
+    width: 300px;
+    flex-shrink: 0;
+    margin-left: var(--sm-s-4);
 }
 
-/* ============================================================
-   RESOURCES ROW — Agency State + Black Budget
-   ============================================================ */
-.sm-ad__resources-row {
-    flex-direction: row;
-    margin-bottom: var(--sm-s-4);
+/* ── Shared panel rhythm ── */
+.sm-ad2__panel {
+    margin-bottom: var(--sm-s-2);
 }
-.sm-ad__state {
-    flex-grow: 5;
+.sm-ad2__split {
+    flex-direction: row;
+    align-items: stretch;
+}
+.sm-ad2__split > .sm-ad2__panel {
+    flex-grow: 1;
     flex-basis: 0;
     margin-right: var(--sm-s-4);
 }
-.sm-ad__budget {
-    flex-grow: 5;
-    flex-basis: 0;
-}
 
-/* Agency State internals */
-.sm-ad__state-body {
-    flex-direction: column;
-}
-/* Dividers between state lines render via border-TOP on every line
-   EXCEPT the first. UI Toolkit doesn't support :first-child or
-   :last-child pseudo-classes, so we apply the rule to a modifier
-   that the C# is free to add when needed — or, simpler, just leave
-   every line bordered top + the first state-line ends up touching
-   the panel body padding and reads cleanly. */
-.sm-ad__state-line {
-    flex-direction: row;
-    align-items: center;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    border-top-width: var(--sm-stroke);
-    border-top-color: var(--sm-border);
-}
-/* First state-line gets a class modifier from the C# to drop its top
-   border so the panel body's top padding is clean. */
-.sm-ad__state-line--first { border-top-width: 0; }
-.sm-ad__state-line-key {
-    width: 140px;
-    color: var(--sm-text-secondary);
+.sm-ad2__link-btn {
     font-size: var(--sm-text-xs);
+    padding: 2px 8px;
     letter-spacing: 0.6px;
 }
-.sm-ad__state-line-value {
-    flex-grow: 1;
-    color: var(--sm-text);
-    font-size: var(--sm-text-sm);
-}
-.sm-ad__state-actions {
-    flex-direction: row;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-top: var(--sm-s-4);
-}
 
-/* Black Budget internals (unchanged) */
-.sm-ad__budget-stats {
+/* ════════ Stat tiles ════════ */
+.sm-ad2__stats {
     flex-direction: row;
-    margin-bottom: var(--sm-s-3);
-}
-.sm-ad__budget-stat {
-    flex-grow: 1;
-    flex-direction: column;
-}
-.sm-ad__budget-stat-value {
-    font-size: var(--sm-text-xl);
-    font-weight: 700;
-    color: var(--sm-text);
-    margin-top: 1px;
-}
-.sm-ad__budget-stat-value--success { color: var(--sm-success); }
-.sm-ad__budget-stat-value--alert   { color: var(--sm-alert); }
-.sm-ad__budget-stat-sub {
-    font-size: var(--sm-text-xs);
-    color: var(--sm-text-tertiary);
-    margin-top: 1px;
-}
-.sm-ad__budget-body {
-    flex-direction: column;
-    flex-grow: 1;
-    padding-top: var(--sm-s-4);
-    padding-bottom: var(--sm-s-4);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
-}
-.sm-ad__budget-chart {
-    flex-grow: 1;
-    align-items: flex-end;
-    flex-direction: row;
-    position: relative;
-}
-.sm-ad__budget-grid {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-}
-.sm-ad__budget-grid-line {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background-color: var(--sm-border);
-    opacity: 0.3;
-}
-.sm-ad__budget-axis {
-    flex-direction: row;
-    margin-top: var(--sm-s-2);
+    flex-wrap: wrap;
     margin-bottom: var(--sm-s-2);
 }
-.sm-ad__budget-axis-tick {
+.sm-ad2__tile {
     flex-grow: 1;
-    font-size: 9px;
-    color: var(--sm-text-muted);
-    letter-spacing: 0.5px;
-    text-align: center; justify-content: center; align-items: center;
-}
-.sm-ad__week-col {
-    flex-grow: 1;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    margin-left: 2px;
-    margin-right: 2px;
-    height: 100%;
-}
-.sm-ad__bar-income {
-    width: 60%;
-    background-color: var(--sm-success);
-    margin-bottom: 1px;
-}
-.sm-ad__bar-expense {
-    width: 60%;
-    background-color: var(--sm-alert);
-    opacity: 0.75;
-}
-.sm-ad__budget-legend {
-    flex-direction: row;
-    margin-top: var(--sm-s-3);
-}
-.sm-ad__legend-item {
+    flex-basis: 0;
+    min-width: 150px;
     flex-direction: row;
     align-items: center;
-    margin-right: var(--sm-s-4);
-}
-.sm-ad__legend-swatch {
-    width: 8px;
-    height: 8px;
+    background-color: var(--sm-surface);
+    border-width: 1px;
+    border-color: var(--sm-border);
+    border-top-color: var(--sm-bevel-light);
+    border-left-color: var(--sm-bevel-light);
+    border-bottom-color: var(--sm-bevel-dark);
+    border-radius: var(--sm-r-2);
+    padding: var(--sm-s-2) var(--sm-s-3);
     margin-right: var(--sm-s-2);
+    margin-bottom: var(--sm-s-2);
 }
-.sm-ad__legend-swatch--income    { background-color: var(--sm-success); }
-.sm-ad__legend-swatch--expense   { background-color: var(--sm-alert); }
-.sm-ad__legend-swatch--heat-fine { background-color: var(--sm-warning); }
-
-/* ============================================================
-   OPERATIONS FRAME
-   ============================================================ */
-.sm-ad__opsframe {
-    flex-shrink: 0;
-    flex-direction: row;
-    align-items: center;
-    padding-top: var(--sm-s-3);
-    padding-bottom: var(--sm-s-3);
-    padding-left: var(--sm-s-4);
-    padding-right: var(--sm-s-4);
-    margin-top: var(--sm-s-3);
-    background-color: rgba(0, 0, 0, 0.18);
-    border-top-width: var(--sm-stroke);
-    border-bottom-width: var(--sm-stroke);
-    border-left-width: var(--sm-stroke);
-    border-right-width: var(--sm-stroke);
-    border-top-color: var(--sm-border);
-    border-bottom-color: var(--sm-border);
-    border-left-color: var(--sm-border);
-    border-right-color: var(--sm-border);
-}
-.sm-ad__opsframe-classified {
-    flex-direction: column;
-    flex-shrink: 0;
-    max-width: 280px;
-}
-.sm-ad__opsframe-classified-row {
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 3px;
-}
-.sm-ad__opsframe-classified-icon {
-    width: 10px;
-    height: 10px;
-    background-color: var(--sm-identity);
-    margin-right: 8px;
-}
-.sm-ad__opsframe-classified-label {
-    color: var(--sm-identity);
-    font-size: 10px;
-    letter-spacing: var(--sm-letter-mono-caps);
-    font-weight: 700;
-}
-.sm-ad__opsframe-classified-text {
-    color: var(--sm-text-muted);
-    font-size: 9px;
-    white-space: normal;
-}
-.sm-ad__opsframe-quote {
-    flex-direction: column;
-    flex-shrink: 1;
-    max-width: 380px;
-    align-items: center;
-}
-.sm-ad__opsframe-quote-text {
-    color: var(--sm-text-secondary);
-    font-size: 12px;
-    font-style: italic;
-    text-align: center; justify-content: center; align-items: center;
-    white-space: normal;
-}
-.sm-ad__opsframe-quote-attr {
-    color: var(--sm-text-muted);
-    font-size: 9px;
-    letter-spacing: var(--sm-letter-mono-caps);
-    margin-top: 4px;
-}
-.sm-ad__opsframe-watch {
-    flex-direction: row;
-    align-items: center;
-    flex-shrink: 0;
-}
-.sm-ad__opsframe-watch-text {
-    flex-direction: column;
-    align-items: flex-end;
+.sm-ad2__tile-icon {
+    width: 30px;
+    height: 30px;
     margin-right: var(--sm-s-3);
+    
+    flex-shrink: 0;
 }
-.sm-ad__opsframe-watch-label {
-    color: var(--sm-text-secondary);
-    font-size: 10px;
-    letter-spacing: var(--sm-letter-mono-caps);
+.sm-ad2__tile-text { flex-grow: 1; }
+.sm-ad2__tile-label {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-tertiary);
+    letter-spacing: 1px;
     font-weight: 700;
 }
-.sm-ad__opsframe-watch-row {
-    flex-direction: row;
-    align-items: center;
+.sm-ad2__tile-value-row { flex-direction: row; align-items: flex-end; }
+.sm-ad2__tile-value {
+    font-size: 26px;
+    color: var(--sm-text);
+    font-weight: 700;
+}
+.sm-ad2__tile-value-suffix {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-tertiary);
+    margin-left: 6px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+}
+.sm-ad2__tile-sub {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-tertiary);
     margin-top: 2px;
 }
-.sm-ad__opsframe-watch-sub {
-    color: var(--sm-text-muted);
-    font-size: 9px;
-    letter-spacing: var(--sm-letter-mono-caps);
-    margin-right: 6px;
-}
-.sm-ad__opsframe-watch-num {
-    color: var(--sm-text);
-    font-size: 28px;
-    font-weight: 700;
-}
+.sm-ad2__tile-sub--alert { color: var(--sm-alert); }
+.sm-ad2__tile-sub--warning { color: var(--sm-warning); }
 
-/* ============================================================
-   STATUS BAR
-   ============================================================ */
-.sm-ad__statusbar {
-    flex-shrink: 0;
-    flex-direction: row;
-    align-items: center;
-    height: 28px;
-    padding-left: var(--sm-s-3);
-    padding-right: var(--sm-s-3);
-    margin-top: var(--sm-s-3);
-    background-color: rgba(0, 0, 0, 0.20);
-    border-top-width: var(--sm-stroke);
-    border-bottom-width: var(--sm-stroke);
-    border-left-width: var(--sm-stroke);
-    border-right-width: var(--sm-stroke);
-    border-top-color: var(--sm-border);
-    border-bottom-color: var(--sm-border);
-    border-left-color: var(--sm-border);
-    border-right-color: var(--sm-border);
+/* Readiness confidence tile (wider) */
+.sm-ad2__tile--readiness {
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 230px;
 }
-.sm-ad__statusbar-dot {
-    width: 6px;
+.sm-ad2__readiness-head { flex-direction: row; align-items: center; }
+.sm-ad2__readiness-value {
+    font-size: 26px;
+    color: var(--sm-success);
+    font-weight: 700;
+    margin-left: 6px;
+}
+.sm-ad2__readiness-track {
+    height: 6px;
+    background-color: var(--sm-surface-3);
+    border-radius: 3px;
+    margin-top: var(--sm-s-2);
+    overflow: hidden;
+}
+.sm-ad2__readiness-fill {
     height: 6px;
     background-color: var(--sm-success);
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-    margin-right: var(--sm-s-2);
+    border-radius: 3px;
 }
-.sm-ad__statusbar-cell {
-    color: var(--sm-text-tertiary);
-    font-size: 9px;
-    letter-spacing: 1.8px;
+.sm-ad2__readiness-scale {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 3px;
 }
-.sm-ad__statusbar-sep {
-    color: var(--sm-text-tertiary);
-    font-size: 10px;
-    margin-left: var(--sm-s-2);
-    margin-right: var(--sm-s-2);
-    opacity: 0.6;
-}
-.sm-ad__statusbar-stationery {
+.sm-ad2__readiness-scale-label {
+    font-size: var(--sm-text-micro);
     color: var(--sm-text-muted);
-    font-size: 9px;
-    letter-spacing: var(--sm-letter-mono-caps);
 }
+
+/* ════════ Investigation Arc ════════ */
+.sm-ad2__arc {
+    flex-direction: row;
+    align-items: center;
+    padding: var(--sm-s-2) 0;
+}
+.sm-ad2__arc-stage {
+    flex-grow: 1;
+    flex-basis: 0;
+    flex-direction: row;
+    align-items: center;
+}
+.sm-ad2__arc-badge {
+    width: 26px;
+    height: 26px;
+    border-radius: 13px;
+    border-width: 2px;
+    border-color: var(--sm-border-strong);
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: var(--sm-s-2);
+    background-color: var(--sm-surface);
+}
+.sm-ad2__arc-badge--done {
+    background-color: var(--sm-success);
+    border-color: var(--sm-success);
+}
+.sm-ad2__arc-badge--active {
+    border-color: var(--sm-alert);
+    background-color: var(--sm-surface);
+}
+.sm-ad2__arc-badge-num {
+    font-size: var(--sm-text-sm);
+    font-weight: 700;
+    color: var(--sm-text-secondary);
+}
+.sm-ad2__arc-badge--done .sm-ad2__arc-badge-num { color: #FFFFFF; }
+.sm-ad2__arc-badge--active .sm-ad2__arc-badge-num { color: var(--sm-alert); }
+.sm-ad2__arc-stage-text { flex-direction: column; }
+.sm-ad2__arc-stage-name {
+    font-size: var(--sm-text-sm);
+    font-weight: 700;
+    color: var(--sm-text);
+    letter-spacing: 0.6px;
+}
+.sm-ad2__arc-stage-name--pending { color: var(--sm-text-muted); }
+.sm-ad2__arc-stage-sub {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-tertiary);
+}
+.sm-ad2__arc-connector {
+    flex-grow: 0;
+    width: 28px;
+    height: 2px;
+    background-color: var(--sm-border-strong);
+    margin: 0 var(--sm-s-1);
+    flex-shrink: 0;
+}
+.sm-ad2__arc-doom { color: var(--sm-alert); }
+
+/* ════════ Intelligence Pipeline ════════ */
+.sm-ad2__pipeline {
+    flex-direction: row;
+    align-items: stretch;
+    padding: var(--sm-s-2) 0;
+}
+.sm-ad2__pipe-stage {
+    flex-grow: 1;
+    flex-basis: 0;
+    align-items: center;
+}
+.sm-ad2__pipe-icon {
+    width: 26px;
+    height: 26px;
+    
+    margin-bottom: 4px;
+}
+.sm-ad2__pipe-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--sm-text);
+}
+.sm-ad2__pipe-label {
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-tertiary);
+    letter-spacing: 0.6px;
+    font-weight: 700;
+    margin-top: 2px;
+}
+.sm-ad2__pipe-arrow {
+    width: 16px;
+    text-align: center; justify-content: center; align-items: center;
+    color: var(--sm-text-muted);
+    font-size: var(--sm-text-md);
+    align-self: center;
+}
+
+/* ════════ Active Operations ════════ */
+.sm-ad2__ops { padding-top: var(--sm-s-1); }
+.sm-ad2__ops-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 2px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--sm-border);
+}
+.sm-ad2__ops-name {
+    flex-grow: 1;
+    flex-basis: 0;
+    font-size: var(--sm-text-sm);
+    font-weight: 700;
+    color: var(--sm-text);
+    letter-spacing: 0.4px;
+}
+.sm-ad2__ops-loc {
+    flex-grow: 1;
+    flex-basis: 0;
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-tertiary);
+}
+.sm-ad2__ops-status {
+    font-size: var(--sm-text-xs);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: var(--sm-text-secondary);
+}
+.sm-ad2__ops-status--active { color: var(--sm-success); }
+.sm-ad2__ops-status--planning { color: var(--sm-warning); }
+.sm-ad2__ops-empty {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-muted);
+    padding: var(--sm-s-3) 0;
+    text-align: center; justify-content: center; align-items: center;
+}
+
+/* ════════ Doomsday gauge ════════ */
+.sm-ad2__doom {
+    align-items: center;
+    justify-content: center;
+    padding: var(--sm-s-2) 0 var(--sm-s-1) 0;
+}
+
+/* ════════ Investigation Stage ════════ */
+.sm-ad2__stage-body { padding: var(--sm-s-2) 0; }
+.sm-ad2__stage-headline { flex-direction: row; align-items: flex-end; }
+.sm-ad2__stage-value {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--sm-text);
+}
+.sm-ad2__stage-name {
+    font-size: var(--sm-text-md);
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--sm-alert);
+    margin-left: var(--sm-s-3);
+}
+.sm-ad2__stage-desc {
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text-secondary);
+    margin-top: var(--sm-s-2);
+    white-space: normal;
+}
+
+/* ════════ Personnel summary ════════ */
+.sm-ad2__personnel-body { flex-direction: row; align-items: center; padding-top: var(--sm-s-2); }
+.sm-ad2__personnel-donut {
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--sm-s-4);
+}
+.sm-ad2__personnel-legend { flex-grow: 1; }
+.sm-ad2__legend-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.sm-ad2__legend-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin-right: var(--sm-s-2);
+    flex-shrink: 0;
+}
+.sm-ad2__legend-label {
+    flex-grow: 1;
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text-secondary);
+}
+.sm-ad2__legend-value {
+    font-size: var(--sm-text-sm);
+    font-weight: 700;
+    color: var(--sm-text);
+}
+.sm-ad2__personnel-total { color: var(--sm-text-tertiary); }
+
+/* ════════ Agency health grid ════════ */
+.sm-ad2__health {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding-top: var(--sm-s-2);
+}
+.sm-ad2__health-cell {
+    width: 33%;
+    flex-direction: column;
+    margin-bottom: var(--sm-s-3);
+}
+.sm-ad2__health-head { flex-direction: row; align-items: center; }
+.sm-ad2__health-icon {
+    width: 16px;
+    height: 16px;
+    
+    margin-right: 5px;
+}
+.sm-ad2__health-value {
+    font-size: var(--sm-text-lg);
+    font-weight: 700;
+    color: var(--sm-text);
+}
+.sm-ad2__health-label {
+    font-size: var(--sm-text-micro);
+    color: var(--sm-text-tertiary);
+    letter-spacing: 0.6px;
+    font-weight: 700;
+    margin-top: 1px;
+}
+.sm-ad2__health-status {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-secondary);
+}
+.sm-ad2__health-status--good { color: var(--sm-success); }
+.sm-ad2__health-status--watch { color: var(--sm-warning); }
+.sm-ad2__health-status--bad { color: var(--sm-alert); }
+
+/* ════════ Directorate structure ════════ */
+.sm-ad2__structure {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding-top: var(--sm-s-2);
+}
+.sm-ad2__division {
+    min-width: 150px;
+    flex-grow: 1;
+    flex-basis: 0;
+    background-color: var(--sm-surface-2);
+    border-width: 1px;
+    border-color: var(--sm-border);
+    border-top-width: 2px;
+    border-top-color: var(--sm-info);
+    border-radius: var(--sm-r-2);
+    padding: var(--sm-s-2) var(--sm-s-3);
+    margin-right: var(--sm-s-3);
+    margin-bottom: var(--sm-s-2);
+}
+.sm-ad2__division-name {
+    font-size: var(--sm-text-xs);
+    font-weight: 700;
+    color: var(--sm-text);
+    letter-spacing: 0.6px;
+}
+.sm-ad2__division-staff {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-tertiary);
+    margin-top: 3px;
+}
+.sm-ad2__division-track {
+    height: 4px;
+    background-color: var(--sm-surface-3);
+    border-radius: 2px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+.sm-ad2__division-fill {
+    height: 4px;
+    background-color: var(--sm-info);
+    border-radius: 2px;
+}
+
+/* ════════ Recent intel ════════ */
+.sm-ad2__intel { padding-top: var(--sm-s-1); }
+.sm-ad2__intel-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 2px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--sm-border);
+}
+.sm-ad2__intel-text {
+    flex-grow: 1;
+    flex-basis: 0;
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text);
+}
+.sm-ad2__intel-source {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-tertiary);
+    letter-spacing: 0.4px;
+    margin-right: var(--sm-s-3);
+}
+.sm-ad2__intel-age {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-muted);
+    width: 56px;
+    text-align: right; justify-content: right; align-items: center;
+}
+
+/* ════════ Right rail ════════ */
+.sm-ad2__rail-count { margin-left: var(--sm-s-2); }
+.sm-ad2__rail-list { padding: var(--sm-s-1) 0; }
+.sm-ad2__rail-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 2px;
+}
+.sm-ad2__rail-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 4px;
+    margin-right: var(--sm-s-2);
+    flex-shrink: 0;
+    background-color: var(--sm-text-muted);
+}
+.sm-ad2__rail-dot--alert { background-color: var(--sm-alert); }
+.sm-ad2__rail-dot--warning { background-color: var(--sm-warning); }
+.sm-ad2__rail-dot--info { background-color: var(--sm-info); }
+.sm-ad2__rail-row-text { flex-grow: 1; }
+.sm-ad2__rail-row-title {
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text);
+}
+.sm-ad2__rail-row-age {
+    font-size: var(--sm-text-xs);
+    color: var(--sm-text-muted);
+    margin-left: var(--sm-s-2);
+}
+.sm-ad2__rail-btn {
+    margin-top: var(--sm-s-2);
+    font-size: var(--sm-text-xs);
+    letter-spacing: 0.6px;
+    align-self: stretch;
+    text-align: center; justify-content: center; align-items: center;
+}
+
+/* At a glance */
+.sm-ad2__glance { padding: var(--sm-s-1) 0; }
+.sm-ad2__glance-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 2px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--sm-border);
+}
+.sm-ad2__glance-key {
+    font-size: var(--sm-text-sm);
+    color: var(--sm-text-secondary);
+}
+.sm-ad2__glance-value {
+    font-size: var(--sm-text-sm);
+    font-weight: 700;
+    color: var(--sm-text);
+}
+
+/* ════════ Icon modifier classes (background-image URLs resolve at runtime) ════════ */
+.sm-ad2__icon--analysts   { background-image: url("project://database/Assets/UI/Icons/portrait-analyst.svg"); }
+.sm-ad2__icon--operatives { background-image: url("project://database/Assets/UI/Icons/stat-case-officers.svg"); }
+.sm-ad2__icon--safehouses { background-image: url("project://database/Assets/UI/Icons/equip-tracker.svg"); }
+.sm-ad2__icon--tech       { background-image: url("project://database/Assets/UI/Icons/stat-tech-projects.svg"); }
+.sm-ad2__icon--support    { background-image: url("project://database/Assets/UI/Icons/stat-support.svg"); }
+.sm-ad2__icon--raw        { background-image: url("project://database/Assets/UI/Icons/action-status-report.svg"); }
+.sm-ad2__icon--analysis   { background-image: url("project://database/Assets/UI/Icons/action-advanced-search.svg"); }
+.sm-ad2__icon--developing { background-image: url("project://database/Assets/UI/Icons/action-assignment.svg"); }
+.sm-ad2__icon--refined    { background-image: url("project://database/Assets/UI/Icons/action-declassify.svg"); }
 
 /* ── Assets/UI/Theme/theme-present-polish.uss ── */
 /*
@@ -3098,259 +2867,120 @@ TextField > .unity-text-field__input,
   <a href="index.html">← all screens</a>
 </div>
 <div class="uxml-root">
-  <div class="sm-l1-base sm-screen sm-ad" id="agency-dashboard">
-    <div class="sm-ad__header" id="ad-header">
-      <div class="sm-ad__header-crest"></div>
-      <div class="sm-ad__header-lead">
-        <div class="sm-ad__header-eyebrow sm-mono">DIRECTOR'S DESK · OPERATING DOSSIER</div>
-        <div class="sm-ad__header-title sm-title-slab sm-title-slab--xl">AGENCY HQ</div>
-        <div class="sm-ad__header-codeline-row">
-          <div class="sm-live-dot"></div>
-          <div class="sm-ad__header-codeline sm-mono" id="hero-codeline">HQ · ECHELON · —</div>
-        </div>
-        <div class="sm-ad__header-stationery sm-mono" id="ad-doc-stationery">DOC.ID: AGY-HQ-0001  ·  CLASS: TS//NOFORN  ·  DIST: HQ-01/EYES</div>
+  <div class="sm-l1-base sm-screen sm-ad2" id="agency-dashboard">
+    <div class="sm-ad2__header">
+      <div class="sm-ad2__header-lead">
+        <div class="sm-ad2__title sm-title-slab">AGENCY OVERVIEW</div>
+        <div class="sm-ad2__subtitle">Directorate health, readiness, and operational posture.</div>
       </div>
       <div class="sm-fill"></div>
-      <div class="sm-badge sm-badge--alert sm-ad__hero-attention" id="hero-attention"></div>
+      <div class="sm-ad2__doc sm-mono" id="ad-doc">DOC.ID: AGY-HQ-0001 · CLASS: TS//NOFORN · DIST: HQ-01/EYES</div>
     </div>
-    <div class="sm-row sm-ad__hero-row">
-      <div class="sm-panel sm-ad__arc">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">INVESTIGATION ARC</div>
-          <div class="sm-fill"></div>
-          <div class="sm-mono sm-label sm-ad__arc-doomsday" id="arc-doomsday" title="Days until the conspiracy executes its plan. Resolve a primary terminal-state op before this hits zero.">DOOMSDAY · — d</div>
-        </div>
-        <div class="sm-panel__body sm-ad__arc-body">
-          <div class="sm-ad__arc-stages" id="arc-stages">
-            <div class="sm-ad__arc-stage" id="arc-stage-0">
-              <div class="sm-ad__arc-stage-dot"></div>
-              <div class="sm-mono sm-label sm-ad__arc-stage-label">UNKNOWN</div>
-            </div>
-            <div class="sm-ad__arc-stage-rail"></div>
-            <div class="sm-ad__arc-stage" id="arc-stage-1">
-              <div class="sm-ad__arc-stage-dot"></div>
-              <div class="sm-mono sm-label sm-ad__arc-stage-label">NETWORK KNOWN</div>
-            </div>
-            <div class="sm-ad__arc-stage-rail"></div>
-            <div class="sm-ad__arc-stage" id="arc-stage-2">
-              <div class="sm-ad__arc-stage-dot"></div>
-              <div class="sm-mono sm-label sm-ad__arc-stage-label">MASTERMIND</div>
-            </div>
+    <div class="sm-row sm-ad2__body">
+      <div class="sm-ad2__main">
+        <div class="sm-row sm-ad2__stats" id="ad-stats"></div>
+        <div class="sm-panel sm-ad2__panel sm-ad2__arc-panel">
+          <div class="sm-panel__header">
+            <div class="sm-panel__title">INVESTIGATION ARC</div>
+            <div class="sm-fill"></div>
+            <div class="sm-mono sm-label sm-ad2__arc-doom" id="ad-arc-doom">DOOMSDAY · — d</div>
           </div>
-          <div class="sm-row sm-ad__arc-tracks">
-            <div class="sm-ad__arc-track" title="UNMASKED victory condition. Reveal every conspiracy layer (Layer 0 → Mastermind) to unlock this ending.">
-              <div class="sm-row sm-ad__arc-track-head">
-                <div class="sm-mono sm-label">UNMASKED</div>
-                <div class="sm-fill"></div>
-                <div class="sm-num sm-ad__arc-track-value" id="arc-layers-value">—/—</div>
+          <div class="sm-row sm-ad2__arc" id="ad-arc"></div>
+        </div>
+        <div class="sm-row sm-ad2__split">
+          <div class="sm-panel sm-ad2__panel sm-ad2__pipeline-panel">
+            <div class="sm-panel__header">
+              <div class="sm-panel__title">INTELLIGENCE PIPELINE</div>
+            </div>
+            <div class="sm-row sm-ad2__pipeline" id="ad-pipeline"></div>
+          </div>
+          <div class="sm-panel sm-ad2__panel sm-ad2__ops-panel">
+            <div class="sm-panel__header">
+              <div class="sm-panel__title">ACTIVE OPERATIONS</div>
+              <div class="sm-fill"></div>
+              <button class="sm-btn sm-ad2__link-btn" id="ad-ops-all">VIEW ALL</button>
+            </div>
+            <div class="sm-ad2__ops" id="ad-ops"></div>
+          </div>
+        </div>
+        <div class="sm-row sm-ad2__split">
+          <div class="sm-panel sm-ad2__panel sm-ad2__doom-panel">
+            <div class="sm-panel__header">
+              <div class="sm-panel__title">DOOMSDAY PRESSURE</div>
+            </div>
+            <div class="sm-ad2__doom" id="ad-doom"></div>
+          </div>
+          <div class="sm-panel sm-ad2__panel sm-ad2__stage-panel">
+            <div class="sm-panel__header">
+              <div class="sm-panel__title">INVESTIGATION STAGE</div>
+            </div>
+            <div class="sm-ad2__stage-body">
+              <div class="sm-row sm-ad2__stage-headline">
+                <div class="sm-num sm-ad2__stage-value" id="ad-stage-value">—</div>
+                <div class="sm-ad2__stage-name sm-mono" id="ad-stage-name">—</div>
               </div>
-              <div class="sm-ad__arc-track-rail">
-                <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--layers" id="arc-layers-fill"></div>
-              </div>
-            </div>
-            <div class="sm-ad__arc-track" title="DECAPITATION STRIKE victory condition. Reveal every named conspirator at the Mastermind layer.">
-              <div class="sm-row sm-ad__arc-track-head">
-                <div class="sm-mono sm-label">DECAPITATION</div>
-                <div class="sm-fill"></div>
-                <div class="sm-num sm-ad__arc-track-value" id="arc-mastermind-value">—/—</div>
-              </div>
-              <div class="sm-ad__arc-track-rail">
-                <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--mastermind" id="arc-mastermind-fill"></div>
-              </div>
-            </div>
-            <div class="sm-ad__arc-track" title="Distinct intel types corroborated against the conspiracy. Strengthens evidence weight at terminal-state ops.">
-              <div class="sm-row sm-ad__arc-track-head">
-                <div class="sm-mono sm-label">EVIDENCE WEIGHT</div>
-                <div class="sm-fill"></div>
-                <div class="sm-num sm-ad__arc-track-value" id="arc-intel-value">—/9</div>
-              </div>
-              <div class="sm-ad__arc-track-rail">
-                <div class="sm-ad__arc-track-fill sm-ad__arc-track-fill--intel" id="arc-intel-fill"></div>
-              </div>
-            </div>
-            <div class="sm-ad__arc-target" title="Primary terminal target — the ending your campaign DNA is currently best positioned for.">
-              <div class="sm-mono sm-label">PRIMARY TARGET</div>
-              <div class="sm-num sm-ad__arc-target-value" id="arc-target-value">—</div>
+              <div class="sm-ad2__stage-desc" id="ad-stage-desc">Investigation status will appear here.</div>
             </div>
           </div>
+        </div>
+        <div class="sm-row sm-ad2__split">
+          <div class="sm-panel sm-ad2__panel sm-ad2__personnel-panel">
+            <div class="sm-panel__header">
+              <div class="sm-panel__title">PERSONNEL SUMMARY</div>
+              <div class="sm-fill"></div>
+              <div class="sm-mono sm-label sm-ad2__personnel-total" id="ad-personnel-total">TOTAL —</div>
+            </div>
+            <div class="sm-row sm-ad2__personnel-body">
+              <div class="sm-ad2__personnel-donut" id="ad-personnel-donut"></div>
+              <div class="sm-ad2__personnel-legend" id="ad-personnel-legend"></div>
+            </div>
+          </div>
+          <div class="sm-panel sm-ad2__panel sm-ad2__health-panel">
+            <div class="sm-panel__header">
+              <div class="sm-panel__title">AGENCY HEALTH</div>
+            </div>
+            <div class="sm-ad2__health" id="ad-health"></div>
+          </div>
+        </div>
+        <div class="sm-panel sm-ad2__panel">
+          <div class="sm-panel__header">
+            <div class="sm-panel__title">DIRECTORATE STRUCTURE</div>
+          </div>
+          <div class="sm-row sm-ad2__structure" id="ad-structure"></div>
+        </div>
+        <div class="sm-panel sm-ad2__panel">
+          <div class="sm-panel__header">
+            <div class="sm-panel__title">RECENT INTEL</div>
+            <div class="sm-fill"></div>
+            <button class="sm-btn sm-ad2__link-btn" id="ad-intel-all">VIEW ALL INTEL</button>
+          </div>
+          <div class="sm-ad2__intel" id="ad-intel"></div>
         </div>
       </div>
-      <div class="sm-panel sm-ad__inbox">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">URGENT INBOX</div>
-          <div class="sm-badge sm-ad__inbox-count" id="inbox-count">0</div>
-          <div class="sm-fill"></div>
-          <button class="sm-btn sm-ad__inbox-all-btn" id="btn-inbox-all" title="Open the full inbox — walk-ins, tip-offs, cabinet timers, all in one queue.">SEE ALL</button>
+      <div class="sm-ad2__rail">
+        <div class="sm-panel sm-ad2__panel">
+          <div class="sm-panel__header">
+            <div class="sm-panel__title">ALERTS</div>
+            <div class="sm-badge sm-badge--alert sm-ad2__rail-count" id="ad-alerts-count">0</div>
+          </div>
+          <div class="sm-ad2__rail-list" id="ad-alerts"></div>
+          <button class="sm-btn sm-ad2__rail-btn" id="ad-alerts-all">VIEW ALL ALERTS</button>
         </div>
-        <div class="sm-ad__inbox-scroll" id="inbox-list" style="overflow-x:hidden; overflow-y:auto;"></div>
-        <div class="sm-ad__inbox-empty sm-mono" id="inbox-empty">No items pending. The desk is quiet.</div>
-      </div>
-    </div>
-    <div class="sm-panel sm-ad__pressure">
-      <div class="sm-panel__header">
-        <div class="sm-panel__title">PRESSURE</div>
-        <div class="sm-fill"></div>
-        <button class="sm-btn sm-ad__pressure-btn" id="btn-tip-inbox" title="Tip inbox — informant leads + forensic-flagged personnel waiting for a follow-up.">TIP INBOX</button>
-        <button class="sm-btn sm-ad__pressure-btn" id="btn-threat-report" title="Analyst-aggregated intel digest.">WEEKLY BRIEF</button>
-      </div>
-      <div class="sm-panel__body sm-ad__pressure-body">
-        <div class="sm-row sm-ad__pressure-meters">
-          <div class="sm-ad__pressure-meter sm-ad__pressure-meter--heat">
-            <div class="sm-label">GLOBAL HEAT</div>
-            <div class="sm-row sm-ad__pressure-meter-value-row">
-              <div class="sm-num sm-numeral-display sm-ad__pressure-meter-value" id="pressure-heat-value">—</div>
-              <div class="sm-label sm-ad__pressure-meter-unit">/ 100</div>
-            </div>
-            <div class="sm-ad__pressure-meter-track">
-              <div class="sm-ad__pressure-meter-fill sm-ad__pressure-meter-fill--heat" id="pressure-heat-fill"></div>
-            </div>
-            <div class="sm-mono sm-label sm-ad__pressure-meter-status" id="pressure-heat-status">STABLE</div>
+        <div class="sm-panel sm-ad2__panel">
+          <div class="sm-panel__header">
+            <div class="sm-panel__title">UPCOMING EVENTS</div>
           </div>
-          <div class="sm-ad__pressure-meter sm-ad__pressure-meter--conf">
-            <div class="sm-label">GOV CONFIDENCE</div>
-            <div class="sm-row sm-ad__pressure-meter-value-row">
-              <div class="sm-num sm-numeral-display sm-ad__pressure-meter-value" id="pressure-conf-value">—</div>
-              <div class="sm-label sm-ad__pressure-meter-unit">/ 100</div>
-            </div>
-            <div class="sm-ad__pressure-meter-track">
-              <div class="sm-ad__pressure-meter-fill sm-ad__pressure-meter-fill--conf" id="pressure-conf-fill"></div>
-            </div>
-            <div class="sm-mono sm-label sm-ad__pressure-meter-status" id="pressure-conf-status">STEADY</div>
-          </div>
-          <div class="sm-ad__pressure-meter sm-ad__pressure-meter--doom">
-            <div class="sm-label">DOOMSDAY</div>
-            <div class="sm-row sm-ad__pressure-meter-value-row">
-              <div class="sm-num sm-numeral-display sm-ad__pressure-meter-value" id="pressure-doom-value">—</div>
-              <div class="sm-label sm-ad__pressure-meter-unit">days</div>
-            </div>
-            <div class="sm-ad__pressure-meter-track">
-              <div class="sm-ad__pressure-meter-fill sm-ad__pressure-meter-fill--doom" id="pressure-doom-fill"></div>
-            </div>
-            <div class="sm-mono sm-label sm-ad__pressure-meter-status" id="pressure-doom-status">—</div>
-          </div>
+          <div class="sm-ad2__rail-list" id="ad-events"></div>
+          <button class="sm-btn sm-ad2__rail-btn" id="ad-events-cal">VIEW CALENDAR</button>
         </div>
-        <div class="sm-row sm-ad__pressure-countries-row">
-          <div class="sm-mono sm-label sm-ad__pressure-countries-label">TOP COUNTRIES BY HEAT</div>
-          <div class="sm-ad__pressure-countries" id="pressure-countries"></div>
-          <div class="sm-fill"></div>
-          <div class="sm-mono sm-label sm-ad__pressure-world-link" title="Switch to the world view to inspect per-country heat in detail.">[ WORLD → ]</div>
+        <div class="sm-panel sm-ad2__panel">
+          <div class="sm-panel__header">
+            <div class="sm-panel__title">AT A GLANCE</div>
+          </div>
+          <div class="sm-ad2__glance" id="ad-glance"></div>
+          <button class="sm-btn sm-ad2__rail-btn" id="ad-notes">DIRECTORATE NOTES</button>
         </div>
       </div>
-    </div>
-    <div class="sm-row sm-ad__resources-row">
-      <div class="sm-panel sm-ad__state">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">AGENCY STATE</div>
-        </div>
-        <div class="sm-panel__body sm-ad__state-body">
-          <div class="sm-row sm-ad__state-line sm-ad__state-line--first" id="state-line-personnel">
-            <div class="sm-mono sm-label sm-ad__state-line-key">Personnel</div>
-            <div class="sm-mono sm-ad__state-line-value" id="state-personnel-value">—</div>
-          </div>
-          <div class="sm-row sm-ad__state-line" id="state-line-departments">
-            <div class="sm-mono sm-label sm-ad__state-line-key">Departments</div>
-            <div class="sm-mono sm-ad__state-line-value" id="state-departments-value">—</div>
-          </div>
-          <div class="sm-row sm-ad__state-line" id="state-line-safehouses">
-            <div class="sm-mono sm-label sm-ad__state-line-key">Safe houses</div>
-            <div class="sm-mono sm-ad__state-line-value" id="state-safehouses-value">—</div>
-          </div>
-          <div class="sm-row sm-ad__state-line" id="state-line-ops">
-            <div class="sm-mono sm-label sm-ad__state-line-key">Active ops</div>
-            <div class="sm-mono sm-ad__state-line-value" id="state-ops-value">—</div>
-          </div>
-          <div class="sm-row sm-ad__state-line" id="state-line-tenure">
-            <div class="sm-mono sm-label sm-ad__state-line-key">Tenure</div>
-            <div class="sm-mono sm-ad__state-line-value" id="state-tenure-value">—</div>
-          </div>
-          <div class="sm-fill"></div>
-          <div class="sm-row sm-ad__state-actions">
-            <button class="sm-btn sm-ad__state-action-btn" id="state-hire-btn" title="Open recruitment — review applicants, manage open positions.">HIRE</button>
-            <button class="sm-btn sm-ad__state-action-btn" id="state-network-btn" title="Open the full safe house network — comms, capacity, heat per node.">SAFE HOUSE NETWORK</button>
-            <button class="sm-btn sm-ad__state-action-btn" id="state-transit-btn" title="Show every operative currently in transit between cities.">IN TRANSIT</button>
-            <button class="sm-btn sm-ad__state-action-btn" id="state-walkins-btn" title="Walk-in candidates — defectors and informants who have approached the agency.">WALK-INS</button>
-          </div>
-        </div>
-      </div>
-      <div class="sm-panel sm-ad__budget">
-        <div class="sm-panel__header">
-          <div class="sm-panel__title">BLACK BUDGET · 90D</div>
-          <div class="sm-fill"></div>
-          <button class="sm-btn sm-ad__ledger-btn" id="budget-ledger-btn" title="Open the budget ledger — every voucher and transaction this campaign.">OPEN LEDGER</button>
-        </div>
-        <div class="sm-panel__body sm-ad__budget-body">
-          <div class="sm-row sm-ad__budget-stats">
-            <div class="sm-ad__budget-stat">
-              <div class="sm-label">BALANCE</div>
-              <div class="sm-num sm-ad__budget-stat-value sm-numeral-display" id="budget-balance">—</div>
-              <div class="sm-mono sm-label sm-ad__budget-stat-sub" id="budget-balance-sub">—</div>
-            </div>
-            <div class="sm-ad__budget-stat">
-              <div class="sm-label">INCOME</div>
-              <div class="sm-num sm-ad__budget-stat-value sm-ad__budget-stat-value--success" id="budget-income">—</div>
-              <div class="sm-mono sm-label sm-ad__budget-stat-sub" id="budget-income-sub">/day</div>
-            </div>
-            <div class="sm-ad__budget-stat">
-              <div class="sm-label">BURN</div>
-              <div class="sm-num sm-ad__budget-stat-value sm-ad__budget-stat-value--alert" id="budget-burn">—</div>
-              <div class="sm-mono sm-label sm-ad__budget-stat-sub" id="budget-burn-sub">/day</div>
-            </div>
-          </div>
-          <div class="sm-row sm-ad__budget-chart" id="budget-chart"></div>
-          <div class="sm-row sm-ad__budget-axis" id="budget-axis"></div>
-          <div class="sm-row sm-ad__budget-legend">
-            <div class="sm-row sm-ad__legend-item">
-              <div class="sm-ad__legend-swatch sm-ad__legend-swatch--income"></div>
-              <div class="sm-mono sm-label">Balance</div>
-            </div>
-            <div class="sm-row sm-ad__legend-item">
-              <div class="sm-ad__legend-swatch sm-ad__legend-swatch--expense"></div>
-              <div class="sm-mono sm-label">Ops burn</div>
-            </div>
-            <div class="sm-row sm-ad__legend-item">
-              <div class="sm-ad__legend-swatch sm-ad__legend-swatch--heat-fine"></div>
-              <div class="sm-mono sm-label">Heat fines</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="sm-ad__opsframe">
-      <div class="sm-ad__opsframe-classified">
-        <div class="sm-ad__opsframe-classified-row">
-          <div class="sm-ad__opsframe-classified-icon"></div>
-          <div class="sm-ad__opsframe-classified-label sm-mono">CLASSIFIED  ·  EYES ONLY</div>
-        </div>
-        <div class="sm-ad__opsframe-classified-text sm-mono">Per 18 U.S.C. § 798 — unauthorized disclosure prohibited.</div>
-      </div>
-      <div class="sm-fill"></div>
-      <div class="sm-ad__opsframe-quote">
-        <div class="sm-ad__opsframe-quote-text" id="ad-opsframe-quote">“Operations stands ready to receive standing orders.”</div>
-        <div class="sm-ad__opsframe-quote-attr sm-mono" id="ad-opsframe-quote-attr">— OPS CHIEF, R.</div>
-      </div>
-      <div class="sm-fill"></div>
-      <div class="sm-ad__opsframe-watch">
-        <div class="sm-ad__opsframe-watch-text">
-          <div class="sm-ad__opsframe-watch-label sm-mono">ACTIVE OPERATIONS</div>
-          <div class="sm-ad__opsframe-watch-row">
-            <div class="sm-ad__opsframe-watch-sub sm-mono">WATCH BOARD  ·  LIVE</div>
-            <div class="sm-live-dot"></div>
-          </div>
-        </div>
-        <div class="sm-ad__opsframe-watch-num sm-num sm-numeral-display sm-numeral-display--xl" id="ad-opsframe-watch-count">00</div>
-      </div>
-    </div>
-    <div class="sm-ad__statusbar">
-      <div class="sm-ad__statusbar-dot"></div>
-      <div class="sm-ad__statusbar-cell sm-mono">NODE / HQ-01</div>
-      <div class="sm-ad__statusbar-sep">·</div>
-      <div class="sm-ad__statusbar-cell sm-mono" id="ad-status-utc">UTC 00:00:00</div>
-      <div class="sm-ad__statusbar-sep">·</div>
-      <div class="sm-ad__statusbar-cell sm-mono" id="ad-status-codeline">—</div>
-      <div class="sm-ad__statusbar-sep">·</div>
-      <div class="sm-ad__statusbar-cell sm-mono">TS//SCI</div>
-      <div class="sm-fill"></div>
-      <div class="sm-ad__statusbar-stationery sm-mono">DOC.ID: AGY-HQ-0001  ·  CLASS: TS//NOFORN  ·  DIST: HQ-01/EYES</div>
     </div>
   </div>
 </div>
